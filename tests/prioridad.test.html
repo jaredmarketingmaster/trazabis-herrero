@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pruebas · Prioridad del lead</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:,">
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 24px; color: #1A1D29; }
+    table { border-collapse: collapse; width: 100%; max-width: 960px; }
+    th, td { border: 1px solid #DCDFE7; padding: 6px 10px; text-align: left; font-size: 14px; }
+    .ok { color: #156B43; font-weight: 700; }
+    .fallo { color: #B42318; font-weight: 700; }
+    #resumen { font-size: 18px; font-weight: 700; margin: 16px 0; }
+  </style>
+</head>
+<body>
+  <h1>Pruebas del cálculo de prioridad</h1>
+  <p id="resumen">Ejecutando…</p>
+  <table>
+    <thead><tr><th>Caso</th><th>Esperado</th><th>Obtenido</th><th>Resultado</th></tr></thead>
+    <tbody id="filas"></tbody>
+  </table>
+
+  <script src="../assets/js/formulario.js"></script>
+  <script>
+    (function () {
+      var P = window.TrazabisForm.calcularPrioridad;
+      var base = {
+        clientes_cartera: "101_150", tamano_equipo: "3_15", cargo: "socio_director_gerente",
+        programa_contable: "odoo", acepta_sin_conector: "no_aplica", intento_previo: "ocr", plazo_inicio: "proximos_6_meses"
+      };
+      function con(cambios) { var d = {}; for (var k in base) d[k] = base[k]; for (var c in cambios) d[c] = cambios[c]; return d; }
+      var casos = [
+        ["Odoo, socio, 101–150, con OCR", con({}), "alta"],
+        ["No Odoo y acepta tablas", con({ programa_contable: "holded", acepta_sin_conector: "si" }), "alta"],
+        ["No Odoo y necesita el conector", con({ programa_contable: "holded", acepta_sin_conector: "no" }), "no_cerrar"],
+        ["Menos de 20 clientes", con({ clientes_cartera: "menos_20" }), "no_cerrar"],
+        ["20–50 clientes", con({ clientes_cartera: "20_50" }), "baja"],
+        ["Responsable de contabilidad", con({ cargo: "responsable_contabilidad" }), "media"],
+        ["Sin intento previo", con({ intento_previo: "no" }), "media"],
+        ["Solo se informa, sin cumplir «alta»", con({ cargo: "otro", plazo_inicio: "solo_informandome" }), "baja"],
+        ["Solo se informa, cumpliendo «alta» (orden del brief: alta antes que baja)", con({ plazo_inicio: "solo_informandome" }), "alta"],
+        ["Más de 300, gerente, Excel", con({ clientes_cartera: "mas_300", intento_previo: "excel" }), "alta"],
+        ["No lo sé + acepta tablas + ambas cosas", con({ programa_contable: "no_lo_se", acepta_sin_conector: "si", intento_previo: "ambos" }), "alta"]
+      ];
+      var fallos = 0;
+      var tbody = document.getElementById("filas");
+      casos.forEach(function (c) {
+        var obtenido = P(c[1]);
+        var ok = obtenido === c[2];
+        if (!ok) fallos++;
+        var tr = document.createElement("tr");
+        [c[0], c[2], obtenido].forEach(function (t) { var td = document.createElement("td"); td.textContent = t; tr.appendChild(td); });
+        var td = document.createElement("td"); td.className = ok ? "ok" : "fallo"; td.textContent = ok ? "OK" : "FALLO"; tr.appendChild(td);
+        tbody.appendChild(tr);
+      });
+      var uuid = window.TrazabisForm.uuidv4();
+      var uuidOk = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(uuid);
+      if (!uuidOk) fallos++;
+      var tr = document.createElement("tr");
+      ["event_id es un UUID v4", "UUID v4", uuid].forEach(function (t) { var td = document.createElement("td"); td.textContent = t; tr.appendChild(td); });
+      var td = document.createElement("td"); td.className = uuidOk ? "ok" : "fallo"; td.textContent = uuidOk ? "OK" : "FALLO"; tr.appendChild(td);
+      tbody.appendChild(tr);
+      var total = casos.length + 1;
+      var resumen = document.getElementById("resumen");
+      resumen.textContent = (total - fallos) + " de " + total + " pruebas correctas" + (fallos ? " · " + fallos + " fallos" : "");
+      resumen.className = fallos ? "fallo" : "ok";
+      window.__resultadoPruebas = { total: total, fallos: fallos };
+    })();
+  </script>
+</body>
+</html>
