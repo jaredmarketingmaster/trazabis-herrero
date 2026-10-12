@@ -141,7 +141,9 @@
     botones.appendChild(crearBoton("Rechazar todas", "rechazar"));
     botones.appendChild(crearBoton("Configurar", "configurar"));
     banner.appendChild(botones);
-    document.body.insertBefore(banner, document.body.firstChild);
+    // Va justo después del enlace «Saltar al contenido» (si existe), al principio del orden de tabulación
+    var salto = document.querySelector("body > .salto");
+    document.body.insertBefore(banner, salto ? salto.nextSibling : document.body.firstChild);
   }
 
   function crearPanel() {

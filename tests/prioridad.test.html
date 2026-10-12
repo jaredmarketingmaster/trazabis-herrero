@@ -23,9 +23,10 @@
     <tbody id="filas"></tbody>
   </table>
 
-  <script src="../assets/js/formulario.js"></script>
+  <script src="../assets/js/formulario.js?v=20261012" defer></script>
   <script>
-    (function () {
+    // Las pruebas se ejecutan cuando el script diferido ya se ha cargado
+    document.addEventListener("DOMContentLoaded", function () {
       var P = window.TrazabisForm.calcularPrioridad;
       var base = {
         clientes_cartera: "101_150", tamano_equipo: "3_15", cargo: "socio_director_gerente",
@@ -68,7 +69,7 @@
       resumen.textContent = (total - fallos) + " de " + total + " pruebas correctas" + (fallos ? " · " + fallos + " fallos" : "");
       resumen.className = fallos ? "fallo" : "ok";
       window.__resultadoPruebas = { total: total, fallos: fallos };
-    })();
+    });
   </script>
 </body>
 </html>

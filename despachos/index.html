@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8">
   <script>
-    // Si la página se sirve como «/despachos» (sin barra final), se añade la barra para que las rutas relativas funcionen.
-    (function () { var p = location.pathname; if (/\/despachos$/.test(p)) location.replace(p + "/" + location.search + location.hash); })();
+    // Marca que hay JS (activa las animaciones de entrada) y, si la página se sirve como «/despachos»
+    // (sin barra final), añade la barra para que las rutas relativas funcionen.
+    (function () { document.documentElement.classList.add("js"); var p = location.pathname; if (/\/despachos$/.test(p)) location.replace(p + "/" + location.search + location.hash); })();
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Trazabis para despachos · Tus agentes preparan. Tu equipo aprueba.</title>
@@ -14,96 +15,134 @@
   <link rel="icon" href="data:,">
   <link rel="preload" href="../assets/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/styles.css">
-  <script src="../assets/js/config.js" defer></script>
-  <script src="../assets/js/datalayer.js" defer></script>
-  <script src="../assets/js/consent.js" defer></script>
-  <script src="../assets/js/main.js" defer></script>
-  <script src="../assets/js/calculadora.js" defer></script>
-  <script src="../assets/js/formulario.js" defer></script>
+  <link rel="stylesheet" href="../assets/css/styles.css?v=20261012">
+  <script src="../assets/js/config.js?v=20261012" defer></script>
+  <script src="../assets/js/datalayer.js?v=20261012" defer></script>
+  <script src="../assets/js/consent.js?v=20261012" defer></script>
+  <script src="../assets/js/main.js?v=20261012" defer></script>
+  <script src="../assets/js/calculadora.js?v=20261012" defer></script>
+  <script src="../assets/js/formulario.js?v=20261012" defer></script>
+  <script src="../assets/js/efectos.js?v=20261012" defer></script>
 </head>
 <body>
-  <!-- Iconos de línea (sprite) -->
+  <!-- Iconos de línea (sprite). Trazos con pathLength="1" para dibujarlos al aparecer; rellenos tenues de dos tonos -->
   <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false">
-    <symbol id="i-recibe" viewBox="0 0 24 24"><path d="M3 13v5.5A1.5 1.5 0 0 0 4.5 20h15a1.5 1.5 0 0 0 1.5-1.5V13h-5l-1.5 2.5h-5L8 13H3Z"/><path d="M12 3.5V11M8.75 7.75 12 11l3.25-3.25"/></symbol>
-    <symbol id="i-lee" viewBox="0 0 24 24"><path d="M13 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21H11"/><path d="M13 3v5h5M13 3l5 5v2"/><path d="M8 12h4M8 15.5h2"/><circle cx="16.5" cy="16.5" r="3"/><path d="m18.7 18.7 2.3 2.3"/></symbol>
-    <symbol id="i-prepara" viewBox="0 0 24 24"><path d="M13 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21H10"/><path d="M13 3v5h5M13 3l5 5v1.5"/><path d="M8 12h5M8 15.5h3"/><path d="m18.5 12.5 2.5 2.5-6 6h-2.5v-2.5l6-6Z"/></symbol>
-    <symbol id="i-valida" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.75 2.75L16.5 9.5"/></symbol>
-    <symbol id="i-concilia" viewBox="0 0 24 24"><path d="M4 8h15M15 4.5 18.5 8 15 11.5"/><path d="M20 16H5M9 12.5 5.5 16 9 19.5"/></symbol>
-    <symbol id="i-contabiliza" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="2.75"/><path d="M5 6v12c0 1.52 3.13 2.75 7 2.75s7-1.23 7-2.75V6"/><path d="M5 12c0 1.52 3.13 2.75 7 2.75s7-1.23 7-2.75"/></symbol>
-    <symbol id="i-canales" viewBox="0 0 24 24"><path d="M4.5 4h10A1.5 1.5 0 0 1 16 5.5v6a1.5 1.5 0 0 1-1.5 1.5H9l-4 3v-3h-.5A1.5 1.5 0 0 1 3 11.5v-6A1.5 1.5 0 0 1 4.5 4Z"/><path d="M19 9h.5a1.5 1.5 0 0 1 1.5 1.5v5a1.5 1.5 0 0 1-1.5 1.5H19v3l-4-3h-3.5"/></symbol>
-    <symbol id="i-calendario" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="1.5"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M12 13v3.5M12 18.75v.01"/></symbol>
-    <symbol id="i-relevo" viewBox="0 0 24 24"><circle cx="9" cy="7.5" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 10.5-5.1"/><path d="M21 14.5a4 4 0 1 1-1.17-2.83"/><path d="M21 9.5v3h-3"/></symbol>
-    <symbol id="i-tabla" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="1.5"/><path d="M3 9h18M9 9v11"/><path d="m13.5 12.5 4 4M17.5 12.5l-4 4"/></symbol>
-    <symbol id="i-servidor" viewBox="0 0 24 24"><rect x="4" y="3.5" width="16" height="7" rx="1.5"/><rect x="4" y="13.5" width="16" height="7" rx="1.5"/><path d="M8 7h.01M8 17h.01M12 7h4M12 17h4"/></symbol>
-    <symbol id="i-candado" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="1.5"/><path d="M8 10.5v-3a4 4 0 0 1 8 0v3M12 14.5V17"/></symbol>
-    <symbol id="i-reloj" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
-    <symbol id="i-descarga" viewBox="0 0 24 24"><path d="M12 3.5v11M7.5 10 12 14.5 16.5 10"/><path d="M4 16.5v2A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5v-2"/></symbol>
-    <symbol id="i-contrato" viewBox="0 0 24 24"><path d="M14 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V8l-5-5Z"/><path d="M14 3v5h5M8.5 9.5h3M8.5 13h7"/><path d="M8.5 17.5c1-1.4 1.8-1.4 2.3 0 .5 1.4 1.3 1.4 2.4-.2.6.8 1.3 1 2.3.2"/></symbol>
-    <symbol id="i-marca" viewBox="0 0 24 24"><path d="M3 4.5V11l9.3 9.3a1.5 1.5 0 0 0 2.12 0l5.88-5.88a1.5 1.5 0 0 0 0-2.12L11 3H4.5A1.5 1.5 0 0 0 3 4.5Z"/><circle cx="7.5" cy="7.5" r="1.25"/></symbol>
-    <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="9" rx="1.25"/><rect x="13.5" y="3" width="7.5" height="5" rx="1.25"/><rect x="13.5" y="11" width="7.5" height="10" rx="1.25"/><rect x="3" y="15" width="7.5" height="6" rx="1.25"/></symbol>
-    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
-    <symbol id="i-equis" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
-    <symbol id="i-guion" viewBox="0 0 24 24"><path d="M7 12h10"/></symbol>
-    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.75v.01"/></symbol>
-    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
-    <symbol id="i-telefono" viewBox="0 0 24 24"><path d="M5 3.5h3.2l1.6 4.2-2 1.3a11 11 0 0 0 7.2 7.2l1.3-2 4.2 1.6V19a1.5 1.5 0 0 1-1.5 1.5A16.5 16.5 0 0 1 3.5 5 1.5 1.5 0 0 1 5 3.5Z"/></symbol>
+    <symbol id="i-recibe" viewBox="0 0 24 24"><path fill="currentColor" fill-opacity=".14" stroke="none" d="M3 13v5.5A1.5 1.5 0 0 0 4.5 20h15a1.5 1.5 0 0 0 1.5-1.5V13h-5l-1.5 2.5h-5L8 13H3Z"/><path pathLength="1" d="M3 13v5.5A1.5 1.5 0 0 0 4.5 20h15a1.5 1.5 0 0 0 1.5-1.5V13h-5l-1.5 2.5h-5L8 13H3Z"/><path pathLength="1" d="M12 3.5V11M8.75 7.75 12 11l3.25-3.25"/></symbol>
+    <symbol id="i-lee" viewBox="0 0 24 24"><path fill="currentColor" fill-opacity=".14" stroke="none" d="M13 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21H11l2-5 5-6V8l-5-5Z"/><path pathLength="1" d="M13 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21H11"/><path pathLength="1" d="M13 3v5h5M13 3l5 5v2"/><path pathLength="1" d="M8 12h4M8 15.5h2"/><circle pathLength="1" cx="16.5" cy="16.5" r="3"/><path pathLength="1" d="m18.7 18.7 2.3 2.3"/></symbol>
+    <symbol id="i-prepara" viewBox="0 0 24 24"><path fill="currentColor" fill-opacity=".14" stroke="none" d="M13 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21H10l2.5-2.5 5.5-5.5V8l-5-5Z"/><path pathLength="1" d="M13 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21H10"/><path pathLength="1" d="M13 3v5h5M13 3l5 5v1.5"/><path pathLength="1" d="M8 12h5M8 15.5h3"/><path pathLength="1" d="m18.5 12.5 2.5 2.5-6 6h-2.5v-2.5l6-6Z"/></symbol>
+    <symbol id="i-valida" viewBox="0 0 24 24"><circle fill="currentColor" fill-opacity=".14" stroke="none" cx="12" cy="12" r="9"/><circle pathLength="1" cx="12" cy="12" r="9"/><path pathLength="1" d="m8 12.5 2.75 2.75L16.5 9.5"/></symbol>
+    <symbol id="i-concilia" viewBox="0 0 24 24"><rect fill="currentColor" fill-opacity=".14" stroke="none" x="3" y="6" width="18" height="12" rx="3"/><path pathLength="1" d="M4 8h15M15 4.5 18.5 8 15 11.5"/><path pathLength="1" d="M20 16H5M9 12.5 5.5 16 9 19.5"/></symbol>
+    <symbol id="i-contabiliza" viewBox="0 0 24 24"><ellipse fill="currentColor" fill-opacity=".14" stroke="none" cx="12" cy="6" rx="7" ry="2.75"/><ellipse pathLength="1" cx="12" cy="6" rx="7" ry="2.75"/><path pathLength="1" d="M5 6v12c0 1.52 3.13 2.75 7 2.75s7-1.23 7-2.75V6"/><path pathLength="1" d="M5 12c0 1.52 3.13 2.75 7 2.75s7-1.23 7-2.75"/></symbol>
+    <symbol id="i-canales" viewBox="0 0 24 24"><path fill="currentColor" fill-opacity=".14" stroke="none" d="M4.5 4h10A1.5 1.5 0 0 1 16 5.5v6a1.5 1.5 0 0 1-1.5 1.5H9l-4 3v-3h-.5A1.5 1.5 0 0 1 3 11.5v-6A1.5 1.5 0 0 1 4.5 4Z"/><path pathLength="1" d="M4.5 4h10A1.5 1.5 0 0 1 16 5.5v6a1.5 1.5 0 0 1-1.5 1.5H9l-4 3v-3h-.5A1.5 1.5 0 0 1 3 11.5v-6A1.5 1.5 0 0 1 4.5 4Z"/><path pathLength="1" d="M19 9h.5a1.5 1.5 0 0 1 1.5 1.5v5a1.5 1.5 0 0 1-1.5 1.5H19v3l-4-3h-3.5"/></symbol>
+    <symbol id="i-calendario" viewBox="0 0 24 24"><path fill="currentColor" fill-opacity=".14" stroke="none" d="M3 10V6.5A1.5 1.5 0 0 1 4.5 5h15A1.5 1.5 0 0 1 21 6.5V10Z"/><rect pathLength="1" x="3" y="5" width="18" height="16" rx="1.5"/><path pathLength="1" d="M3 10h18M8 3v4M16 3v4"/><path pathLength="1" d="M12 13v3.5M12 18.75v.01"/></symbol>
+    <symbol id="i-relevo" viewBox="0 0 24 24"><circle fill="currentColor" fill-opacity=".14" stroke="none" cx="9" cy="7.5" r="3.5"/><circle pathLength="1" cx="9" cy="7.5" r="3.5"/><path pathLength="1" d="M2.5 20a6.5 6.5 0 0 1 10.5-5.1"/><path pathLength="1" d="M21 14.5a4 4 0 1 1-1.17-2.83"/><path pathLength="1" d="M21 9.5v3h-3"/></symbol>
+    <symbol id="i-tabla" viewBox="0 0 24 24"><path fill="currentColor" fill-opacity=".14" stroke="none" d="M3 9V5.5A1.5 1.5 0 0 1 4.5 4h15A1.5 1.5 0 0 1 21 5.5V9Z"/><rect pathLength="1" x="3" y="4" width="18" height="16" rx="1.5"/><path pathLength="1" d="M3 9h18M9 9v11"/><path pathLength="1" d="m13.5 12.5 4 4M17.5 12.5l-4 4"/></symbol>
+    <symbol id="i-servidor" viewBox="0 0 24 24"><rect fill="currentColor" fill-opacity=".14" stroke="none" x="4" y="3.5" width="16" height="7" rx="1.5"/><rect pathLength="1" x="4" y="3.5" width="16" height="7" rx="1.5"/><rect pathLength="1" x="4" y="13.5" width="16" height="7" rx="1.5"/><path pathLength="1" d="M8 7h.01M8 17h.01M12 7h4M12 17h4"/></symbol>
+    <symbol id="i-candado" viewBox="0 0 24 24"><rect fill="currentColor" fill-opacity=".14" stroke="none" x="5" y="10.5" width="14" height="10" rx="1.5"/><rect pathLength="1" x="5" y="10.5" width="14" height="10" rx="1.5"/><path pathLength="1" d="M8 10.5v-3a4 4 0 0 1 8 0v3M12 14.5V17"/></symbol>
+    <symbol id="i-reloj" viewBox="0 0 24 24"><circle fill="currentColor" fill-opacity=".14" stroke="none" cx="12" cy="12" r="9"/><circle pathLength="1" cx="12" cy="12" r="9"/><path pathLength="1" d="M12 7v5l3.5 2"/></symbol>
+    <symbol id="i-descarga" viewBox="0 0 24 24"><path fill="currentColor" fill-opacity=".14" stroke="none" d="M4 16.5v2A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5v-2Z"/><path pathLength="1" d="M12 3.5v11M7.5 10 12 14.5 16.5 10"/><path pathLength="1" d="M4 16.5v2A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5v-2"/></symbol>
+    <symbol id="i-contrato" viewBox="0 0 24 24"><path fill="currentColor" fill-opacity=".14" stroke="none" d="M14 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V8l-5-5Z"/><path pathLength="1" d="M14 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V8l-5-5Z"/><path pathLength="1" d="M14 3v5h5M8.5 9.5h3M8.5 13h7"/><path pathLength="1" d="M8.5 17.5c1-1.4 1.8-1.4 2.3 0 .5 1.4 1.3 1.4 2.4-.2.6.8 1.3 1 2.3.2"/></symbol>
+    <symbol id="i-marca" viewBox="0 0 24 24"><path fill="currentColor" fill-opacity=".14" stroke="none" d="M3 4.5V11l9.3 9.3a1.5 1.5 0 0 0 2.12 0l5.88-5.88a1.5 1.5 0 0 0 0-2.12L11 3H4.5A1.5 1.5 0 0 0 3 4.5Z"/><path pathLength="1" d="M3 4.5V11l9.3 9.3a1.5 1.5 0 0 0 2.12 0l5.88-5.88a1.5 1.5 0 0 0 0-2.12L11 3H4.5A1.5 1.5 0 0 0 3 4.5Z"/><circle pathLength="1" cx="7.5" cy="7.5" r="1.25"/></symbol>
+    <symbol id="i-panel" viewBox="0 0 24 24"><rect fill="currentColor" fill-opacity=".14" stroke="none" x="3" y="3" width="7.5" height="9" rx="1.25"/><rect pathLength="1" x="3" y="3" width="7.5" height="9" rx="1.25"/><rect pathLength="1" x="13.5" y="3" width="7.5" height="5" rx="1.25"/><rect pathLength="1" x="13.5" y="11" width="7.5" height="10" rx="1.25"/><rect pathLength="1" x="3" y="15" width="7.5" height="6" rx="1.25"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path pathLength="1" d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-equis" viewBox="0 0 24 24"><path pathLength="1" d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
+    <symbol id="i-guion" viewBox="0 0 24 24"><path pathLength="1" d="M7 12h10"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle fill="currentColor" fill-opacity=".14" stroke="none" cx="12" cy="12" r="9"/><circle pathLength="1" cx="12" cy="12" r="9"/><path pathLength="1" d="M12 11v5.5M12 7.75v.01"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path pathLength="1" d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-telefono" viewBox="0 0 24 24"><path pathLength="1" d="M5 3.5h3.2l1.6 4.2-2 1.3a11 11 0 0 0 7.2 7.2l1.3-2 4.2 1.6V19a1.5 1.5 0 0 1-1.5 1.5A16.5 16.5 0 0 1 3.5 5 1.5 1.5 0 0 1 5 3.5Z"/></symbol>
+    <symbol id="i-flecha" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
   </svg>
+
+  <a class="salto" href="#contenido">Saltar al contenido</a>
 
   <header class="barra-superior" id="inicio">
     <div class="contenedor">
-      <a class="logo-enlace" href="#inicio"><img class="logo" src="../assets/img/logo-trazabis.png" alt="Trazabis" width="643" height="187"></a>
+      <a class="logo-enlace" href="#inicio"><img class="logo" src="../assets/img/logo-trazabis.webp" alt="Trazabis" width="643" height="187"></a>
     </div>
   </header>
 
-  <main>
+  <main id="contenido">
     <!-- Sección 1 · Cabecera -->
-    <section class="hero seccion--azul" aria-labelledby="titulo-principal">
+    <section class="hero seccion--azul" aria-labelledby="titulo-principal" data-luz>
+      <div class="hero__fondo" aria-hidden="true">
+        <span class="hero__malla"></span>
+        <span class="hero__luz hero__luz--profunda"></span>
+        <span class="hero__luz hero__luz--azul"></span>
+        <span class="hero__luz hero__luz--raton"></span>
+      </div>
       <div class="contenedor hero__rejilla">
         <div class="hero__texto">
-          <p class="antetitulo">Para asesorías y gestorías con más de 50 clientes</p>
-          <h1 id="titulo-principal">Tus agentes preparan. Tu equipo aprueba.</h1>
+          <p class="antetitulo"><span class="antetitulo__punto" aria-hidden="true"></span>Para asesorías y gestorías con más de 50 clientes</p>
+          <h1 id="titulo-principal"><span class="linea" style="--i:0">Tus agentes preparan.</span> <span class="linea linea--acento" style="--i:1">Tu equipo aprueba.</span></h1>
           <p class="hero__subtitulo">Trazabis lee, clasifica y prepara el borrador contable de la documentación de tus clientes, y deja a tu equipo solo lo que necesita revisión. La implantación la hacemos nosotros, cliente a cliente.</p>
           <div class="hero__accion">
-            <a class="boton boton--claro" href="#formulario" data-cta="hero">Ver si mi despacho encaja</a>
+            <a class="boton boton--claro" href="#formulario" data-cta="hero"><span>Ver si mi despacho encaja</span><svg class="icono boton__flecha" aria-hidden="true" focusable="false"><use href="#i-flecha"/></svg></a>
             <p class="hero__nota">Unas preguntas sobre tu despacho y te llamamos para agendar un diagnóstico de cartera gratuito.</p>
           </div>
         </div>
         <div class="hero__visual">
+          <span class="chip chip--a" aria-hidden="true"><svg class="icono" focusable="false"><use href="#i-check"/></svg></span>
+          <span class="chip chip--b" aria-hidden="true"><svg class="icono" focusable="false"><use href="#i-lee"/></svg></span>
           <svg class="cola" viewBox="0 0 400 320" width="400" height="320" role="img" aria-labelledby="cola-titulo" focusable="false">
             <title id="cola-titulo">Cola de validación con dos documentos validados y uno para revisar</title>
+            <defs>
+              <linearGradient id="cola-brillo" x1="0" x2="1" y1="0" y2="0">
+                <stop offset="0" stop-color="#C9D2F5" stop-opacity="0"/>
+                <stop offset=".5" stop-color="#C9D2F5" stop-opacity=".55"/>
+                <stop offset="1" stop-color="#C9D2F5" stop-opacity="0"/>
+              </linearGradient>
+              <clipPath id="cola-recorte"><rect width="400" height="320" rx="16"/></clipPath>
+            </defs>
             <rect width="400" height="320" rx="16" fill="#FFFFFF"/>
             <rect x="24" y="26" width="132" height="12" rx="6" fill="#C9CEDD"/>
             <rect x="24" y="48" width="84" height="10" rx="5" fill="#E3E6EE"/>
+            <circle cx="350" cy="38" r="5" fill="#E3E6EE"/>
+            <circle cx="366" cy="38" r="5" fill="#E3E6EE"/>
             <g transform="translate(16 80)">
-              <rect width="368" height="64" rx="10" fill="#F5F6F8"/>
-              <path d="M20 14h15l9 9v27H20z" fill="#FFFFFF" stroke="#1E2852" stroke-width="2" stroke-linejoin="round"/>
-              <path d="M35 14v9h9" fill="none" stroke="#1E2852" stroke-width="2" stroke-linejoin="round"/>
-              <rect x="60" y="20" width="118" height="10" rx="5" fill="#C9CEDD"/>
-              <rect x="60" y="36" width="76" height="8" rx="4" fill="#DDE1EA"/>
-              <rect x="240" y="18" width="112" height="28" rx="14" fill="#E3F3EA"/>
-              <circle cx="258" cy="32" r="5" fill="#1E8E5A"/>
-              <text x="270" y="37.5" font-family="Roboto, Arial, sans-serif" font-size="15" font-weight="500" fill="#1A1D29">Validado</text>
+              <g class="cola__fila" style="--i:0">
+                <rect width="368" height="64" rx="10" fill="#F5F6F8"/>
+                <path d="M20 14h15l9 9v27H20z" fill="#FFFFFF" stroke="#1E2852" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M35 14v9h9" fill="none" stroke="#1E2852" stroke-width="2" stroke-linejoin="round"/>
+                <rect x="60" y="20" width="118" height="10" rx="5" fill="#C9CEDD"/>
+                <rect x="60" y="36" width="76" height="8" rx="4" fill="#DDE1EA"/>
+                <g class="cola__estado" style="--i:0">
+                  <rect x="240" y="18" width="112" height="28" rx="14" fill="#E3F3EA"/>
+                  <circle cx="258" cy="32" r="5" fill="#1E8E5A"/>
+                  <text x="270" y="37.5" font-family="Roboto, Arial, sans-serif" font-size="15" font-weight="500" fill="#1A1D29">Validado</text>
+                </g>
+              </g>
             </g>
             <g transform="translate(16 156)">
-              <rect width="368" height="64" rx="10" fill="#F5F6F8"/>
-              <path d="M20 14h15l9 9v27H20z" fill="#FFFFFF" stroke="#1E2852" stroke-width="2" stroke-linejoin="round"/>
-              <path d="M35 14v9h9" fill="none" stroke="#1E2852" stroke-width="2" stroke-linejoin="round"/>
-              <rect x="60" y="20" width="96" height="10" rx="5" fill="#C9CEDD"/>
-              <rect x="60" y="36" width="104" height="8" rx="4" fill="#DDE1EA"/>
-              <rect x="240" y="18" width="112" height="28" rx="14" fill="#E3F3EA"/>
-              <circle cx="258" cy="32" r="5" fill="#1E8E5A"/>
-              <text x="270" y="37.5" font-family="Roboto, Arial, sans-serif" font-size="15" font-weight="500" fill="#1A1D29">Validado</text>
+              <g class="cola__fila" style="--i:1">
+                <rect width="368" height="64" rx="10" fill="#F5F6F8"/>
+                <path d="M20 14h15l9 9v27H20z" fill="#FFFFFF" stroke="#1E2852" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M35 14v9h9" fill="none" stroke="#1E2852" stroke-width="2" stroke-linejoin="round"/>
+                <rect x="60" y="20" width="96" height="10" rx="5" fill="#C9CEDD"/>
+                <rect x="60" y="36" width="104" height="8" rx="4" fill="#DDE1EA"/>
+                <g class="cola__estado" style="--i:1">
+                  <rect x="240" y="18" width="112" height="28" rx="14" fill="#E3F3EA"/>
+                  <circle cx="258" cy="32" r="5" fill="#1E8E5A"/>
+                  <text x="270" y="37.5" font-family="Roboto, Arial, sans-serif" font-size="15" font-weight="500" fill="#1A1D29">Validado</text>
+                </g>
+              </g>
             </g>
             <g transform="translate(16 232)">
-              <rect x="1" y="1" width="366" height="62" rx="9" fill="#FDF6E3" stroke="#C98A0B" stroke-width="2"/>
-              <path d="M20 14h15l9 9v27H20z" fill="#FFFFFF" stroke="#1E2852" stroke-width="2" stroke-linejoin="round"/>
-              <path d="M35 14v9h9" fill="none" stroke="#1E2852" stroke-width="2" stroke-linejoin="round"/>
-              <rect x="60" y="20" width="128" height="10" rx="5" fill="#C9CEDD"/>
-              <rect x="60" y="36" width="64" height="8" rx="4" fill="#DDE1EA"/>
-              <rect x="240" y="18" width="112" height="28" rx="14" fill="#FBEBC4"/>
-              <circle cx="258" cy="32" r="5" fill="#C98A0B"/>
-              <text x="270" y="37.5" font-family="Roboto, Arial, sans-serif" font-size="15" font-weight="500" fill="#1A1D29">Revisar</text>
+              <g class="cola__fila" style="--i:2">
+                <rect x="1" y="1" width="366" height="62" rx="9" fill="#FDF6E3" stroke="#C98A0B" stroke-width="2"/>
+                <rect class="cola__latido" x="1" y="1" width="366" height="62" rx="9" fill="none" stroke="#C98A0B" stroke-width="2"/>
+                <path d="M20 14h15l9 9v27H20z" fill="#FFFFFF" stroke="#1E2852" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M35 14v9h9" fill="none" stroke="#1E2852" stroke-width="2" stroke-linejoin="round"/>
+                <rect x="60" y="20" width="128" height="10" rx="5" fill="#C9CEDD"/>
+                <rect x="60" y="36" width="64" height="8" rx="4" fill="#DDE1EA"/>
+                <g class="cola__estado" style="--i:2">
+                  <rect x="240" y="18" width="112" height="28" rx="14" fill="#FBEBC4"/>
+                  <circle cx="258" cy="32" r="5" fill="#C98A0B"/>
+                  <text x="270" y="37.5" font-family="Roboto, Arial, sans-serif" font-size="15" font-weight="500" fill="#1A1D29">Revisar</text>
+                </g>
+              </g>
+            </g>
+            <g clip-path="url(#cola-recorte)">
+              <rect class="cola__barrido" x="-130" y="0" width="130" height="320" fill="url(#cola-brillo)"/>
             </g>
           </svg>
         </div>
@@ -113,23 +152,23 @@
     <!-- Sección 2 · El problema -->
     <section class="seccion" aria-labelledby="titulo-problema">
       <div class="contenedor">
-        <div class="seccion__cabecera">
-          <h2 id="titulo-problema">¿Te suena?</h2>
+        <div class="seccion__cabecera" data-reveal>
+          <h2 class="titulo-acento" id="titulo-problema">¿Te suena?</h2>
         </div>
-        <ul class="tarjetas-problema">
-          <li class="tarjeta-problema">
+        <ul class="tarjetas-problema" data-stagger>
+          <li class="tarjeta-problema" data-reveal data-foco>
             <span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-canales"/></svg></span>
             <p>La documentación de tus clientes llega por cuatro o cinco canales, tarde e incompleta.</p>
           </li>
-          <li class="tarjeta-problema">
+          <li class="tarjeta-problema" data-reveal data-foco>
             <span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-calendario"/></svg></span>
             <p>Del día 15 al 20 de cada cierre trimestral, el equipo no da abasto y tocan horas extra.</p>
           </li>
-          <li class="tarjeta-problema">
+          <li class="tarjeta-problema" data-reveal data-foco>
             <span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-relevo"/></svg></span>
             <p>Cada vez que se va alguien junior, toca formar de nuevo a otra persona.</p>
           </li>
-          <li class="tarjeta-problema">
+          <li class="tarjeta-problema" data-reveal data-foco>
             <span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-tabla"/></svg></span>
             <p>Ya probasteis un OCR o un Excel, y el atasco sigue ahí.</p>
           </li>
@@ -140,81 +179,81 @@
     <!-- Sección 3 · Capturar no basta -->
     <section class="seccion seccion--gris" aria-labelledby="titulo-captura">
       <div class="contenedor">
-        <h2 id="titulo-captura">Capturar documentos no basta.</h2>
-        <p class="entradilla">Un OCR lee la factura. Pero el trabajo caro empieza después: llevarla al cliente correcto, validarla, conciliarla y contabilizarla. Si solo automatizas la captura, el cuello de botella sigue ahí.</p>
-        <div class="comparativa">
-          <div class="comparativa__columna comparativa__columna--captura">
+        <h2 class="titulo-acento" id="titulo-captura" data-reveal>Capturar documentos no basta.</h2>
+        <p class="entradilla" data-reveal>Un OCR lee la factura. Pero el trabajo caro empieza después: llevarla al cliente correcto, validarla, conciliarla y contabilizarla. Si solo automatizas la captura, el cuello de botella sigue ahí.</p>
+        <div class="comparativa" data-stagger>
+          <div class="comparativa__columna comparativa__columna--captura" data-reveal>
             <h3>Solo captura</h3>
-            <ol class="comparativa__lista">
-              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-guion"/></svg><span>El OCR lee el documento</span></li>
-              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-guion"/></svg><span>Tu equipo lo asigna al cliente</span></li>
-              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-guion"/></svg><span>Tu equipo revisa cada dato</span></li>
-              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-guion"/></svg><span>Tu equipo concilia y teclea el asiento</span></li>
+            <ol class="comparativa__lista" data-stagger>
+              <li data-reveal="fundido"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-guion"/></svg><span>El OCR lee el documento</span></li>
+              <li data-reveal="fundido"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-guion"/></svg><span>Tu equipo lo asigna al cliente</span></li>
+              <li data-reveal="fundido"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-guion"/></svg><span>Tu equipo revisa cada dato</span></li>
+              <li data-reveal="fundido"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-guion"/></svg><span>Tu equipo concilia y teclea el asiento</span></li>
             </ol>
           </div>
-          <div class="comparativa__columna comparativa__columna--trazabis">
+          <div class="comparativa__columna comparativa__columna--trazabis" data-reveal>
             <h3>Con Trazabis</h3>
-            <ol class="comparativa__lista">
-              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Los agentes leen y asignan por alias o NIF</span></li>
-              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Cada dato llega con su nivel de confianza</span></li>
-              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Tu equipo aprueba solo lo dudoso</span></li>
-              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>El asiento llega a tu ERP</span></li>
+            <ol class="comparativa__lista" data-stagger>
+              <li data-reveal="fundido"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Los agentes leen y asignan por alias o NIF</span></li>
+              <li data-reveal="fundido"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Cada dato llega con su nivel de confianza</span></li>
+              <li data-reveal="fundido"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Tu equipo aprueba solo lo dudoso</span></li>
+              <li data-reveal="fundido"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>El asiento llega a tu ERP</span></li>
             </ol>
           </div>
         </div>
-        <p class="cierre-destacado">Trazabis se encarga del flujo completo: enruta cada documento por alias o NIF, marca con un nivel de confianza cada dato y lleva el asiento directamente a tu ERP. Tu equipo solo revisa lo dudoso.</p>
+        <p class="cierre-destacado" data-reveal>Trazabis se encarga del flujo completo: enruta cada documento por alias o NIF, marca con un nivel de confianza cada dato y lleva el asiento directamente a tu ERP. Tu equipo solo revisa lo dudoso.</p>
       </div>
     </section>
 
     <!-- Sección 4 · Cómo funciona -->
     <section class="seccion" aria-labelledby="titulo-como">
       <div class="contenedor">
-        <div class="seccion__cabecera">
-          <h2 id="titulo-como">Del documento al asiento, con tu equipo validando</h2>
+        <div class="seccion__cabecera" data-reveal>
+          <h2 class="titulo-acento" id="titulo-como">Del documento al asiento, con tu equipo validando</h2>
         </div>
-        <ol class="pasos">
-          <li class="paso-flujo">
+        <ol class="pasos" data-reveal="pista" data-stagger>
+          <li class="paso-flujo" data-reveal data-foco>
             <span class="paso-flujo__numero" aria-hidden="true">1</span>
             <span class="paso-flujo__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-recibe"/></svg></span>
             <p class="paso-flujo__texto"><strong>Recibe:</strong> tus clientes envían lo que ya envían hoy, por WhatsApp, Telegram, email, Drive o un portal web sin contraseña.</p>
           </li>
-          <li class="paso-flujo">
+          <li class="paso-flujo" data-reveal data-foco>
             <span class="paso-flujo__numero" aria-hidden="true">2</span>
             <span class="paso-flujo__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-lee"/></svg></span>
             <p class="paso-flujo__texto"><strong>Lee y clasifica:</strong> la IA extrae proveedor, importes, base imponible e IVA o IRPF, y lleva cada documento al cliente correcto.</p>
           </li>
-          <li class="paso-flujo">
+          <li class="paso-flujo" data-reveal data-foco>
             <span class="paso-flujo__numero" aria-hidden="true">3</span>
             <span class="paso-flujo__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-prepara"/></svg></span>
             <p class="paso-flujo__texto"><strong>Prepara:</strong> genera el borrador contable, con un nivel de confianza en cada campo.</p>
           </li>
-          <li class="paso-flujo">
+          <li class="paso-flujo" data-reveal data-foco>
             <span class="paso-flujo__numero" aria-hidden="true">4</span>
             <span class="paso-flujo__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-valida"/></svg></span>
             <p class="paso-flujo__texto"><strong>Valida:</strong> lo dudoso se bloquea y tu equipo lo aprueba con un clic.</p>
           </li>
-          <li class="paso-flujo">
+          <li class="paso-flujo" data-reveal data-foco>
             <span class="paso-flujo__numero" aria-hidden="true">5</span>
             <span class="paso-flujo__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-concilia"/></svg></span>
             <p class="paso-flujo__texto"><strong>Concilia:</strong> cruza los extractos bancarios (N43 o PDF) con el módulo TrazaControl.</p>
           </li>
-          <li class="paso-flujo">
+          <li class="paso-flujo" data-reveal data-foco>
             <span class="paso-flujo__numero" aria-hidden="true">6</span>
             <span class="paso-flujo__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-contabiliza"/></svg></span>
             <p class="paso-flujo__texto"><strong>Contabiliza:</strong> el asiento llega a tu ERP.</p>
           </li>
         </ol>
-        <ul class="destacados">
-          <li class="destacado">
+        <ul class="destacados" data-stagger>
+          <li class="destacado" data-reveal>
             <span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-marca"/></svg></span>
             <span>Marca blanca: tus clientes ven la marca de tu despacho.</span>
           </li>
-          <li class="destacado">
+          <li class="destacado" data-reveal>
             <span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-panel"/></svg></span>
             <span>Toda tu cartera, en un solo panel.</span>
           </li>
         </ul>
-        <p class="lema">Tus agentes preparan. Tú apruebas.</p>
+        <p class="lema texto-degradado" data-reveal>Tus agentes preparan. Tú apruebas.</p>
       </div>
     </section>
 
@@ -222,13 +261,13 @@
     <template id="plantilla-video">
       <section class="seccion seccion--azul" id="video" aria-labelledby="titulo-video">
         <div class="contenedor contenedor--estrecho">
-          <h2 id="titulo-video">Cómo funciona Trazabis, en 90 segundos</h2>
-          <div class="video-marco">
+          <h2 class="titulo-acento" id="titulo-video" data-reveal>Cómo funciona Trazabis, en 90 segundos</h2>
+          <div class="video-marco" data-reveal="escala">
             <video controls preload="metadata" playsinline width="1280" height="720"></video>
           </div>
           <p class="pendiente video-pendiente" data-video-poster-pendiente hidden>[PENDIENTE: imagen de póster del vídeo]</p>
           <div class="cta-bloque">
-            <a class="boton boton--claro" href="#formulario" data-cta="video">Ver si mi despacho encaja</a>
+            <a class="boton boton--claro" href="#formulario" data-cta="video"><span>Ver si mi despacho encaja</span><svg class="icono boton__flecha" aria-hidden="true" focusable="false"><use href="#i-flecha"/></svg></a>
           </div>
         </div>
       </section>
@@ -237,17 +276,17 @@
     <!-- Sección 6 · Cómo lo implantamos -->
     <section class="seccion seccion--separada" aria-labelledby="titulo-implantacion">
       <div class="contenedor">
-        <div class="seccion__cabecera">
-          <h2 id="titulo-implantacion">La implantación la hacemos nosotros</h2>
+        <div class="seccion__cabecera" data-reveal>
+          <h2 class="titulo-acento" id="titulo-implantacion">La implantación la hacemos nosotros</h2>
         </div>
-        <ol class="fases">
-          <li class="fase"><span class="fase__numero" aria-hidden="true">1</span><span class="fase__nombre">Diagnóstico</span></li>
-          <li class="fase"><span class="fase__numero" aria-hidden="true">2</span><span class="fase__nombre">Configuración</span></li>
-          <li class="fase"><span class="fase__numero" aria-hidden="true">3</span><span class="fase__nombre">Activación</span></li>
+        <ol class="fases" data-stagger>
+          <li class="fase" data-reveal><span class="fase__numero" aria-hidden="true">1</span><span class="fase__nombre">Diagnóstico</span></li>
+          <li class="fase" data-reveal><span class="fase__numero" aria-hidden="true">2</span><span class="fase__nombre">Configuración</span></li>
+          <li class="fase" data-reveal><span class="fase__numero" aria-hidden="true">3</span><span class="fase__nombre">Activación</span></li>
         </ol>
-        <p class="fases-nota">Con un plan firmado y despliegue por oleadas.</p>
-        <div class="implantacion-rejilla">
-          <div class="tarjeta">
+        <p class="fases-nota" data-reveal>Con un plan firmado y despliegue por oleadas.</p>
+        <div class="implantacion-rejilla" data-stagger>
+          <div class="tarjeta" data-reveal data-foco>
             <h3>Lo que pones tú:</h3>
             <ul class="lista-marcas">
               <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Una persona responsable en el despacho.</span></li>
@@ -256,7 +295,7 @@
               <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Dos sesiones de formación.</span></li>
             </ul>
           </div>
-          <div class="tarjeta">
+          <div class="tarjeta" data-reveal data-foco>
             <h3>Lo que hacen tus clientes:</h3>
             <p class="tarjeta__texto">enviar una foto del documento, como ya hacen por WhatsApp.</p>
           </div>
@@ -267,12 +306,12 @@
     <!-- Sección 7 · Inversión -->
     <section class="seccion seccion--gris" id="inversion" aria-labelledby="titulo-inversion">
       <div class="contenedor">
-        <div class="seccion__cabecera">
-          <h2 id="titulo-inversion">Precios públicos, sin IVA</h2>
+        <div class="seccion__cabecera" data-reveal>
+          <h2 class="titulo-acento" id="titulo-inversion">Precios públicos, sin IVA</h2>
         </div>
 
-        <div class="precios-rejilla">
-          <div class="bloque-precio bloque-precio--destacado">
+        <div class="precios-rejilla" data-stagger>
+          <div class="bloque-precio bloque-precio--destacado" data-reveal>
             <h3>Para el despacho</h3>
             <p class="precio-grande"><span class="precio-grande__cifra">0&nbsp;€</span> al mes</p>
             <ul class="lista-marcas">
@@ -283,7 +322,7 @@
             </ul>
           </div>
 
-          <div class="bloque-precio">
+          <div class="bloque-precio" data-reveal data-foco>
             <h3>Onboarding <span class="bloque-precio__nota-titulo">(pago único, según el tamaño de tu cartera)</span></h3>
             <table class="tabla">
               <thead>
@@ -300,7 +339,7 @@
             </table>
           </div>
 
-          <div class="bloque-precio bloque-precio--ancho">
+          <div class="bloque-precio bloque-precio--ancho" data-reveal>
             <h3>Planes de tu cartera</h3>
             <p class="planes-intro">Los asumes tú o se los repercutes a cada cliente.</p>
             <table class="tabla tabla--apilable" role="table">
@@ -343,23 +382,23 @@
             <p class="pendiente">[PENDIENTE: confirmar periodicidad de los documentos por plan]</p>
           </div>
 
-          <div class="bloque-precio bloque-precio--ancho">
+          <div class="bloque-precio bloque-precio--ancho" data-reveal>
             <h3>Módulo de conciliación bancaria (TrazaControl)</h3>
             <p class="pendiente">[PENDIENTE: precio]</p>
           </div>
         </div>
 
-        <div class="nota-integracion" role="note">
+        <div class="nota-integracion" role="note" data-reveal>
           <svg class="icono" aria-hidden="true" focusable="false"><use href="#i-info"/></svg>
           <p>Hoy el conector en producción es Odoo. Holded y a2ERP están en despliegue. Para otros programas hacemos un estudio de viabilidad desde 295&nbsp;€. Mientras tanto, Trazabis funciona con tablas, panel de BI y exportables en PDF y Excel.</p>
         </div>
 
-        <div class="cta-bloque">
-          <a class="boton boton--primario" href="#formulario" data-cta="inversion">Ver si mi despacho encaja</a>
+        <div class="cta-bloque" data-reveal>
+          <a class="boton boton--primario" href="#formulario" data-cta="inversion"><span>Ver si mi despacho encaja</span><svg class="icono boton__flecha" aria-hidden="true" focusable="false"><use href="#i-flecha"/></svg></a>
         </div>
 
         <!-- Subbloque · Calculadora -->
-        <div class="calculadora" id="calculadora">
+        <div class="calculadora" id="calculadora" data-reveal>
           <h3>Calcula tu inversión</h3>
           <div class="calculadora__rejilla">
             <div class="calculadora__entradas">
@@ -396,7 +435,7 @@
               </div>
               <p class="calc-nota">Importes sin IVA.</p>
               <div class="calc-cta">
-                <a class="boton boton--claro" href="#formulario" data-cta="calculadora">Ver si mi despacho encaja</a>
+                <a class="boton boton--claro" href="#formulario" data-cta="calculadora"><span>Ver si mi despacho encaja</span><svg class="icono boton__flecha" aria-hidden="true" focusable="false"><use href="#i-flecha"/></svg></a>
               </div>
             </div>
           </div>
@@ -408,23 +447,23 @@
     <section class="seccion" aria-labelledby="titulo-encaje">
       <div class="contenedor">
         <h2 class="visualmente-oculto" id="titulo-encaje">Para quién es y para quién no</h2>
-        <div class="encaje">
-          <div class="encaje__columna encaje__columna--si">
+        <div class="encaje" data-stagger>
+          <div class="encaje__columna encaje__columna--si" data-reveal data-foco>
             <h3>Es para ti si:</h3>
-            <ul class="encaje__lista">
-              <li><span class="marca-circulo marca-circulo--si"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span><span>Tienes una asesoría o gestoría fiscal-contable con más de 50 clientes.</span></li>
-              <li><span class="marca-circulo marca-circulo--si"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span><span>Trabajas con Odoo, o te sirve trabajar con tablas y exportables mientras llega el conector de tu programa.</span></li>
-              <li><span class="marca-circulo marca-circulo--si"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span><span>Quieres que tu equipo valide lo dudoso, no que nadie revise nada.</span></li>
-              <li><span class="marca-circulo marca-circulo--si"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span><span>Puedes asignar una persona responsable durante la implantación.</span></li>
+            <ul class="encaje__lista" data-stagger>
+              <li data-reveal="fundido"><span class="marca-circulo marca-circulo--si"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span><span>Tienes una asesoría o gestoría fiscal-contable con más de 50 clientes.</span></li>
+              <li data-reveal="fundido"><span class="marca-circulo marca-circulo--si"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span><span>Trabajas con Odoo, o te sirve trabajar con tablas y exportables mientras llega el conector de tu programa.</span></li>
+              <li data-reveal="fundido"><span class="marca-circulo marca-circulo--si"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span><span>Quieres que tu equipo valide lo dudoso, no que nadie revise nada.</span></li>
+              <li data-reveal="fundido"><span class="marca-circulo marca-circulo--si"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span><span>Puedes asignar una persona responsable durante la implantación.</span></li>
             </ul>
           </div>
-          <div class="encaje__columna encaje__columna--no">
+          <div class="encaje__columna encaje__columna--no" data-reveal data-foco>
             <h3>No es para ti si:</h3>
-            <ul class="encaje__lista">
-              <li><span class="marca-circulo marca-circulo--no"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-equis"/></svg></span><span>Buscas una contabilidad 100&nbsp;% automática, sin revisión humana.</span></li>
-              <li><span class="marca-circulo marca-circulo--no"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-equis"/></svg></span><span>Necesitas como condición, desde el primer día, un conector que todavía no está en producción.</span></li>
-              <li><span class="marca-circulo marca-circulo--no"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-equis"/></svg></span><span>Buscas un desarrollo a medida o un software propio.</span></li>
-              <li><span class="marca-circulo marca-circulo--no"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-equis"/></svg></span><span>Buscas asesoramiento fiscal: Trazabis quita el teclear, no el decidir.</span></li>
+            <ul class="encaje__lista" data-stagger>
+              <li data-reveal="fundido"><span class="marca-circulo marca-circulo--no"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-equis"/></svg></span><span>Buscas una contabilidad 100&nbsp;% automática, sin revisión humana.</span></li>
+              <li data-reveal="fundido"><span class="marca-circulo marca-circulo--no"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-equis"/></svg></span><span>Necesitas como condición, desde el primer día, un conector que todavía no está en producción.</span></li>
+              <li data-reveal="fundido"><span class="marca-circulo marca-circulo--no"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-equis"/></svg></span><span>Buscas un desarrollo a medida o un software propio.</span></li>
+              <li data-reveal="fundido"><span class="marca-circulo marca-circulo--no"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-equis"/></svg></span><span>Buscas asesoramiento fiscal: Trazabis quita el teclear, no el decidir.</span></li>
             </ul>
           </div>
         </div>
@@ -432,17 +471,17 @@
     </section>
 
     <!-- Sección 9 · Seguridad -->
-    <section class="seccion seccion--azul" aria-labelledby="titulo-seguridad">
+    <section class="seccion seccion--azul seccion--seguridad" aria-labelledby="titulo-seguridad">
       <div class="contenedor">
-        <div class="seccion__cabecera">
-          <h2 id="titulo-seguridad">Tus datos y los de tus clientes</h2>
+        <div class="seccion__cabecera" data-reveal>
+          <h2 class="titulo-acento" id="titulo-seguridad">Tus datos y los de tus clientes</h2>
         </div>
-        <ul class="seguridad">
-          <li><span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-servidor"/></svg></span><p>Servidores en la Unión Europea y tratamiento conforme al RGPD.</p></li>
-          <li><span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-candado"/></svg></span><p>Doble factor de autenticación y roles separados.</p></li>
-          <li><span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-reloj"/></svg></span><p>Retención de datos configurable.</p></li>
-          <li><span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-descarga"/></svg></span><p>Histórico exportable en PDF y Excel, y exportación y eliminación de tus datos si te das de baja.</p></li>
-          <li><span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-contrato"/></svg></span><p>Contrato de encargo de tratamiento.</p></li>
+        <ul class="seguridad" data-stagger>
+          <li data-reveal data-foco><span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-servidor"/></svg></span><p>Servidores en la Unión Europea y tratamiento conforme al RGPD.</p></li>
+          <li data-reveal data-foco><span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-candado"/></svg></span><p>Doble factor de autenticación y roles separados.</p></li>
+          <li data-reveal data-foco><span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-reloj"/></svg></span><p>Retención de datos configurable.</p></li>
+          <li data-reveal data-foco><span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-descarga"/></svg></span><p>Histórico exportable en PDF y Excel, y exportación y eliminación de tus datos si te das de baja.</p></li>
+          <li data-reveal data-foco><span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-contrato"/></svg></span><p>Contrato de encargo de tratamiento.</p></li>
         </ul>
       </div>
     </section>
@@ -451,11 +490,11 @@
     <section class="seccion seccion--antracita" aria-labelledby="titulo-quienes">
       <div class="contenedor quienes">
         <div class="quienes__texto">
-          <h2 id="titulo-quienes">Producto propio, en producción</h2>
-          <p>Trazabis es un producto de Servicios Digitales y Automatización SL. No revendemos una herramienta de terceros: la implantamos nosotros, cliente a cliente. Y nuestro modelo está alineado con el tuyo: no cobramos cuota al despacho, ganamos cuando tu cartera lo usa.</p>
+          <h2 class="titulo-acento" id="titulo-quienes" data-reveal>Producto propio, en producción</h2>
+          <p data-reveal>Trazabis es un producto de Servicios Digitales y Automatización SL. No revendemos una herramienta de terceros: la implantamos nosotros, cliente a cliente. Y nuestro modelo está alineado con el tuyo: no cobramos cuota al despacho, ganamos cuando tu cartera lo usa.</p>
         </div>
-        <figure class="retrato">
-          <img src="../assets/img/ruben-bel.jpg" alt="Rubén Bel, de Trazabis" width="800" height="1199" loading="lazy" decoding="async">
+        <figure class="retrato" data-reveal="escala">
+          <img src="../assets/img/ruben-bel.webp" alt="Rubén Bel, de Trazabis" width="800" height="1199" loading="lazy" decoding="async">
           <figcaption>Rubén Bel · <span class="pendiente">[PENDIENTE: cargo]</span></figcaption>
         </figure>
       </div>
@@ -464,43 +503,43 @@
     <!-- Sección 11 · Preguntas frecuentes -->
     <section class="seccion" aria-labelledby="titulo-faq">
       <div class="contenedor contenedor--estrecho">
-        <div class="seccion__cabecera">
-          <h2 id="titulo-faq">Preguntas frecuentes</h2>
+        <div class="seccion__cabecera" data-reveal>
+          <h2 class="titulo-acento" id="titulo-faq">Preguntas frecuentes</h2>
         </div>
-        <div class="faq">
-          <details>
+        <div class="faq" data-stagger>
+          <details data-reveal>
             <summary><span class="faq__pregunta"><span>¿Gratis para el despacho? ¿Dónde está la trampa?</span><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></span></summary>
             <div class="faq__respuesta"><p>No hay trampa: nuestro ingreso son las suscripciones de tu cartera, no una cuota al despacho. El panel y el conector son gratis.</p></div>
           </details>
-          <details>
+          <details data-reveal>
             <summary><span class="faq__pregunta"><span>Mis clientes no lo van a usar.</span><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></span></summary>
             <div class="faq__respuesta"><p>Solo tienen que enviar una foto, como ya hacen por WhatsApp. Quien deja de teclear es tu equipo.</p></div>
           </details>
-          <details>
+          <details data-reveal>
             <summary><span class="faq__pregunta"><span>Ya uso un OCR.</span><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></span></summary>
             <div class="faq__respuesta"><p>Capturar no basta. Trazabis enruta cada documento por alias o NIF, lo pasa por una cola de validación con niveles de confianza, concilia y lleva el asiento directamente a tu ERP.</p></div>
           </details>
-          <details>
+          <details data-reveal>
             <summary><span class="faq__pregunta"><span>Mi programa no es Odoo, ¿puedo usarlo?</span><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></span></summary>
             <div class="faq__respuesta"><p>Hoy el conector en producción es Odoo. Holded y a2ERP están en despliegue. Para otros programas hacemos un estudio de viabilidad desde 295&nbsp;€. Mientras tanto, funciona con tablas, panel de BI y exportables.</p></div>
           </details>
-          <details>
+          <details data-reveal>
             <summary><span class="faq__pregunta"><span>¿La IA va a contabilizar sin control?</span><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></span></summary>
             <div class="faq__respuesta"><p>No. Cada dato lleva un nivel de confianza, y lo dudoso se bloquea hasta que tu equipo lo valida.</p></div>
           </details>
-          <details>
+          <details data-reveal>
             <summary><span class="faq__pregunta"><span>¿Quién paga los planes de mis clientes?</span><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></span></summary>
             <div class="faq__respuesta"><p>Tú decides: puedes asumir el coste o repercutírselo a cada cliente.</p></div>
           </details>
-          <details>
+          <details data-reveal>
             <summary><span class="faq__pregunta"><span>¿Hay permanencia?</span><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></span></summary>
             <div class="faq__respuesta"><p>El despacho no tiene cuota, mínimos ni permanencia.</p></div>
           </details>
-          <details>
+          <details data-reveal>
             <summary><span class="faq__pregunta"><span>¿Migráis el histórico?</span><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></span></summary>
             <div class="faq__respuesta"><p>Las migraciones complejas de datos históricos se presupuestan aparte.</p></div>
           </details>
-          <details>
+          <details data-reveal>
             <summary><span class="faq__pregunta"><span>¿Qué pasa cuando envío el formulario?</span><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></span></summary>
             <div class="faq__respuesta"><p>En unos minutos te llamará el asistente de inteligencia artificial de Trazabis para confirmar tu interés y agendar un diagnóstico de cartera gratuito.</p></div>
           </details>
@@ -509,12 +548,12 @@
     </section>
 
     <!-- Sección 12 · Cierre y formulario -->
-    <section class="seccion seccion--gris" id="formulario" aria-labelledby="formulario-titulo">
+    <section class="seccion seccion--gris seccion--formulario" id="formulario" aria-labelledby="formulario-titulo">
       <div class="contenedor contenedor--lectura" id="form-contenedor">
-        <h2 id="formulario-titulo">¿Vemos si tu despacho encaja?</h2>
-        <p class="entradilla">Responde unas preguntas sobre tu despacho y te llamaremos para agendar un diagnóstico de cartera gratuito.</p>
+        <h2 class="titulo-acento" id="formulario-titulo" data-reveal>¿Vemos si tu despacho encaja?</h2>
+        <p class="entradilla" data-reveal>Responde unas preguntas sobre tu despacho y te llamaremos para agendar un diagnóstico de cartera gratuito.</p>
 
-        <div class="formulario-caja">
+        <div class="formulario-caja" data-reveal>
           <form id="form-lead" action="#formulario" method="post" novalidate>
             <div class="progreso">
               <p class="progreso__texto" id="progreso-texto">Paso 1 de 2</p>
@@ -727,13 +766,13 @@
 
     <!-- Barra fija inferior en móvil -->
     <div class="cta-fija" id="cta-fija" data-oculta="false">
-      <a class="boton boton--primario" href="#formulario" data-cta="sticky">Ver si mi despacho encaja</a>
+      <a class="boton boton--primario" href="#formulario" data-cta="sticky"><span>Ver si mi despacho encaja</span><svg class="icono boton__flecha" aria-hidden="true" focusable="false"><use href="#i-flecha"/></svg></a>
     </div>
   </main>
 
   <footer class="pie">
     <div class="contenedor">
-      <span class="pie__logo"><img class="logo" src="../assets/img/logo-trazabis.png" alt="Trazabis" width="643" height="187" loading="lazy" decoding="async"></span>
+      <span class="pie__logo"><img class="logo" src="../assets/img/logo-trazabis.webp" alt="Trazabis" width="643" height="187" loading="lazy" decoding="async"></span>
       <div class="pie__datos">
         <p>Servicios Digitales y Automatización SL · CIF B19369800 · Paseo de la Castellana 194, Bajo B, 28048 Madrid</p>
         <p>Email: <span class="pendiente" data-config="EMAIL_CONTACTO">[PENDIENTE: email de contacto]</span> · Teléfono: <span class="pendiente" data-config="TELEFONO_CONTACTO">[PENDIENTE: teléfono de contacto]</span></p>

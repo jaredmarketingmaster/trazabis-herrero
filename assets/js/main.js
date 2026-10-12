@@ -1,45 +1,57 @@
 /* Comportamiento común: pie (año y contacto), botones de llamada a la acción,
-   barra fija en móvil, preguntas frecuentes y sección de vídeo. */
+   barra fija en móvil, preguntas frecuentes y sección de vídeo.
+   Cada bloque va envuelto en safe(): si uno falla, el resto sigue funcionando. */
 (function () {
   "use strict";
 
   var cfg = window.TRAZABIS_CONFIG || {};
   var DL = window.TrazabisDL || { push: function () {} };
 
+  function safe(fn, nombre) {
+    try { fn(); } catch (e) { if (window.console) console.warn("[main:" + nombre + "]", e); }
+  }
+
   // Año actual en el pie
-  Array.prototype.forEach.call(document.querySelectorAll("[data-anio]"), function (el) {
-    el.textContent = String(new Date().getFullYear());
-  });
+  function initAnio() {
+    Array.prototype.forEach.call(document.querySelectorAll("[data-anio]"), function (el) {
+      el.textContent = String(new Date().getFullYear());
+    });
+  }
 
   // Email y teléfono de contacto desde config.js (si están vacíos se queda el marcador [PENDIENTE])
-  Array.prototype.forEach.call(document.querySelectorAll("[data-config]"), function (el) {
-    var clave = el.getAttribute("data-config");
-    var valor = typeof cfg[clave] === "string" ? cfg[clave].trim() : "";
-    if (!valor) return;
-    var a = document.createElement("a");
-    if (clave.indexOf("EMAIL") === 0) {
-      a.href = "mailto:" + valor;
-    } else {
-      a.href = "tel:" + valor.replace(/[^\d+]/g, "");
-    }
-    a.textContent = valor;
-    el.textContent = "";
-    el.classList.remove("pendiente");
-    el.appendChild(a);
-  });
+  function initContacto() {
+    Array.prototype.forEach.call(document.querySelectorAll("[data-config]"), function (el) {
+      var clave = el.getAttribute("data-config");
+      var valor = typeof cfg[clave] === "string" ? cfg[clave].trim() : "";
+      if (!valor) return;
+      var a = document.createElement("a");
+      if (clave.indexOf("EMAIL") === 0) {
+        a.href = "mailto:" + valor;
+      } else {
+        a.href = "tel:" + valor.replace(/[^\d+]/g, "");
+      }
+      a.textContent = valor;
+      el.textContent = "";
+      el.classList.remove("pendiente");
+      el.appendChild(a);
+    });
+  }
 
   // Clics en «Ver si mi despacho encaja»
-  document.addEventListener("click", function (ev) {
-    var el = ev.target.closest ? ev.target.closest("[data-cta]") : null;
-    if (!el) return;
-    DL.push("cta_click", { cta_location: el.getAttribute("data-cta") });
-  });
+  function initCta() {
+    document.addEventListener("click", function (ev) {
+      var el = ev.target.closest ? ev.target.closest("[data-cta]") : null;
+      if (!el) return;
+      DL.push("cta_click", { cta_location: el.getAttribute("data-cta") });
+    });
+  }
 
   // Sección de vídeo: solo existe en el DOM si VIDEO_URL tiene valor
-  (function () {
+  function initVideo() {
     var plantilla = document.getElementById("plantilla-video");
     var url = typeof cfg.VIDEO_URL === "string" ? cfg.VIDEO_URL.trim() : "";
     if (!plantilla || !url || !("content" in plantilla)) return;
+    if (document.getElementById("video")) return; // montaje idempotente
     var destino;
     try {
       destino = new URL(url, location.href);
@@ -64,19 +76,21 @@
       DL.push("video_play", {});
     });
     plantilla.parentNode.insertBefore(fragmento, plantilla);
-  })();
+  }
 
   // Preguntas frecuentes
-  Array.prototype.forEach.call(document.querySelectorAll(".faq details"), function (d) {
-    d.addEventListener("toggle", function () {
-      if (!d.open) return;
-      var s = d.querySelector("summary");
-      DL.push("faq_open", { faq_question: s ? s.textContent.trim() : "" });
+  function initFaq() {
+    Array.prototype.forEach.call(document.querySelectorAll(".faq details"), function (d) {
+      d.addEventListener("toggle", function () {
+        if (!d.open) return;
+        var s = d.querySelector("summary");
+        DL.push("faq_open", { faq_question: s ? s.textContent.trim() : "" });
+      });
     });
-  });
+  }
 
   // Barra fija inferior en móvil: se oculta cuando el formulario está a la vista
-  (function () {
+  function initBarraFija() {
     var barra = document.getElementById("cta-fija");
     var formulario = document.getElementById("formulario");
     if (!barra || !formulario) return;
@@ -88,5 +102,12 @@
       });
     }, { threshold: 0 });
     obs.observe(formulario);
-  })();
+  }
+
+  safe(initAnio, "anio");
+  safe(initContacto, "contacto");
+  safe(initCta, "cta");
+  safe(initVideo, "video");
+  safe(initFaq, "faq");
+  safe(initBarraFija, "barraFija");
 })();

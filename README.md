@@ -17,10 +17,11 @@ Sitio estático: HTML, CSS y JavaScript sin frameworks, sin paso de compilación
 5. [Formulario](#formulario)
 6. [Medición: dataLayer, GTM y consentimiento](#medición-datalayer-gtm-y-consentimiento)
 7. [Pendientes por responsable](#pendientes-por-responsable)
-8. [Decisiones tomadas y diferencias con el brief](#decisiones-tomadas-y-diferencias-con-el-brief)
-9. [Comprobación final](#comprobación-final)
-10. [Lighthouse](#lighthouse)
-11. [Contraste de color](#contraste-de-color)
+8. [Diseño visual y animaciones](#diseño-visual-y-animaciones)
+9. [Decisiones tomadas y diferencias con el brief](#decisiones-tomadas-y-diferencias-con-el-brief)
+10. [Comprobación final](#comprobación-final)
+11. [Lighthouse](#lighthouse)
+12. [Contraste de color](#contraste-de-color)
 
 ---
 
@@ -39,16 +40,20 @@ Sitio estático: HTML, CSS y JavaScript sin frameworks, sin paso de compilación
 /assets/js/main.js                Pie, botones CTA, barra fija, FAQ y sección de vídeo
 /assets/js/calculadora.js
 /assets/js/formulario.js
+/assets/js/efectos.js             Capa visual: aparición al scroll, luz de la cabecera, halos, deslizador
 /assets/fonts/                    Montserrat y Roboto (Google Fonts, licencia OFL) alojadas aquí
-/assets/img/logo-trazabis.png     Logo aportado (recortado y optimizado)
-/assets/img/ruben-bel.jpg         Foto aportada (reducida a 800 px, sin filtros)
+/assets/img/logo-trazabis.webp    Logo que usa la web (WebP sin pérdida, 7 KB)
+/assets/img/logo-trazabis.png     Logo aportado (recortado y optimizado; original de referencia)
+/assets/img/ruben-bel.webp        Foto que usa la web (WebP, 17 KB, sin filtros)
+/assets/img/ruben-bel.jpg         Foto aportada (reducida a 800 px; original de referencia)
 /tests/calculadora.test.html      Pruebas unitarias de la calculadora
 /tests/prioridad.test.html        Pruebas del cálculo de prioridad y del event_id
 /404.html                         Página de error autónoma
+/.htaccess                        Caché, compresión y tipos MIME para Hostinger / Apache / LiteSpeed
 /.nojekyll                        Evita el procesado de Jekyll en GitHub Pages
 ```
 
-Orden de carga de los scripts (todos con `defer`): `config.js` → `datalayer.js` → `consent.js` → `main.js` → `calculadora.js` → `formulario.js`.
+Orden de carga de los scripts (todos con `defer` y patrón IIFE, sin módulos): `config.js` → `datalayer.js` → `consent.js` → `main.js` → `calculadora.js` → `formulario.js` → `efectos.js`. Cada inicialización de `main.js` y `efectos.js` va envuelta en `safe()`: si una falla, el resto sigue funcionando.
 
 ## Probar en local
 
@@ -85,7 +90,11 @@ En local (o con `?debug=1`, o mientras `GTM_ID` esté vacío) el sitio está en 
 
 **Vercel:** proyecto «Other», sin comando de compilación, directorio de salida `.`.
 
+**Hostinger (o cualquier Apache / LiteSpeed):** subir todo el contenido de la carpeta, **incluido `.htaccess`** (es un archivo oculto: activa «mostrar archivos ocultos» en el cliente FTP o en el Administrador de archivos). El `.htaccess` hace que HTML, CSS y JS se revaliden en cada visita, que imágenes y fuentes se guarden un mes, comprime el texto y fija los tipos MIME. En un VPS con Nginx el `.htaccess` no se aplica.
+
 **Cualquier hosting estático:** subir todos los archivos tal cual.
+
+**En cada despliegue que cambie CSS o JS, sube el número de versión** que llevan los enlaces a `styles.css` y a los scripts (`?v=20261012`) en `despachos/index.html` y en las tres páginas legales, usando la fecha del día (`?v=AAAAMMDD`). Así ningún navegador ni CDN sirve una versión antigua.
 
 Notas:
 
@@ -245,6 +254,30 @@ Todos los marcadores se ven en la página resaltados en amarillo (clase `.pendie
 - [ ] Escaneo de cookies tras publicar y eliminación de las filas de herramientas que no se instalen.
 - [ ] Despliegue (HTTPS, compresión y caché en el hosting).
 
+## Diseño visual y animaciones
+
+Dirección elegida: arquetipo **«Mouse-Reactive Gradient»** (adecuado para un SaaS B2B), adaptado a la guía de marca del brief: bloques sólidos azul / blanco, Montserrat + Roboto y los mismos tokens de color. No se ha añadido ni modificado ningún texto del copy.
+
+**Efecto firma — la cabecera viva:** sobre el azul Trazabis hay una malla de puntos y focos de luz suaves; con ratón, el foco principal sigue al cursor con inercia (un solo bucle `requestAnimationFrame` que se detiene cuando la luz llega a su sitio o la cabecera sale de pantalla). En móvil y sin ratón, los focos derivan lentamente. La cola de validación se anima al cargar: entra la tarjeta, las tres filas, aparecen las etiquetas «Validado» / «Revisar», un barrido recorre los documentos y la fila «Revisar» late suavemente.
+
+**Efectos de apoyo:**
+
+1. **Aparición al hacer scroll** de bloques y tarjetas, escalonada, con los iconos de línea dibujándose al entrar (`IntersectionObserver` con umbral 0,01 y red de seguridad a los 6 s).
+2. **Halo bajo el cursor y elevación** en las tarjetas (solo en dispositivos con ratón).
+3. **Botones con elevación, brillo diagonal y flecha** que avanza al pasar el ratón.
+4. **Línea de progreso** que se rellena a lo largo de los seis pasos de «Cómo funciona».
+
+Además: titulares con barra de acento, cifras con degradado de marca, deslizador de la calculadora con relleno, pequeño salto del total al cambiar, apertura suave de las preguntas frecuentes (Chrome 131+), transición entre los pasos del formulario y marca de verificación que se dibuja en la página de gracias.
+
+**Color:** el morado del logo (`#8127E3`) se usa solo como acento decorativo (brillos, degradados, líneas) y en texto grande con contraste comprobado; no sustituye a ningún token del brief. Si se prefiere la paleta estricta, basta con cambiar `--acento-logo`, `--lavanda` y `--violeta-texto` en `styles.css`.
+
+**Robustez:**
+
+- **Sin JavaScript** todo el contenido es visible: las animaciones dependen de la clase `.js`, que añade un script en línea en el `<head>`.
+- **Movimiento reducido** (`prefers-reduced-motion`): se mantienen los fundidos y los cambios de color, que no son intrusivos. Se quitan los desplazamientos, los bucles infinitos (latido, deriva de luces, fichas flotantes, brillo de la barra de progreso) y el desplazamiento suave hacia el formulario, como pide el brief.
+- **Sin librerías:** no se usan GSAP ni Lenis porque el brief prohíbe dependencias; todo es CSS y JS nativo. Se usa el desplazamiento nativo del navegador.
+- **Accesibilidad:** se añade el enlace «Saltar al contenido», visible solo al recibir el foco.
+
 ## Decisiones tomadas y diferencias con el brief
 
 Se ha respetado el copy literal del brief. Estas son las decisiones que no venían cerradas o que obligaban a elegir entre dos requisitos:
@@ -259,10 +292,14 @@ Se ha respetado el copy literal del brief. Estas son las decisiones que no vení
 8. **Microtextos funcionales no incluidos en el brief:** mensajes de error, banner y panel de cookies, etiqueta «Opcional» en las casillas 3 y 4, «Importes sin IVA.» y el precio del año 1 bajo cada plan en la calculadora, etiquetas «Email:» y «Teléfono:» del pie, lista de prefijos telefónicos y textos de la página 404.
 9. **Estados de la cola de validación:** el verde y el ámbar derivados no alcanzan 4,5:1 con texto blanco (4,14:1 y 2,95:1), así que las etiquetas usan texto oscuro sobre fondo claro con un punto de color.
 10. **Calculadora:** empieza en 100 clientes · Inicio · asumido por el despacho (el caso de prueba del brief). El número admite cualquier entero; el deslizador va de 51 a 300.
+11. **Imágenes en WebP.** La web usa `ruben-bel.webp` y `logo-trazabis.webp`. Los archivos `ruben-bel.jpg` y `logo-trazabis.png` se conservan en las rutas que indica el brief como originales de referencia, pero ninguna página los referencia.
+12. **Archivos añadidos en la capa visual:** `assets/js/efectos.js` y `.htaccess`. Las páginas de prueba cargan los scripts con `defer` y ejecutan las pruebas en `DOMContentLoaded`.
 
 ## Comprobación final
 
-Verificación automatizada con Playwright (Chromium 141) sirviendo el sitio desde un subdirectorio (`/repo/`) y desde la raíz: **86/86 comprobaciones correctas**, más auditoría de accesibilidad con axe-core 4.10 (WCAG 2.2 A/AA y buenas prácticas): **0 infracciones** en todas las páginas a 390 y 1440 px, con banner, sin banner, con el formulario en el paso 2 mostrando errores y con el panel de cookies abierto.
+Verificación automatizada con Playwright (Chromium 141) sirviendo el sitio desde un subdirectorio (`/repo/`) y desde la raíz: **86/86 comprobaciones correctas**, más auditoría de accesibilidad con axe-core 4.10 (WCAG 2.2 A/AA y buenas prácticas): **0 infracciones** en todas las páginas a 390 y 1440 px, con banner, sin banner, con el formulario en el paso 2 mostrando errores y con el panel de cookies abierto. El verificador del skill de diseño (`verify_project.py`) da 0 errores; su único aviso es la ausencia de `lib/` (GSAP), intencionada.
+
+Comprobado también tras la capa visual: con movimiento reducido no queda ninguna animación infinita, todo el contenido aparece y el desplazamiento no es suave; sin JavaScript todo el contenido es visible; los textos de la cabecera mantienen el contraste AA incluso con el foco de luz justo debajo (mínimo medido sobre el píxel de fondo más claro: 4,60:1 en el titular, que es texto grande y exige 3:1, y 5,29:1 o más en el resto).
 
 | # | Comprobación | Resultado |
 | --- | --- | --- |
@@ -275,7 +312,7 @@ Verificación automatizada con Playwright (Chromium 141) sirviendo el sitio desd
 | 7 | Vídeo | ✅ Con `VIDEO_URL` vacía, `#video` no existe en el DOM. |
 | 8 | dataLayer sin datos personales | ✅ Probado con un envío completo: ni nombre, ni email, ni teléfono, ni despacho, ni texto libre. |
 | 9 | Sin consentimiento, sin terceros | ✅ Con `GTM_ID` configurado: 0 peticiones a Google, Meta o Microsoft antes de aceptar y tras «Rechazar todas»; GTM se carga solo al aceptar. Los tres botones del banner miden lo mismo (324 × 48 px en móvil, 282 × 48 px en escritorio). |
-| 10 | Contraste, foco y teclado | ✅ Contraste AA (tabla abajo y axe); 32 paradas de tabulación, todas con contorno visible; acordeón con `<details>`. |
+| 10 | Contraste, foco y teclado | ✅ Contraste AA (tabla abajo, axe y medición sobre el fondo animado); 33 paradas de tabulación (la primera, «Saltar al contenido»), todas con contorno visible; acordeón con `<details>`. |
 | 11 | Subdirectorio | ✅ Probado en `/repo/despachos/`; la raíz redirige conservando `utm_*` y `fbclid`. |
 | 12 | Lighthouse móvil | Ver abajo. |
 | 13 | README con pendientes agrupados | ✅ Este documento. |
@@ -288,12 +325,12 @@ Lighthouse 12.2.1, móvil con limitación simulada, servido en local con `python
 
 | Página | Rendimiento | Accesibilidad | Buenas prácticas | SEO |
 | --- | --- | --- | --- | --- |
-| `/despachos/` | 98 | 100 | 100 | 63* |
-| `/legal/politica-privacidad.html` | 100 | 100 | 100 | 100 |
+| `/despachos/` | 97 | 100 | 100 | 63* |
+| `/legal/politica-privacidad.html` | 99 | 100 | 100 | 100 |
 
 \* El SEO baja únicamente por el `noindex` intencionado de la landing de pauta.
 
-Métricas de la landing (dos ejecuciones con el mismo resultado): FCP 1,2 s · LCP 2,3 s · TBT 0 ms · CLS 0 · Speed Index 1,2 s. Las sugerencias restantes (compresión de texto y caché) dependen del hosting, no del código; conviene repetir la medición una vez publicado.
+Métricas de la landing con la capa visual (dos ejecuciones, rendimiento 97 en ambas): FCP 1,4 s · LCP 2,4–2,6 s · TBT 0–10 ms · CLS 0. Antes de la capa visual el rendimiento era 98. Las sugerencias restantes (compresión de texto y caché) dependen del servidor: en Hostinger las resuelve el `.htaccess`; conviene repetir la medición una vez publicado.
 
 ## Contraste de color
 
@@ -312,5 +349,10 @@ Ratios calculados con la fórmula de WCAG 2.x (AA exige 4,5:1 en texto normal y 
 | `#1A1D29` | `#FFE58A` marcador pendiente | 13,44:1 |
 | `#1A1D29` | `#E3F3EA` / `#FBEBC4` etiquetas de estado | 14,60 / 14,21:1 |
 | `#7A8092` borde de campos | `#FFFFFF` | 3,94:1 |
+| `#CDB8FF` lavanda (texto grande, degradados claros) | `#1E2852` | 8,03:1 |
+| `#E5DBFF` (color de respaldo del degradado claro) | `#1E2852` | 10,74:1 |
+| `#5B34C9` violeta de texto (final de los degradados) | `#FFFFFF` / `#F5F6F8` | 7,56 / 6,99:1 |
+| `#3A3A9E` (tono intermedio de los degradados) | `#FFFFFF` | 9,22:1 |
+| `#C5CAE0` antetítulo | `#2C3560` (fondo de la píldora) | 7,23:1 |
 
 No usados como color de texto sobre blanco por no llegar a 4,5:1: `#1E8E5A` (4,14:1) y `#C98A0B` (2,95:1).

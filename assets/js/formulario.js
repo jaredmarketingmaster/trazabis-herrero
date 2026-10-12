@@ -107,7 +107,7 @@
 
     var icono = document.createElement("span");
     icono.className = "gracias__icono";
-    icono.innerHTML = '<svg class="icono" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
+    icono.innerHTML = '<svg class="icono" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path pathLength="1" d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
     caja.appendChild(icono);
 
     var h2 = document.createElement("h2");
