@@ -40,16 +40,16 @@ Las secciones aparecen en este orden. Todo el texto es el copy literal aprobado;
 | # | Sección | Fondo | Contenido |
 | --- | --- | --- | --- |
 | — | Barra superior | Blanco | Solo el logo, que enlaza al inicio de la página |
-| 1 | Cabecera | Azul | Antetítulo, titular «Tus agentes preparan. Tu equipo aprueba.», subtítulo, botón «Ver si mi despacho encaja» y una ilustración animada de una cola de validación (dos documentos «Validado» y uno «Revisar») |
+| 1 | Cabecera | Azul | Antetítulo, titular «Tus agentes preparan. Tu equipo aprueba.», subtítulo, botón «Ver si mi despacho encaja» y el **vídeo demo** de Trazabis (1:32), que no se descarga hasta pulsar «reproducir» |
 | 2 | El problema | Blanco | «¿Te suena?» con cuatro tarjetas: canales dispersos, picos del cierre trimestral, rotación de personal junior e intentos fallidos con OCR o Excel |
 | 3 | Capturar no basta | Gris claro | Por qué un OCR no resuelve el cuello de botella y comparativa «Solo captura» frente a «Con Trazabis» |
 | 4 | Cómo funciona | Blanco | Seis pasos (Recibe, Lee y clasifica, Prepara, Valida, Concilia, Contabiliza), dos destacados (marca blanca y panel único) y el lema «Tus agentes preparan. Tú apruebas.» |
-| 5 | Vídeo | Azul | «Cómo funciona Trazabis, en 90 segundos». **Solo existe si se configura `VIDEO_URL`**; si no, la sección no aparece |
+| 5 | Vídeo | Azul | «Cómo funciona Trazabis, en 90 segundos». **Solo existe si se configura `VIDEO_URL`**; como el vídeo demo ya está en la cabecera, se deja vacía y la sección no aparece |
 | 6 | Implantación | Blanco | Tres fases (Diagnóstico → Configuración → Activación), qué aporta el despacho y qué hacen sus clientes |
-| 7 | Inversión | Gris claro | Precios públicos sin IVA: 0 € al mes para el despacho, tabla de onboarding por tamaño de cartera, planes de la cartera con el descuento del primer año, módulo TrazaControl, nota de integración y calculadora |
+| 7 | Inversión | Gris claro | Precios públicos sin IVA: 0 € al mes para el despacho, tabla de onboarding por tamaño de cartera, planes de la cartera con el descuento del primer año, módulo TrazaControl (concilia el extracto N43 o PDF con los documentos ya leídos; precio aparte, fuera de los planes y sin descuentos), nota de integración y calculadora |
 | 8 | Para quién es | Blanco | Dos columnas con el mismo peso visual: «Es para ti si» y «No es para ti si» |
 | 9 | Seguridad | Azul | Cinco puntos sobre servidores en la UE, doble factor, retención, exportación y contrato de encargo |
-| 10 | Quiénes somos | Gris antracita | «Producto propio, en producción», texto sobre la empresa y foto de Rubén Bel |
+| 10 | Quiénes somos | Gris antracita | «Producto propio, en producción», texto sobre la empresa y foto de Rubén Bel Pauner, CEO y Fundador de Trazabis |
 | 11 | Preguntas frecuentes | Blanco | Nueve preguntas en acordeón |
 | 12 | Formulario | Gris claro | «¿Vemos si tu despacho encaja?» y el formulario en dos pasos |
 | — | Pie | Azul | Logo, datos de la empresa, email y teléfono, enlaces legales, «Configurar cookies» y © con el año actual |
@@ -115,7 +115,7 @@ Anuncio de Meta ──► /despachos/?utm_…&fbclid=…
 
 ### 3.3 Botones «Ver si mi despacho encaja»
 
-Hay cinco: cabecera, vídeo (si existe), inversión, calculadora y la barra fija inferior en móvil. Todos bajan al formulario y registran el evento `cta_click` con su ubicación.
+Hay cinco: cabecera, sección de vídeo (si existe), inversión, calculadora y la barra fija inferior en móvil. Todos bajan al formulario y registran el evento `cta_click` con su ubicación.
 
 La **barra fija en móvil** (pantallas de menos de 768 px) está visible mientras se lee la página y se oculta cuando el formulario entra en pantalla.
 
@@ -192,7 +192,7 @@ Todos los eventos pasan por `datalayer.js`, que **solo deja pasar una lista cerr
 | Evento | Cuándo |
 | --- | --- |
 | `cta_click` | Clic en un botón «Ver si mi despacho encaja» |
-| `video_play` | Primera reproducción del vídeo |
+| `video_play` | Primera reproducción del vídeo demo de la cabecera (o del de la sección 5, si existe) |
 | `calculator_use` | Primer cambio en la calculadora |
 | `form_start` | Primera interacción con el formulario |
 | `form_step_complete` | Paso 1 completado (incluye respuestas y prioridad) |
@@ -208,7 +208,7 @@ La API de conversiones de Meta no está en la web: la envía el sistema que reci
 ## 5. Diseño y animaciones
 
 - **Identidad:** bloques de color sólido (azul Trazabis, blanco, gris claro y gris antracita), Montserrat para titulares y Roboto para el texto. Las fuentes se sirven desde el propio sitio para no contactar con Google sin consentimiento.
-- **Cabecera:** malla de puntos y focos de luz; con ratón, el foco principal sigue al cursor. La ilustración de la cola de validación se anima al cargar.
+- **Cabecera:** malla de puntos y focos de luz; con ratón, el foco principal sigue al cursor. A la derecha (debajo en móvil), el vídeo demo con su póster y un botón de reproducción propio. Con `preload="none"`, solo se descarga el póster (8 KB) hasta que se pulsa «reproducir»; entonces aparecen los controles nativos. Se sirve en WebM con copia MP4 para Safari e iPhone antiguos.
 - **Al hacer scroll:** los bloques aparecen escalonados y los iconos de línea se dibujan.
 - **Interacción:** halo bajo el cursor y elevación en las tarjetas, botones con brillo y flecha, línea de progreso en los seis pasos, salto del total de la calculadora y apertura suave de las preguntas frecuentes.
 - **Sin JavaScript** todo el contenido sigue visible.
@@ -236,7 +236,8 @@ Las tres páginas legales son **borradores pendientes de revisión por el abogad
 | `assets/js/config.js` | Constantes configurables: `GTM_ID`, `FORM_ENDPOINT`, `VIDEO_URL`, `VIDEO_POSTER`, `TELEFONO_ASISTENTE`, `EMAIL_CONTACTO`, `TELEFONO_CONTACTO` |
 | `assets/js/datalayer.js` | Envía eventos al dataLayer filtrando datos personales |
 | `assets/js/consent.js` | Banner, panel y modo de consentimiento; carga de GTM tras aceptar |
-| `assets/js/main.js` | Año y contacto del pie, clics en los botones, vídeo, preguntas frecuentes y barra fija |
+| `assets/js/main.js` | Año y contacto del pie, clics en los botones, vídeo demo de la cabecera y sección de vídeo, preguntas frecuentes y barra fija |
+| `assets/video/` | Vídeo demo en WebM (original) y MP4 (copia de compatibilidad) |
 | `assets/js/calculadora.js` | Cálculos e interfaz de la calculadora |
 | `assets/js/formulario.js` | Formulario, validación, prioridad, envío y página de gracias |
 | `assets/js/efectos.js` | Animaciones: aparición al hacer scroll, luz de la cabecera, halos y deslizador |
@@ -249,7 +250,7 @@ Si un script de efectos falla, el resto del sitio sigue funcionando: cada bloque
 
 ## 8. Antes de publicar
 
-1. Completar los `[PENDIENTE]` (lista por responsable en el README).
+1. Completar los `[PENDIENTE]` (lista por responsable en el README) y revisar las cifras que muestra el vídeo demo en el panel «Resumen».
 2. Rellenar `config.js`, como mínimo `FORM_ENDPOINT`, con CORS habilitado.
 3. Validar con el abogado los textos legales, las casillas y el banner de cookies.
 4. Configurar GTM con las comprobaciones de consentimiento de cada etiqueta.

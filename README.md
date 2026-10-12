@@ -45,6 +45,9 @@ Sitio estático: HTML, CSS y JavaScript sin frameworks, sin paso de compilación
 /assets/img/logo-trazabis.webp    Logo que usa la web (WebP sin pérdida, 7 KB)
 /assets/img/logo-trazabis.png     Logo aportado (recortado y optimizado; original de referencia)
 /assets/img/ruben-bel.webp        Foto que usa la web (WebP, 17 KB, sin filtros)
+/assets/img/trazabis-demo-poster.webp  Póster del vídeo demo (primer fotograma, 8 KB)
+/assets/video/trazabis-demo.webm  Vídeo demo de la cabecera (VP9 + Opus, 1920 × 1080, 1:32, 5,5 MB; archivo aportado)
+/assets/video/trazabis-demo.mp4   Copia en H.264 + AAC (5,2 MB) para navegadores que no reproducen WebM
 /assets/img/ruben-bel.jpg         Foto aportada (reducida a 800 px; original de referencia)
 /tests/calculadora.test.html      Pruebas unitarias de la calculadora
 /tests/prioridad.test.html        Pruebas del cálculo de prioridad y del event_id
@@ -222,10 +225,10 @@ Todos los marcadores se ven en la página resaltados en amarillo (clase `.pendie
 - [ ] Email de contacto → `EMAIL_CONTACTO` (pie y aviso legal).
 - [ ] Teléfono de contacto → `TELEFONO_CONTACTO` (pie y aviso legal).
 - [ ] Datos registrales: provincia del Registro Mercantil, tomo, folio y hoja (aviso legal).
-- [ ] Cargo de Rubén (pie de la foto).
-- [ ] Precio del módulo de conciliación bancaria (TrazaControl).
 - [ ] Periodicidad de los documentos por plan (nota bajo la tabla de planes).
-- [ ] URL del vídeo → `VIDEO_URL` y su póster → `VIDEO_POSTER`.
+- [ ] **Revisar las cifras que muestra el vídeo demo.** En el panel «Resumen» (hacia el segundo 10) aparecen el porcentaje de documentos insertados sin revisión y el tiempo medio por documento, con sus objetivos. El brief prohibía mostrar en el sitio porcentajes de automatización y precisamente esos objetivos. Confirmar que se aceptan como datos de demostración o reeditar el vídeo.
+- [ ] Subtítulos del vídeo demo: si el audio tiene locución, aportar un archivo `.vtt` para añadirlo como pista de subtítulos (lo exige WCAG 1.2.2). Si solo es música, no hace falta.
+- [ ] (Opcional) `VIDEO_URL` y `VIDEO_POSTER` solo activan la sección 5 «Cómo funciona Trazabis, en 90 segundos». Como ese vídeo ya está en la cabecera, se deja vacía para no repetirlo.
 - [ ] Colores oficiales de marca (HEX) para sustituir los tokens de `styles.css`. **Ojo:** los colores medidos en el logo aportado son azul `#14376B` y morado `#8127E3`; el azul del brief (`#1E2852`) no coincide con el del logo.
 - [ ] (Opcional) Versión monocroma del logo en blanco (SVG) para el pie; mientras tanto, el logo bicolor va sobre una placa blanca.
 - [ ] (Opcional) Favicon.
@@ -258,7 +261,9 @@ Todos los marcadores se ven en la página resaltados en amarillo (clase `.pendie
 
 Dirección elegida: arquetipo **«Mouse-Reactive Gradient»** (adecuado para un SaaS B2B), adaptado a la guía de marca del brief: bloques sólidos azul / blanco, Montserrat + Roboto y los mismos tokens de color. No se ha añadido ni modificado ningún texto del copy.
 
-**Efecto firma — la cabecera viva:** sobre el azul Trazabis hay una malla de puntos y focos de luz suaves; con ratón, el foco principal sigue al cursor con inercia (un solo bucle `requestAnimationFrame` que se detiene cuando la luz llega a su sitio o la cabecera sale de pantalla). En móvil y sin ratón, los focos derivan lentamente. La cola de validación se anima al cargar: entra la tarjeta, las tres filas, aparecen las etiquetas «Validado» / «Revisar», un barrido recorre los documentos y la fila «Revisar» late suavemente.
+**Efecto firma — la cabecera viva:** sobre el azul Trazabis hay una malla de puntos y focos de luz suaves; con ratón, el foco principal sigue al cursor con inercia (un solo bucle `requestAnimationFrame` que se detiene cuando la luz llega a su sitio o la cabecera sale de pantalla). En móvil y sin ratón, los focos derivan lentamente.
+
+**Vídeo demo en la cabecera** (sustituye a la ilustración de la cola de validación): se muestra su primer fotograma como póster con un botón de reproducción propio. Tiene `preload="none"`, así que **no se descarga ningún byte del vídeo hasta pulsar «reproducir»**: antes solo se carga el póster (8 KB). Al reproducir aparecen los controles nativos y se registra `video_play`. Sin JavaScript se muestran directamente los controles nativos. Se sirve en WebM con copia MP4 de respaldo para Safari e iPhone antiguos.
 
 **Efectos de apoyo:**
 
@@ -297,13 +302,13 @@ Se ha respetado el copy literal del brief. Estas son las decisiones que no vení
 
 ## Comprobación final
 
-Verificación automatizada con Playwright (Chromium 141) sirviendo el sitio desde un subdirectorio (`/repo/`) y desde la raíz: **86/86 comprobaciones correctas**, más auditoría de accesibilidad con axe-core 4.10 (WCAG 2.2 A/AA y buenas prácticas): **0 infracciones** en todas las páginas a 390 y 1440 px, con banner, sin banner, con el formulario en el paso 2 mostrando errores y con el panel de cookies abierto. El verificador del skill de diseño (`verify_project.py`) da 0 errores; su único aviso es la ausencia de `lib/` (GSAP), intencionada.
+Verificación automatizada con Playwright (Chromium 141) sirviendo el sitio desde un subdirectorio (`/repo/`) y desde la raíz: **86/86 comprobaciones correctas**, más auditoría de accesibilidad con axe-core 4.10 (WCAG 2.2 A/AA y buenas prácticas): **0 infracciones** en todas las páginas a 390 y 1440 px, con banner, sin banner, con el formulario en el paso 2 mostrando errores y con el panel de cookies abierto. El verificador del skill de diseño (`verify_project.py`) da 0 errores; su único aviso es la ausencia de `lib/` (GSAP), intencionada. Sobre el vídeo, axe deja los subtítulos como «revisión manual»: no puede saber si el audio tiene locución (ver pendientes).
 
 Comprobado también tras la capa visual: con movimiento reducido no queda ninguna animación infinita, todo el contenido aparece y el desplazamiento no es suave; sin JavaScript todo el contenido es visible; los textos de la cabecera mantienen el contraste AA incluso con el foco de luz justo debajo (mínimo medido sobre el píxel de fondo más claro: 4,60:1 en el titular, que es texto grande y exige 3:1, y 5,29:1 o más en el resto).
 
 | # | Comprobación | Resultado |
 | --- | --- | --- |
-| 1 | Términos prohibidos del brief (punto 9.1) y voseo | ✅ Sin coincidencias, con una excepción: el marcador literal de la política de privacidad «[PENDIENTE: país y …]», que el brief incluye en la sección 8.2 y que se refiere a las salvaguardas de las transferencias internacionales, no a un compromiso comercial. «100 %» solo aparece en «No es para ti si», negado. |
+| 1 | Términos prohibidos del brief (punto 9.1) y voseo | ✅ En los textos, sin coincidencias salvo dos excepciones. La primera es el marcador literal de la política de privacidad «[PENDIENTE: país y …]», que el brief incluye en la sección 8.2 y que se refiere a las salvaguardas de las transferencias internacionales, no a un compromiso comercial. La segunda es «Fundador» en el pie de foto de Rubén Bel Pauner («CEO y Fundador de Trazabis»), por indicación expresa del cliente; no tiene relación con ningún programa comercial. «100 %» solo aparece en «No es para ti si», negado. ⚠️ El vídeo demo muestra en pantalla cifras de ese tipo (ver pendientes). |
 | 2 | Holded, a2ERP, A3 y Sage | ✅ Solo como «en despliegue», «otros programas», opciones del formulario o marcas citadas en el aviso legal. Sin logos de terceros. |
 | 3 | Calculadora | ✅ 51 → 3.000 €; 100 → 3.000 €; 101 → 4.000 €; 300 → 7.000 €; 100 + Inicio + asumido → 20.700 € (3.000 + 17.700). Fuera de 51–300, mensaje de diagnóstico. 31/31 pruebas unitarias. |
 | 4 | Pregunta condicional y prioridad | ✅ `acepta_sin_conector` solo aparece si el programa no es Odoo; 12/12 pruebas de prioridad y UUID. |
@@ -325,12 +330,12 @@ Lighthouse 12.2.1, móvil con limitación simulada, servido en local con `python
 
 | Página | Rendimiento | Accesibilidad | Buenas prácticas | SEO |
 | --- | --- | --- | --- | --- |
-| `/despachos/` | 97 | 100 | 100 | 63* |
+| `/despachos/` | 96 | 100 | 100 | 63* |
 | `/legal/politica-privacidad.html` | 99 | 100 | 100 | 100 |
 
 \* El SEO baja únicamente por el `noindex` intencionado de la landing de pauta.
 
-Métricas de la landing con la capa visual (dos ejecuciones, rendimiento 97 en ambas): FCP 1,4 s · LCP 2,4–2,6 s · TBT 0–10 ms · CLS 0. Antes de la capa visual el rendimiento era 98. Las sugerencias restantes (compresión de texto y caché) dependen del servidor: en Hostinger las resuelve el `.htaccess`; conviene repetir la medición una vez publicado.
+Métricas de la landing con el vídeo demo en la cabecera (dos ejecuciones, rendimiento 96 en ambas): FCP 1,4 s · LCP 2,7–2,8 s · TBT 0–30 ms · CLS 0 · peso total de la página 270 KB, porque el vídeo no se descarga hasta pulsar «reproducir». Antes de la capa visual el rendimiento era 98, y con la ilustración, 97. Las sugerencias restantes (compresión de texto y caché) dependen del servidor: en Hostinger las resuelve el `.htaccess`; conviene repetir la medición una vez publicado.
 
 ## Contraste de color
 

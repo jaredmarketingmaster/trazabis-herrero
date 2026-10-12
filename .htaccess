@@ -32,6 +32,8 @@
   ExpiresByType image/svg+xml "access plus 1 month"
   ExpiresByType image/avif "access plus 1 month"
   ExpiresByType image/x-icon "access plus 1 month"
+  ExpiresByType video/webm "access plus 1 month"
+  ExpiresByType video/mp4 "access plus 1 month"
 
   # Fonts — cache long, immutable
   ExpiresByType font/woff2 "access plus 1 year"
@@ -53,7 +55,7 @@
   </FilesMatch>
 
   # Images & fonts: long cache
-  <FilesMatch "\.(webp|jpg|jpeg|png|svg|avif|ico|woff|woff2)$">
+  <FilesMatch "\.(webp|jpg|jpeg|png|svg|avif|ico|woff|woff2|webm|mp4)$">
     Header set Cache-Control "public, max-age=2592000"
   </FilesMatch>
 
@@ -73,6 +75,8 @@
   AddType font/woff2 .woff2
   AddType font/woff .woff
   AddType image/svg+xml .svg
+  AddType video/webm .webm
+  AddType video/mp4 .mp4
 </IfModule>
 
 # ----- Gzip compression for text assets -----

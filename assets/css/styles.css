@@ -55,7 +55,7 @@
   --gris-fondo: #F5F6F8;      /* secciones alternas claras (derivado) */
   --texto: #1A1D29;           /* derivado */
   --texto-suave: #5A6072;     /* derivado */
-  /* Estados (semáforo de la interfaz; solo para ilustrar la cola de validación) */
+  /* Estados (semáforo de la interfaz) */
   --estado-validado: #1E8E5A; /* derivado */
   --estado-revisar: #C98A0B;  /* derivado */
   --estado-bloqueado: #C0392B;/* derivado */
@@ -758,66 +758,95 @@ div.pendiente {
   max-width: 52ch;
 }
 
+/* Vídeo demo de la cabecera. preload="none": no se descarga nada del vídeo hasta pulsar «reproducir» */
 .hero__visual {
   position: relative;
   width: 100%;
-  max-width: 460px;
+  max-width: 640px;
   margin-inline: auto;
-  padding: 14px 6px;
 }
 
-.cola {
-  width: 100%;
-  height: auto;
-  border-radius: 16px;
+.hero__video {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radio-lg);
+  background: #14376B url("../img/trazabis-demo-poster.webp") center / cover no-repeat;
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 30px 60px -20px rgba(0, 0, 0, 0.55),
-    0 0 80px -10px rgba(129, 39, 227, 0.45);
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 30px 60px -20px rgba(0, 0, 0, 0.6),
+    0 0 90px -10px rgba(129, 39, 227, 0.5);
 }
 
-.cola__fila,
-.cola__estado,
-.cola__latido {
-  transform-box: fill-box;
-  transform-origin: center;
+.hero__video-player {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: transparent;
 }
 
-.cola__latido {
-  opacity: 0;
+/* Botón de reproducción propio (solo con JS; sin JS quedan los controles nativos) */
+.hero__video-play {
+  display: none;
 }
 
-/* Fichas flotantes decorativas alrededor de la cola */
-.chip {
+.js .hero__video-play {
+  --color-foco: var(--blanco);
   position: absolute;
-  z-index: 1;
+  left: 50%;
+  top: 76%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
   background: var(--blanco);
   color: var(--azul-trazabis);
-  box-shadow: 0 16px 30px -12px rgba(0, 0, 0, 0.5);
+  translate: -50% -50%;
+  cursor: pointer;
+  box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.18), 0 18px 40px -10px rgba(0, 0, 0, 0.6);
+  transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out), opacity 0.25s;
 }
 
-.chip .icono {
-  width: 24px;
-  height: 24px;
-  stroke-width: 2;
+.hero__video-play .icono {
+  width: 26px;
+  height: 26px;
+  margin-left: 4px;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 1.5;
 }
 
-.chip--a {
-  top: -4px;
-  left: -2px;
-  border-radius: 50%;
-  color: var(--estado-validado);
+@media (hover: hover) {
+  .js .hero__video-play:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 16px rgba(255, 255, 255, 0.16), 0 22px 48px -10px rgba(0, 0, 0, 0.65);
+  }
 }
 
-.chip--b {
-  right: -2px;
-  bottom: 2px;
+/* Halo pulsante alrededor del botón (bucle suave; se quita con movimiento reducido) */
+@keyframes pulsoPlay {
+  from {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.45), 0 18px 40px -10px rgba(0, 0, 0, 0.6);
+  }
+
+  to {
+    box-shadow: 0 0 0 22px rgba(255, 255, 255, 0), 0 18px 40px -10px rgba(0, 0, 0, 0.6);
+  }
+}
+
+.js .hero__video-play {
+  animation: pulsoPlay 2.2s ease-out 1.6s infinite;
+}
+
+.hero__video.reproduciendo .hero__video-play {
+  opacity: 0;
+  pointer-events: none;
+  animation: none;
 }
 
 @media (max-width: 479px) {
@@ -834,26 +863,6 @@ div.pendiente {
   .hero__subtitulo {
     font-size: 1.25rem;
   }
-
-  .chip {
-    width: 56px;
-    height: 56px;
-  }
-
-  .chip .icono {
-    width: 28px;
-    height: 28px;
-  }
-
-  .chip--a {
-    top: -14px;
-    left: -18px;
-  }
-
-  .chip--b {
-    right: -18px;
-    bottom: -6px;
-  }
 }
 
 @media (min-width: 1024px) {
@@ -862,8 +871,8 @@ div.pendiente {
   }
 
   .hero__rejilla {
-    grid-template-columns: 1.12fr 0.88fr;
-    gap: 72px;
+    grid-template-columns: 1fr 1.05fr;
+    gap: 64px;
   }
 }
 
@@ -892,74 +901,6 @@ div.pendiente {
   }
 }
 
-@keyframes filaEntra {
-  from {
-    opacity: 0;
-    transform: translateX(26px);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes estadoPop {
-  from {
-    opacity: 0;
-    transform: scale(0.55);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes barrido {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(660px);
-  }
-}
-
-@keyframes latido {
-  0% {
-    opacity: 0.85;
-    transform: scale(1);
-  }
-
-  100% {
-    opacity: 0;
-    transform: scale(1.05, 1.18);
-  }
-}
-
-@keyframes flotar {
-  from {
-    translate: 0 0;
-  }
-
-  to {
-    translate: 0 -10px;
-  }
-}
-
-@keyframes chipEntra {
-  from {
-    opacity: 0;
-    transform: scale(0.4) rotate(-12deg);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
 .js .hero .antetitulo {
   animation: subir 0.7s var(--ease-out) 0.05s both;
 }
@@ -977,38 +918,8 @@ div.pendiente {
   animation: subir 0.9s var(--ease-out) 0.5s both;
 }
 
-.js .cola {
+.js .hero__video {
   animation: aparecerTarjeta 1.1s var(--ease-out) 0.3s both;
-}
-
-.js .cola__fila {
-  animation: filaEntra 0.7s var(--ease-out) both;
-  animation-delay: calc(0.8s + var(--i, 0) * 0.18s);
-}
-
-.js .cola__estado {
-  animation: estadoPop 0.55s var(--ease-bounce) both;
-  animation-delay: calc(1.3s + var(--i, 0) * 0.18s);
-}
-
-.js .cola__barrido {
-  animation: barrido 1.5s var(--ease-soft) 1.95s both;
-}
-
-.js .cola__latido {
-  animation: latido 2.8s ease-out 2.6s infinite;
-}
-
-.js .chip {
-  animation: chipEntra 0.6s var(--ease-bounce) both, flotar 5s ease-in-out infinite alternate;
-}
-
-.js .chip--a {
-  animation-delay: 1.5s, 2.1s;
-}
-
-.js .chip--b {
-  animation-delay: 1.75s, 0.4s;
 }
 
 /* --------------------------------------------------------------------------
@@ -1706,6 +1617,28 @@ div.pendiente {
   .tabla--apilable td .cifra {
     text-align: right;
   }
+}
+
+.trazacontrol__texto {
+  font-size: 1.0625rem;
+  max-width: 75ch;
+}
+
+.trazacontrol__aviso {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  width: fit-content;
+  max-width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--azul-suave);
+  color: var(--azul-trazabis);
+  font-weight: 500;
+}
+
+.trazacontrol__aviso .icono {
+  margin-top: 1px;
 }
 
 .nota-integracion {
@@ -3420,18 +3353,12 @@ div.pendiente {
 @media (prefers-reduced-motion: reduce) {
   .hero__luz--raton,
   .hero__luz--azul,
-  .js .chip,
-  .js .cola__latido,
-  .js .cola__barrido,
+  .js .hero__video-play,
   .progreso__barra span::after {
     animation: none;
   }
 
-  .js .chip {
-    opacity: 1;
-  }
-
-  .js .cola {
+  .js .hero__video {
     animation-name: subir;
   }
 

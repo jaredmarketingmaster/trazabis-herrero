@@ -78,6 +78,36 @@
     plantilla.parentNode.insertBefore(fragmento, plantilla);
   }
 
+  // Vídeo demo de la cabecera: botón de reproducción propio y medición de la primera reproducción.
+  // El vídeo tiene preload="none": no descarga nada hasta que se pulsa «reproducir».
+  function initVideoDemo() {
+    var caja = document.querySelector(".hero__video");
+    if (!caja) return;
+    var video = caja.querySelector("video");
+    var boton = caja.querySelector(".hero__video-play");
+    if (!video) return;
+    var medido = false;
+    if (boton) {
+      // Con JS, el póster se muestra limpio con el botón propio; los controles nativos aparecen al reproducir
+      video.controls = false;
+      boton.addEventListener("click", function () {
+        caja.classList.add("reproduciendo");
+        video.focus();
+        var promesa = video.play();
+        if (promesa && typeof promesa.catch === "function") {
+          promesa.catch(function () { caja.classList.remove("reproduciendo"); });
+        }
+      });
+    }
+    video.addEventListener("play", function () {
+      caja.classList.add("reproduciendo");
+      video.controls = true;
+      if (medido) return;
+      medido = true;
+      DL.push("video_play", {});
+    });
+  }
+
   // Preguntas frecuentes
   function initFaq() {
     Array.prototype.forEach.call(document.querySelectorAll(".faq details"), function (d) {
@@ -108,6 +138,7 @@
   safe(initContacto, "contacto");
   safe(initCta, "cta");
   safe(initVideo, "video");
+  safe(initVideoDemo, "videoDemo");
   safe(initFaq, "faq");
   safe(initBarraFija, "barraFija");
 })();

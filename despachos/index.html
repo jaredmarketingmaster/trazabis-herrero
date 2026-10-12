@@ -15,14 +15,14 @@
   <link rel="icon" href="data:,">
   <link rel="preload" href="../assets/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/styles.css?v=20261012">
-  <script src="../assets/js/config.js?v=20261012" defer></script>
-  <script src="../assets/js/datalayer.js?v=20261012" defer></script>
-  <script src="../assets/js/consent.js?v=20261012" defer></script>
-  <script src="../assets/js/main.js?v=20261012" defer></script>
-  <script src="../assets/js/calculadora.js?v=20261012" defer></script>
-  <script src="../assets/js/formulario.js?v=20261012" defer></script>
-  <script src="../assets/js/efectos.js?v=20261012" defer></script>
+  <link rel="stylesheet" href="../assets/css/styles.css?v=20261012-2">
+  <script src="../assets/js/config.js?v=20261012-2" defer></script>
+  <script src="../assets/js/datalayer.js?v=20261012-2" defer></script>
+  <script src="../assets/js/consent.js?v=20261012-2" defer></script>
+  <script src="../assets/js/main.js?v=20261012-2" defer></script>
+  <script src="../assets/js/calculadora.js?v=20261012-2" defer></script>
+  <script src="../assets/js/formulario.js?v=20261012-2" defer></script>
+  <script src="../assets/js/efectos.js?v=20261012-2" defer></script>
 </head>
 <body>
   <!-- Iconos de línea (sprite). Trazos con pathLength="1" para dibujarlos al aparecer; rellenos tenues de dos tonos -->
@@ -81,70 +81,15 @@
           </div>
         </div>
         <div class="hero__visual">
-          <span class="chip chip--a" aria-hidden="true"><svg class="icono" focusable="false"><use href="#i-check"/></svg></span>
-          <span class="chip chip--b" aria-hidden="true"><svg class="icono" focusable="false"><use href="#i-lee"/></svg></span>
-          <svg class="cola" viewBox="0 0 400 320" width="400" height="320" role="img" aria-labelledby="cola-titulo" focusable="false">
-            <title id="cola-titulo">Cola de validación con dos documentos validados y uno para revisar</title>
-            <defs>
-              <linearGradient id="cola-brillo" x1="0" x2="1" y1="0" y2="0">
-                <stop offset="0" stop-color="#C9D2F5" stop-opacity="0"/>
-                <stop offset=".5" stop-color="#C9D2F5" stop-opacity=".55"/>
-                <stop offset="1" stop-color="#C9D2F5" stop-opacity="0"/>
-              </linearGradient>
-              <clipPath id="cola-recorte"><rect width="400" height="320" rx="16"/></clipPath>
-            </defs>
-            <rect width="400" height="320" rx="16" fill="#FFFFFF"/>
-            <rect x="24" y="26" width="132" height="12" rx="6" fill="#C9CEDD"/>
-            <rect x="24" y="48" width="84" height="10" rx="5" fill="#E3E6EE"/>
-            <circle cx="350" cy="38" r="5" fill="#E3E6EE"/>
-            <circle cx="366" cy="38" r="5" fill="#E3E6EE"/>
-            <g transform="translate(16 80)">
-              <g class="cola__fila" style="--i:0">
-                <rect width="368" height="64" rx="10" fill="#F5F6F8"/>
-                <path d="M20 14h15l9 9v27H20z" fill="#FFFFFF" stroke="#1E2852" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M35 14v9h9" fill="none" stroke="#1E2852" stroke-width="2" stroke-linejoin="round"/>
-                <rect x="60" y="20" width="118" height="10" rx="5" fill="#C9CEDD"/>
-                <rect x="60" y="36" width="76" height="8" rx="4" fill="#DDE1EA"/>
-                <g class="cola__estado" style="--i:0">
-                  <rect x="240" y="18" width="112" height="28" rx="14" fill="#E3F3EA"/>
-                  <circle cx="258" cy="32" r="5" fill="#1E8E5A"/>
-                  <text x="270" y="37.5" font-family="Roboto, Arial, sans-serif" font-size="15" font-weight="500" fill="#1A1D29">Validado</text>
-                </g>
-              </g>
-            </g>
-            <g transform="translate(16 156)">
-              <g class="cola__fila" style="--i:1">
-                <rect width="368" height="64" rx="10" fill="#F5F6F8"/>
-                <path d="M20 14h15l9 9v27H20z" fill="#FFFFFF" stroke="#1E2852" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M35 14v9h9" fill="none" stroke="#1E2852" stroke-width="2" stroke-linejoin="round"/>
-                <rect x="60" y="20" width="96" height="10" rx="5" fill="#C9CEDD"/>
-                <rect x="60" y="36" width="104" height="8" rx="4" fill="#DDE1EA"/>
-                <g class="cola__estado" style="--i:1">
-                  <rect x="240" y="18" width="112" height="28" rx="14" fill="#E3F3EA"/>
-                  <circle cx="258" cy="32" r="5" fill="#1E8E5A"/>
-                  <text x="270" y="37.5" font-family="Roboto, Arial, sans-serif" font-size="15" font-weight="500" fill="#1A1D29">Validado</text>
-                </g>
-              </g>
-            </g>
-            <g transform="translate(16 232)">
-              <g class="cola__fila" style="--i:2">
-                <rect x="1" y="1" width="366" height="62" rx="9" fill="#FDF6E3" stroke="#C98A0B" stroke-width="2"/>
-                <rect class="cola__latido" x="1" y="1" width="366" height="62" rx="9" fill="none" stroke="#C98A0B" stroke-width="2"/>
-                <path d="M20 14h15l9 9v27H20z" fill="#FFFFFF" stroke="#1E2852" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M35 14v9h9" fill="none" stroke="#1E2852" stroke-width="2" stroke-linejoin="round"/>
-                <rect x="60" y="20" width="128" height="10" rx="5" fill="#C9CEDD"/>
-                <rect x="60" y="36" width="64" height="8" rx="4" fill="#DDE1EA"/>
-                <g class="cola__estado" style="--i:2">
-                  <rect x="240" y="18" width="112" height="28" rx="14" fill="#FBEBC4"/>
-                  <circle cx="258" cy="32" r="5" fill="#C98A0B"/>
-                  <text x="270" y="37.5" font-family="Roboto, Arial, sans-serif" font-size="15" font-weight="500" fill="#1A1D29">Revisar</text>
-                </g>
-              </g>
-            </g>
-            <g clip-path="url(#cola-recorte)">
-              <rect class="cola__barrido" x="-130" y="0" width="130" height="320" fill="url(#cola-brillo)"/>
-            </g>
-          </svg>
+          <div class="hero__video">
+            <video class="hero__video-player" controls preload="none" playsinline width="1920" height="1080" poster="../assets/img/trazabis-demo-poster.webp" aria-label="Vídeo: Cómo funciona Trazabis, en 90 segundos">
+              <source src="../assets/video/trazabis-demo.webm" type="video/webm">
+              <source src="../assets/video/trazabis-demo.mp4" type="video/mp4">
+            </video>
+            <button type="button" class="hero__video-play" aria-label="Reproducir el vídeo: Cómo funciona Trazabis, en 90 segundos">
+              <svg class="icono" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.5v13l10.5-6.5L8 5.5Z"/></svg>
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -384,7 +329,8 @@
 
           <div class="bloque-precio bloque-precio--ancho" data-reveal>
             <h3>Módulo de conciliación bancaria (TrazaControl)</h3>
-            <p class="pendiente">[PENDIENTE: precio]</p>
+            <p class="trazacontrol__texto">Sube el extracto en N43 o PDF y Trazabis casa cada movimiento con los documentos ya leídos. Lo que no cuadra queda señalado para que lo resuelva tu equipo.</p>
+            <p class="trazacontrol__aviso"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-info"/></svg><span>Es un módulo con precio aparte: no está incluido en los planes de la cartera y no admite descuentos.</span></p>
           </div>
         </div>
 
@@ -494,8 +440,8 @@
           <p data-reveal>Trazabis es un producto de Servicios Digitales y Automatización SL. No revendemos una herramienta de terceros: la implantamos nosotros, cliente a cliente. Y nuestro modelo está alineado con el tuyo: no cobramos cuota al despacho, ganamos cuando tu cartera lo usa.</p>
         </div>
         <figure class="retrato" data-reveal="escala">
-          <img src="../assets/img/ruben-bel.webp" alt="Rubén Bel, de Trazabis" width="800" height="1199" loading="lazy" decoding="async">
-          <figcaption>Rubén Bel · <span class="pendiente">[PENDIENTE: cargo]</span></figcaption>
+          <img src="../assets/img/ruben-bel.webp" alt="Rubén Bel Pauner, de Trazabis" width="800" height="1199" loading="lazy" decoding="async">
+          <figcaption>Rubén Bel Pauner · CEO y Fundador de Trazabis</figcaption>
         </figure>
       </div>
     </section>
