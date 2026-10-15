@@ -29,18 +29,22 @@ La página **informa, filtra y califica**: explica el producto y los precios, mu
 /tests/*.test.html                 Pruebas (no forman parte de la experiencia del visitante)
 ```
 
-La landing no tiene menú ni enlaces de salida; los únicos enlaces externos a la propia landing son los del pie legal.
+La landing no tiene menú ni enlaces de salida. Solo enlaza fuera de sí misma a las páginas legales: desde el pie (las tres) y desde la casilla de privacidad del formulario (la política de privacidad, en una pestaña nueva).
 
 ---
 
 ## 2. Contenido de la landing (`/despachos/`)
 
-Las secciones aparecen en este orden. Todo el texto es el copy literal aprobado; los datos que faltan se muestran como marcadores `[PENDIENTE: …]` resaltados en amarillo.
+Las secciones aparecen en este orden. El texto es el copy literal del brief, más dos textos indicados después por el cliente: el cargo de Rubén Bel Pauner y la descripción de TrazaControl. Los datos que faltan se muestran como marcadores `[PENDIENTE: …]` resaltados en amarillo. Hoy quedan visibles cinco:
+
+- el email y el teléfono de contacto del pie;
+- la periodicidad de los documentos por plan;
+- dos marcadores del abogado en las casillas del formulario: validar sus textos y decidir si se mantiene la casilla de Meta.
 
 | # | Sección | Fondo | Contenido |
 | --- | --- | --- | --- |
 | — | Barra superior | Blanco | Solo el logo, que enlaza al inicio de la página |
-| 1 | Cabecera | Azul | Antetítulo, titular «Tus agentes preparan. Tu equipo aprueba.», subtítulo, botón «Ver si mi despacho encaja» y el **vídeo demo** de Trazabis (1:32), que no se descarga hasta pulsar «reproducir» |
+| 1 | Cabecera | Azul | Antetítulo, titular «Tus agentes preparan. Tu equipo aprueba.», subtítulo, botón «Ver si mi despacho encaja» y el **vídeo demo** de Trazabis (91,7 s; el reproductor muestra 1:31), que no se descarga hasta pulsar «reproducir» |
 | 2 | El problema | Blanco | «¿Te suena?» con cuatro tarjetas: canales dispersos, picos del cierre trimestral, rotación de personal junior e intentos fallidos con OCR o Excel |
 | 3 | Capturar no basta | Gris claro | Por qué un OCR no resuelve el cuello de botella y comparativa «Solo captura» frente a «Con Trazabis» |
 | 4 | Cómo funciona | Blanco | Seis pasos (Recibe, Lee y clasifica, Prepara, Valida, Concilia, Contabiliza), dos destacados (marca blanca y panel único) y el lema «Tus agentes preparan. Tú apruebas.» |
@@ -60,7 +64,7 @@ Las secciones aparecen en este orden. Todo el texto es el copy literal aprobado;
 
 | Clientes | 51–100 | 101–150 | 151–200 | 201–250 | 251–300 | Más de 300 |
 | --- | --- | --- | --- | --- | --- | --- |
-| Precio | 3.000 € | 4.000 € | 5.000 € | 6.000 € | 7.000 € | Se ve en el diagnóstico |
+| Precio | 3.000 € | 4.000 € | 5.000 € | 6.000 € | 7.000 € | Lo vemos en el diagnóstico |
 
 **Planes de la cartera** (los asume el despacho o los repercute a cada cliente):
 
@@ -71,7 +75,7 @@ Las secciones aparecen en este orden. Todo el texto es el copy literal aprobado;
 | Negocio | 500 | 79 €/mes | 39,50 €/mes |
 | Personalizado | Más de 500 | desde 99 €/mes | desde 49,50 €/mes |
 
-Desde el segundo año: -35 % con pago mensual o -45 % con pago anual sobre el precio de lista.
+Desde el segundo año: -35 % con pago mensual o -45 % con pago anual sobre el precio de lista, de por vida. El descuento del primer año no se acumula con otras promociones.
 
 ---
 
@@ -208,11 +212,16 @@ La API de conversiones de Meta no está en la web: la envía el sistema que reci
 ## 5. Diseño y animaciones
 
 - **Identidad:** bloques de color sólido (azul Trazabis, blanco, gris claro y gris antracita), Montserrat para titulares y Roboto para el texto. Las fuentes se sirven desde el propio sitio para no contactar con Google sin consentimiento.
-- **Cabecera:** malla de puntos y focos de luz; con ratón, el foco principal sigue al cursor. A la derecha (debajo en móvil), el vídeo demo con su póster y un botón de reproducción propio. Con `preload="none"`, solo se descarga el póster (8 KB) hasta que se pulsa «reproducir»; entonces aparecen los controles nativos. Se sirve en WebM con copia MP4 para Safari e iPhone antiguos.
+- **Cabecera:** malla de puntos y focos de luz; con ratón, el foco principal sigue al cursor. A la derecha en pantallas de 1024 px o más (debajo del texto en las más estrechas), el vídeo demo con su póster y un botón de reproducción propio. Con `preload="none"`, solo se descarga el póster (8 KB) hasta que se pulsa «reproducir»; entonces aparecen los controles nativos. Se sirve en WebM con copia MP4 para Safari e iPhone antiguos.
 - **Al hacer scroll:** los bloques aparecen escalonados y los iconos de línea se dibujan.
-- **Interacción:** halo bajo el cursor y elevación en las tarjetas, botones con brillo y flecha, línea de progreso en los seis pasos, salto del total de la calculadora y apertura suave de las preguntas frecuentes.
+- **Interacción:** halo bajo el cursor y elevación en las tarjetas (solo con ratón), botones con brillo y flecha, línea de progreso en los seis pasos y salto del total de la calculadora. Las preguntas frecuentes se abren con transición suave en los navegadores que lo permiten (Chrome 131 o posterior); en el resto se abren al instante.
+- **Accesibilidad:** el primer elemento del teclado es «Saltar al contenido», que solo se ve al recibir el foco. Todos los elementos interactivos muestran un contorno de foco visible.
 - **Sin JavaScript** todo el contenido sigue visible.
-- **Con movimiento reducido** activado en el sistema se quitan los desplazamientos y los bucles, y el desplazamiento al formulario deja de ser suave.
+- **Con movimiento reducido** activado en el sistema:
+  - Se quitan todas las animaciones en bucle: la deriva de las luces, el halo del botón de reproducción y el brillo de la barra de progreso.
+  - Los bloques que aparecen al hacer scroll solo se funden, sin desplazarse.
+  - El desplazamiento hacia el formulario deja de ser suave.
+  - Se mantiene la entrada de la cabecera al cargar, que es un desplazamiento corto de 22 px.
 
 ---
 
@@ -221,8 +230,8 @@ La API de conversiones de Meta no está en la web: la envía el sistema que reci
 | Página | Contenido y funcionamiento |
 | --- | --- |
 | **Aviso legal** | Datos del titular (LSSI), objeto, condiciones de uso, propiedad intelectual, responsabilidad y jurisdicción. El email y el teléfono se rellenan desde `config.js` |
-| **Política de privacidad** | Responsable, datos tratados, finalidades y bases legales, llamada del asistente de IA, conservación, proveedores, transferencias, derechos, menores y seguridad |
-| **Política de cookies** | Qué son, tabla de cookies por proveedor y categoría, cómo aceptarlas o rechazarlas y transferencias |
+| **Política de privacidad** | Responsable, datos tratados, finalidades y bases legales, llamada del asistente de IA, conservación, proveedores, transferencias, derechos, menores, seguridad y cambios en la política |
+| **Política de cookies** | Qué son, tabla de cookies por proveedor y categoría, cómo aceptarlas, rechazarlas o cambiar la elección, transferencias y actualizaciones |
 | **404** | Página autónoma (estilos y logo integrados) con un enlace que localiza la landing aunque el sitio esté en un subdirectorio |
 
 Las tres páginas legales son **borradores pendientes de revisión por el abogado**. Comparten cabecera, pie y banner de cookies con la landing.
@@ -242,6 +251,8 @@ Las tres páginas legales son **borradores pendientes de revisión por el abogad
 | `assets/js/formulario.js` | Formulario, validación, prioridad, envío y página de gracias |
 | `assets/js/efectos.js` | Animaciones: aparición al hacer scroll, luz de la cabecera, halos y deslizador |
 | `assets/css/styles.css` | Todos los estilos y los tokens de color de marca |
+| `assets/img/` | Logo, foto de Rubén y póster del vídeo en WebP (más el logo PNG y la foto JPG originales, que no se usan en las páginas) |
+| `assets/fonts/` | Montserrat y Roboto de Google Fonts alojadas en el sitio, con su licencia |
 | `.htaccess` | Caché, compresión y tipos MIME en Hostinger / Apache |
 
 Si un script de efectos falla, el resto del sitio sigue funcionando: cada bloque se inicia por separado.
