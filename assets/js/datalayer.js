@@ -10,7 +10,6 @@
 
   var PERMITIDOS = [
     "cta_location",
-    "clientes_rango", "plan", "quien_paga",
     "step", "field",
     "clientes_cartera", "tamano_equipo", "cargo", "programa_contable",
     "acepta_sin_conector", "intento_previo", "plazo_inicio", "prioridad",

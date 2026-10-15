@@ -3,8 +3,7 @@
    .js y tienen red de seguridad) y el formulario funciona igual.
    - Aparición al hacer scroll (IntersectionObserver, umbral 0,01 + red de 6 s).
    - Luz de la cabecera que sigue al ratón (efecto firma; solo con puntero fino).
-   - Halo que sigue al cursor dentro de las tarjetas [data-foco].
-   - Relleno del deslizador y salto del total en la calculadora. */
+   - Halo que sigue al cursor dentro de las tarjetas [data-foco]. */
 (function () {
   "use strict";
 
@@ -124,41 +123,10 @@
     }, { passive: true });
   }
 
-  /* Calculadora: relleno del deslizador y salto del total cuando cambia */
-  function initCalculadora() {
-    var rango = document.getElementById("calc-clientes-rango");
-    var numero = document.getElementById("calc-clientes");
-    var total = document.getElementById("calc-total");
-    if (!rango) return;
-
-    function relleno() {
-      var min = Number(rango.min), max = Number(rango.max), v = Number(rango.value);
-      var pct = max > min ? ((v - min) / (max - min)) * 100 : 0;
-      rango.style.setProperty("--pct", pct.toFixed(2) + "%");
-    }
-
-    rango.addEventListener("input", relleno);
-    // calculadora.js sincroniza el deslizador al escribir el número: se lee en el fotograma siguiente
-    if (numero) numero.addEventListener("input", function () { requestAnimationFrame(relleno); });
-    relleno();
-
-    if (total && "MutationObserver" in window) {
-      var anterior = total.textContent;
-      new MutationObserver(function () {
-        if (total.textContent === anterior) return;
-        anterior = total.textContent;
-        total.classList.remove("calc-salto");
-        void total.offsetWidth; // reinicia la animación
-        total.classList.add("calc-salto");
-      }).observe(total, { childList: true, characterData: true, subtree: true });
-    }
-  }
-
   function arrancar() {
     safe(initAparicion, "aparicion");
     safe(initLuz, "luz");
     safe(initFoco, "foco");
-    safe(initCalculadora, "calculadora");
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", arrancar);

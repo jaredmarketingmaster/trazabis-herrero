@@ -8,5 +8,6 @@ window.TRAZABIS_CONFIG = {
   TELEFONO_ASISTENTE: "",// [PENDIENTE] Número desde el que llama el asistente de IA. Si está vacío, no se muestra.
   EMAIL_CONTACTO: "",    // [PENDIENTE]
   TELEFONO_CONTACTO: "", // [PENDIENTE]
+  CALC_ENDPOINT: "",     // [PENDIENTE] Webhook que recibe las solicitudes de la calculadora. Si está vacío, se usa FORM_ENDPOINT.
   FUNDADOR_HASTA: "2026-10-31T23:59:59+01:00",  // Fin del programa Despacho Fundador (hora peninsular; el 31-10-2026 ya rige el horario de invierno, UTC+1)
 };
