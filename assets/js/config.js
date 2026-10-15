@@ -1,4 +1,4 @@
-/* Constantes configurables de la landing de Trazabis.
+/* Constantes de configuración de la landing de Trazabis.
    Nunca pongas aquí claves de API ni secretos: este archivo es público. */
 window.TRAZABIS_CONFIG = {
   GTM_ID: "",            // [PENDIENTE] Ej. "GTM-XXXXXXX". Si está vacío, GTM no se carga.
