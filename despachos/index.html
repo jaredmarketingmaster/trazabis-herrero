@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="es" data-raiz="../">
+<head>
+  <meta charset="utf-8">
+  <script>
+    // Marca que hay JS (activa las animaciones de entrada) y, si la página se sirve como «/despachos»
+    // (sin barra final), añade la barra para que las rutas relativas funcionen.
+    (function () { document.documentElement.classList.add("js"); var p = location.pathname; if (/\/despachos$/.test(p)) location.replace(p + "/" + location.search + location.hash); })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Trazabis para despachos · Tus agentes preparan. Tu equipo aprueba.</title>
+  <meta name="description" content="Trazabis lee, clasifica y prepara el borrador contable de la documentación de tus clientes, y deja a tu equipo solo lo que necesita revisión. La implantación la hacemos nosotros, cliente a cliente.">
+  <meta name="robots" content="noindex, follow">
+  <meta name="theme-color" content="#1E2852">
+  <link rel="icon" href="data:,">
+  <link rel="preload" href="../assets/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../assets/css/styles.css?v=20261015-2">
+  <script src="../assets/js/config.js?v=20261015-1" defer></script>
+  <script src="../assets/js/datalayer.js?v=20261015-2" defer></script>
+  <script src="../assets/js/consent.js?v=20261014-1" defer></script>
+  <script src="../assets/js/main.js?v=20261014-1" defer></script>
+  <script src="../assets/js/formulario.js?v=20261014-2" defer></script>
+  <script src="../assets/js/agenda.js?v=20261015-2" defer></script>
+  <script src="../assets/js/calculadora-integracion.js?v=20261015-1" defer></script>
+  <script src="../assets/js/efectos.js?v=20261014-1" defer></script>
+</head>
+<body>
+  <!-- Iconos de línea (sprite). Trazos con pathLength="1" para dibujarlos al aparecer; rellenos tenues de dos tonos -->
+  <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false">
+    <symbol id="i-recibe" viewBox="0 0 24 24"><path fill="currentColor" fill-opacity=".14" stroke="none" d="M3 13v5.5A1.5 1.5 0 0 0 4.5 20h15a1.5 1.5 0 0 0 1.5-1.5V13h-5l-1.5 2.5h-5L8 13H3Z"/><path pathLength="1" d="M3 13v5.5A1.5 1.5 0 0 0 4.5 20h15a1.5 1.5 0 0 0 1.5-1.5V13h-5l-1.5 2.5h-5L8 13H3Z"/><path pathLength="1" d="M12 3.5V11M8.75 7.75 12 11l3.25-3.25"/></symbol>
+    <symbol id="i-lee" viewBox="0 0 24 24"><path fill="currentColor" fill-opacity=".14" stroke="none" d="M13 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21H11l2-5 5-6V8l-5-5Z"/><path pathLength="1" d="M13 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21H11"/><path pathLength="1" d="M13 3v5h5M13 3l5 5v2"/><path pathLength="1" d="M8 12h4M8 15.5h2"/><circle pathLength="1" cx="16.5" cy="16.5" r="3"/><path pathLength="1" d="m18.7 18.7 2.3 2.3"/></symbol>
+    <symbol id="i-prepara" viewBox="0 0 24 24"><path fill="currentColor" fill-opacity=".14" stroke="none" d="M13 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21H10l2.5-2.5 5.5-5.5V8l-5-5Z"/><path pathLength="1" d="M13 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21H10"/><path pathLength="1" d="M13 3v5h5M13 3l5 5v1.5"/><path pathLength="1" d="M8 12h5M8 15.5h3"/><path pathLength="1" d="m18.5 12.5 2.5 2.5-6 6h-2.5v-2.5l6-6Z"/></symbol>
+    <symbol id="i-valida" viewBox="0 0 24 24"><circle fill="currentColor" fill-opacity=".14" stroke="none" cx="12" cy="12" r="9"/><circle pathLength="1" cx="12" cy="12" r="9"/><path pathLength="1" d="m8 12.5 2.75 2.75L16.5 9.5"/></symbol>
+    <symbol id="i-concilia" viewBox="0 0 24 24"><rect fill="currentColor" fill-opacity=".14" stroke="none" x="3" y="6" width="18" height="12" rx="3"/><path pathLength="1" d="M4 8h15M15 4.5 18.5 8 15 11.5"/><path pathLength="1" d="M20 16H5M9 12.5 5.5 16 9 19.5"/></symbol>
+    <symbol id="i-asiento" viewBox="0 0 24 24"><ellipse fill="currentColor" fill-opacity=".14" stroke="none" cx="12" cy="6" rx="7" ry="2.75"/><ellipse pathLength="1" cx="12" cy="6" rx="7" ry="2.75"/><path pathLength="1" d="M5 6v12c0 1.52 3.13 2.75 7 2.75s7-1.23 7-2.75V6"/><path pathLength="1" d="M5 12c0 1.52 3.13 2.75 7 2.75s7-1.23 7-2.75"/></symbol>
+    <symbol id="i-canales" viewBox="0 0 24 24"><path fill="currentColor" fill-opacity=".14" stroke="none" d="M4.5 4h10A1.5 1.5 0 0 1 16 5.5v6a1.5 1.5 0 0 1-1.5 1.5H9l-4 3v-3h-.5A1.5 1.5 0 0 1 3 11.5v-6A1.5 1.5 0 0 1 4.5 4Z"/><path pathLength="1" d="M4.5 4h10A1.5 1.5 0 0 1 16 5.5v6a1.5 1.5 0 0 1-1.5 1.5H9l-4 3v-3h-.5A1.5 1.5 0 0 1 3 11.5v-6A1.5 1.5 0 0 1 4.5 4Z"/><path pathLength="1" d="M19 9h.5a1.5 1.5 0 0 1 1.5 1.5v5a1.5 1.5 0 0 1-1.5 1.5H19v3l-4-3h-3.5"/></symbol>
+    <symbol id="i-calendario" viewBox="0 0 24 24"><path fill="currentColor" fill-opacity=".14" stroke="none" d="M3 10V6.5A1.5 1.5 0 0 1 4.5 5h15A1.5 1.5 0 0 1 21 6.5V10Z"/><rect pathLength="1" x="3" y="5" width="18" height="16" rx="1.5"/><path pathLength="1" d="M3 10h18M8 3v4M16 3v4"/><path pathLength="1" d="M12 13v3.5M12 18.75v.01"/></symbol>
+    <symbol id="i-relevo" viewBox="0 0 24 24"><circle fill="currentColor" fill-opacity=".14" stroke="none" cx="9" cy="7.5" r="3.5"/><circle pathLength="1" cx="9" cy="7.5" r="3.5"/><path pathLength="1" d="M2.5 20a6.5 6.5 0 0 1 10.5-5.1"/><path pathLength="1" d="M21 14.5a4 4 0 1 1-1.17-2.83"/><path pathLength="1" d="M21 9.5v3h-3"/></symbol>
+    <symbol id="i-tabla" viewBox="0 0 24 24"><path fill="currentColor" fill-opacity=".14" stroke="none" d="M3 9V5.5A1.5 1.5 0 0 1 4.5 4h15A1.5 1.5 0 0 1 21 5.5V9Z"/><rect pathLength="1" x="3" y="4" width="18" height="16" rx="1.5"/><path pathLength="1" d="M3 9h18M9 9v11"/><path pathLength="1" d="m13.5 12.5 4 4M17.5 12.5l-4 4"/></symbol>
+    <symbol id="i-servidor" viewBox="0 0 24 24"><rect fill="currentColor" fill-opacity=".14" stroke="none" x="4" y="3.5" width="16" height="7" rx="1.5"/><rect pathLength="1" x="4" y="3.5" width="16" height="7" rx="1.5"/><rect pathLength="1" x="4" y="13.5" width="16" height="7" rx="1.5"/><path pathLength="1" d="M8 7h.01M8 17h.01M12 7h4M12 17h4"/></symbol>
+    <symbol id="i-candado" viewBox="0 0 24 24"><rect fill="currentColor" fill-opacity=".14" stroke="none" x="5" y="10.5" width="14" height="10" rx="1.5"/><rect pathLength="1" x="5" y="10.5" width="14" height="10" rx="1.5"/><path pathLength="1" d="M8 10.5v-3a4 4 0 0 1 8 0v3M12 14.5V17"/></symbol>
+    <symbol id="i-reloj" viewBox="0 0 24 24"><circle fill="currentColor" fill-opacity=".14" stroke="none" cx="12" cy="12" r="9"/><circle pathLength="1" cx="12" cy="12" r="9"/><path pathLength="1" d="M12 7v5l3.5 2"/></symbol>
+    <symbol id="i-descarga" viewBox="0 0 24 24"><path fill="currentColor" fill-opacity=".14" stroke="none" d="M4 16.5v2A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5v-2Z"/><path pathLength="1" d="M12 3.5v11M7.5 10 12 14.5 16.5 10"/><path pathLength="1" d="M4 16.5v2A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5v-2"/></symbol>
+    <symbol id="i-contrato" viewBox="0 0 24 24"><path fill="currentColor" fill-opacity=".14" stroke="none" d="M14 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V8l-5-5Z"/><path pathLength="1" d="M14 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V8l-5-5Z"/><path pathLength="1" d="M14 3v5h5M8.5 9.5h3M8.5 13h7"/><path pathLength="1" d="M8.5 17.5c1-1.4 1.8-1.4 2.3 0 .5 1.4 1.3 1.4 2.4-.2.6.8 1.3 1 2.3.2"/></symbol>
+    <symbol id="i-marca" viewBox="0 0 24 24"><path fill="currentColor" fill-opacity=".14" stroke="none" d="M3 4.5V11l9.3 9.3a1.5 1.5 0 0 0 2.12 0l5.88-5.88a1.5 1.5 0 0 0 0-2.12L11 3H4.5A1.5 1.5 0 0 0 3 4.5Z"/><path pathLength="1" d="M3 4.5V11l9.3 9.3a1.5 1.5 0 0 0 2.12 0l5.88-5.88a1.5 1.5 0 0 0 0-2.12L11 3H4.5A1.5 1.5 0 0 0 3 4.5Z"/><circle pathLength="1" cx="7.5" cy="7.5" r="1.25"/></symbol>
+    <symbol id="i-panel" viewBox="0 0 24 24"><rect fill="currentColor" fill-opacity=".14" stroke="none" x="3" y="3" width="7.5" height="9" rx="1.25"/><rect pathLength="1" x="3" y="3" width="7.5" height="9" rx="1.25"/><rect pathLength="1" x="13.5" y="3" width="7.5" height="5" rx="1.25"/><rect pathLength="1" x="13.5" y="11" width="7.5" height="10" rx="1.25"/><rect pathLength="1" x="3" y="15" width="7.5" height="6" rx="1.25"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path pathLength="1" d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-equis" viewBox="0 0 24 24"><path pathLength="1" d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
+    <symbol id="i-guion" viewBox="0 0 24 24"><path pathLength="1" d="M7 12h10"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle fill="currentColor" fill-opacity=".14" stroke="none" cx="12" cy="12" r="9"/><circle pathLength="1" cx="12" cy="12" r="9"/><path pathLength="1" d="M12 11v5.5M12 7.75v.01"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path pathLength="1" d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-telefono" viewBox="0 0 24 24"><path pathLength="1" d="M5 3.5h3.2l1.6 4.2-2 1.3a11 11 0 0 0 7.2 7.2l1.3-2 4.2 1.6V19a1.5 1.5 0 0 1-1.5 1.5A16.5 16.5 0 0 1 3.5 5 1.5 1.5 0 0 1 5 3.5Z"/></symbol>
+    <symbol id="i-flecha" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  </svg>
+
+  <a class="salto" href="#contenido">Saltar al contenido</a>
+
+  <header class="barra-superior" id="inicio">
+    <div class="contenedor">
+      <a class="logo-enlace" href="#inicio"><img class="logo" src="../assets/img/logo-trazabis.webp" alt="Trazabis" width="643" height="187"></a>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <!-- Sección 1 · Cabecera -->
+    <section class="hero seccion--azul" aria-labelledby="titulo-principal" data-luz>
+      <div class="hero__fondo" aria-hidden="true">
+        <span class="hero__malla"></span>
+        <span class="hero__luz hero__luz--profunda"></span>
+        <span class="hero__luz hero__luz--azul"></span>
+        <span class="hero__luz hero__luz--raton"></span>
+      </div>
+      <div class="contenedor hero__rejilla">
+        <div class="hero__texto">
+          <p class="antetitulo"><span class="antetitulo__punto" aria-hidden="true"></span>Para asesorías y gestorías con más de 50 clientes</p>
+          <h1 id="titulo-principal"><span class="linea" style="--i:0">Tus agentes preparan.</span> <span class="linea linea--acento" style="--i:1">Tu equipo aprueba.</span></h1>
+          <p class="hero__subtitulo">Trazabis lee, clasifica y prepara el borrador contable de la documentación de tus clientes, y deja a tu equipo solo lo que necesita revisión. La implantación la hacemos nosotros, cliente a cliente.</p>
+          <div class="hero__accion">
+            <a class="boton boton--claro" href="#formulario" data-cta="hero"><span>Ver si mi despacho encaja</span><svg class="icono boton__flecha" aria-hidden="true" focusable="false"><use href="#i-flecha"/></svg></a>
+            <p class="hero__nota">Unas preguntas sobre tu despacho y te llamamos para fijar tu reunión de onboarding: 30 minutos, gratis, con un panel real en producción.</p>
+          </div>
+        </div>
+        <div class="hero__visual">
+          <div class="hero__video">
+            <video class="hero__video-player" controls preload="none" playsinline width="1920" height="1080" poster="../assets/img/trazabis-demo-poster.webp" aria-label="Vídeo: Cómo funciona Trazabis, en 90 segundos">
+              <source src="../assets/video/trazabis-demo.webm" type="video/webm">
+              <source src="../assets/video/trazabis-demo.mp4" type="video/mp4">
+            </video>
+            <button type="button" class="hero__video-play" aria-label="Reproducir el vídeo: Cómo funciona Trazabis, en 90 segundos">
+              <svg class="icono" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.5v13l10.5-6.5L8 5.5Z"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Franja de confianza -->
+    <div class="franja-confianza">
+      <ul class="contenedor franja-confianza__lista" aria-label="Garantías de Trazabis">
+        <li>Servidores en la UE</li>
+        <li>Sin cuota para el despacho</li>
+        <li>Precios públicos sin IVA</li>
+        <li>Equipo técnico propio en Madrid</li>
+      </ul>
+    </div>
+
+    <!-- Sección 2 · El problema -->
+    <section class="seccion" aria-labelledby="titulo-problema">
+      <div class="contenedor">
+        <div class="seccion__cabecera" data-reveal>
+          <h2 class="titulo-acento" id="titulo-problema">¿Te suena?</h2>
+        </div>
+        <ul class="tarjetas-problema" data-stagger>
+          <li class="tarjeta-problema" data-reveal data-foco>
+            <span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-canales"/></svg></span>
+            <p>La documentación de tus clientes llega por cuatro o cinco canales, tarde e incompleta.</p>
+          </li>
+          <li class="tarjeta-problema" data-reveal data-foco>
+            <span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-calendario"/></svg></span>
+            <p>Del día 15 al 20 de cada cierre trimestral, el equipo no da abasto y tocan horas extra.</p>
+          </li>
+          <li class="tarjeta-problema" data-reveal data-foco>
+            <span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-relevo"/></svg></span>
+            <p>Cada vez que se va alguien junior, toca formar de nuevo a otra persona.</p>
+          </li>
+          <li class="tarjeta-problema" data-reveal data-foco>
+            <span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-tabla"/></svg></span>
+            <p>Ya probasteis un OCR o un Excel, y el atasco sigue ahí.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Sección 3 · Capturar no basta -->
+    <section class="seccion seccion--gris" aria-labelledby="titulo-captura">
+      <div class="contenedor">
+        <h2 class="titulo-acento" id="titulo-captura" data-reveal>Capturar documentos no basta.</h2>
+        <p class="entradilla" data-reveal>Un OCR lee la factura. Pero el trabajo caro empieza después: llevarla al cliente correcto, validarla, conciliarla y contabilizarla. Si solo automatizas la captura, el cuello de botella sigue ahí.</p>
+        <div class="comparativa" data-stagger>
+          <div class="comparativa__columna comparativa__columna--captura" data-reveal>
+            <h3>Solo captura</h3>
+            <ol class="comparativa__lista" data-stagger>
+              <li data-reveal="fundido"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-guion"/></svg><span>El OCR lee el documento</span></li>
+              <li data-reveal="fundido"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-guion"/></svg><span>Tu equipo lo asigna al cliente</span></li>
+              <li data-reveal="fundido"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-guion"/></svg><span>Tu equipo revisa cada dato</span></li>
+              <li data-reveal="fundido"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-guion"/></svg><span>Tu equipo concilia y teclea el asiento</span></li>
+            </ol>
+          </div>
+          <div class="comparativa__columna comparativa__columna--trazabis" data-reveal>
+            <h3>Con Trazabis</h3>
+            <ol class="comparativa__lista" data-stagger>
+              <li data-reveal="fundido"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Los agentes leen y asignan por alias o NIF</span></li>
+              <li data-reveal="fundido"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Cada dato llega con su nivel de confianza</span></li>
+              <li data-reveal="fundido"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Tu equipo aprueba solo lo dudoso</span></li>
+              <li data-reveal="fundido"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>El borrador del asiento entra en tu programa; tu equipo lo aprueba</span></li>
+            </ol>
+          </div>
+        </div>
+        <p class="cierre-destacado" data-reveal>Trazabis se encarga del flujo completo: enruta cada documento por alias o NIF, marca con un nivel de confianza cada dato y deja el borrador del asiento en tu programa conectado. Tu equipo revisa solo lo dudoso y aprueba: nada entra en firme sin una persona.</p>
+      </div>
+    </section>
+
+    <!-- Sección 4 · Cómo funciona -->
+    <section class="seccion" aria-labelledby="titulo-como">
+      <div class="contenedor">
+        <div class="seccion__cabecera" data-reveal>
+          <h2 class="titulo-acento" id="titulo-como">Del documento al asiento, con tu equipo validando</h2>
+        </div>
+        <ol class="pasos" data-reveal="pista" data-stagger>
+          <li class="paso-flujo" data-reveal data-foco>
+            <span class="paso-flujo__numero" aria-hidden="true">1</span>
+            <span class="paso-flujo__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-recibe"/></svg></span>
+            <p class="paso-flujo__texto"><strong>Recibe:</strong> tus clientes envían lo que ya envían hoy, por WhatsApp, Telegram, email, Drive o un portal web sin contraseña.</p>
+          </li>
+          <li class="paso-flujo" data-reveal data-foco>
+            <span class="paso-flujo__numero" aria-hidden="true">2</span>
+            <span class="paso-flujo__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-lee"/></svg></span>
+            <p class="paso-flujo__texto"><strong>Lee y clasifica:</strong> la IA extrae proveedor, importes, base imponible e IVA o IRPF, y lleva cada documento al cliente correcto.</p>
+          </li>
+          <li class="paso-flujo" data-reveal data-foco>
+            <span class="paso-flujo__numero" aria-hidden="true">3</span>
+            <span class="paso-flujo__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-prepara"/></svg></span>
+            <p class="paso-flujo__texto"><strong>Prepara:</strong> genera el borrador contable, con un nivel de confianza en cada campo.</p>
+          </li>
+          <li class="paso-flujo" data-reveal data-foco>
+            <span class="paso-flujo__numero" aria-hidden="true">4</span>
+            <span class="paso-flujo__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-valida"/></svg></span>
+            <p class="paso-flujo__texto"><strong>Valida:</strong> lo dudoso se bloquea y tu equipo lo aprueba con un clic.</p>
+          </li>
+          <li class="paso-flujo" data-reveal data-foco>
+            <span class="paso-flujo__numero" aria-hidden="true">5</span>
+            <span class="paso-flujo__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-concilia"/></svg></span>
+            <p class="paso-flujo__texto"><strong>Concilia:</strong> cruza los extractos bancarios (N43 o PDF) con los documentos ya leídos y señala lo que no cuadra.</p>
+          </li>
+          <li class="paso-flujo" data-reveal data-foco>
+            <span class="paso-flujo__numero" aria-hidden="true">6</span>
+            <span class="paso-flujo__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-asiento"/></svg></span>
+            <p class="paso-flujo__texto"><strong>Prepara el asiento:</strong> el borrador entra en tu programa conectado (hoy Odoo) y tu equipo lo aprueba con un clic.</p>
+          </li>
+        </ol>
+        <ul class="destacados" data-stagger>
+          <li class="destacado" data-reveal>
+            <span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-marca"/></svg></span>
+            <span>Marca blanca: tus clientes ven la marca de tu despacho.</span>
+          </li>
+          <li class="destacado" data-reveal>
+            <span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-panel"/></svg></span>
+            <span>Toda tu cartera, en un solo panel.</span>
+          </li>
+        </ul>
+        <p class="lema texto-degradado" data-reveal>Tus agentes preparan. Tú apruebas.</p>
+      </div>
+    </section>
+
+    <!-- Sección 5 · Vídeo: solo se inserta en el DOM si VIDEO_URL tiene valor (ver main.js) -->
+    <template id="plantilla-video">
+      <section class="seccion seccion--azul" id="video" aria-labelledby="titulo-video">
+        <div class="contenedor contenedor--estrecho">
+          <h2 class="titulo-acento" id="titulo-video" data-reveal>Cómo funciona Trazabis, en 90 segundos</h2>
+          <div class="video-marco" data-reveal="escala">
+            <video controls preload="metadata" playsinline width="1280" height="720"></video>
+          </div>
+          <p class="pendiente video-pendiente" data-video-poster-pendiente hidden>[PENDIENTE: imagen de póster del vídeo]</p>
+          <div class="cta-bloque">
+            <a class="boton boton--claro" href="#formulario" data-cta="video"><span>Ver si mi despacho encaja</span><svg class="icono boton__flecha" aria-hidden="true" focusable="false"><use href="#i-flecha"/></svg></a>
+          </div>
+        </div>
+      </section>
+    </template>
+
+    <!-- Sección 6 · Cómo lo implantamos -->
+    <section class="seccion seccion--separada" aria-labelledby="titulo-implantacion">
+      <div class="contenedor">
+        <div class="seccion__cabecera" data-reveal>
+          <h2 class="titulo-acento" id="titulo-implantacion">La implantación la hacemos nosotros</h2>
+        </div>
+        <ol class="fases fases--cinco" data-stagger>
+          <li class="fase" data-reveal><span class="fase__numero" aria-hidden="true">1</span><span class="fase__nombre">Reunión de onboarding · 30 minutos</span></li>
+          <li class="fase" data-reveal><span class="fase__numero" aria-hidden="true">2</span><span class="fase__nombre">Propuesta por escrito · en 48 horas</span></li>
+          <li class="fase" data-reveal><span class="fase__numero" aria-hidden="true">3</span><span class="fase__nombre">Alta · la primera semana</span></li>
+          <li class="fase" data-reveal><span class="fase__numero" aria-hidden="true">4</span><span class="fase__nombre">Oleadas · por grupos de clientes</span></li>
+          <li class="fase" data-reveal><span class="fase__numero" aria-hidden="true">5</span><span class="fase__nombre">Adopción · informe al mes</span></li>
+        </ol>
+        <p class="fases-nota" data-reveal>Con un plan firmado. Empezamos con dos o tres clientes, validamos dos semanas y ampliamos por grupos. <strong>Garantía:</strong> si al cerrar la implantación tu cartera no está operativa según el plan firmado, te devolvemos el setup íntegro.</p>
+        <div class="implantacion-rejilla" data-stagger>
+          <div class="tarjeta" data-reveal data-foco>
+            <h3>Lo que pones tú:</h3>
+            <ul class="lista-marcas">
+              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Una persona responsable en el despacho.</span></li>
+              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>El listado de tu cartera y los canales por los que te llega la documentación.</span></li>
+              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Acceso a tu ERP.</span></li>
+              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Dos sesiones de formación.</span></li>
+            </ul>
+          </div>
+          <div class="tarjeta" data-reveal data-foco>
+            <h3>Lo que hacen tus clientes:</h3>
+            <p class="tarjeta__texto">enviar una foto del documento, como ya hacen por WhatsApp.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección 7 · Inversión -->
+    <section class="seccion seccion--gris" id="inversion" aria-labelledby="titulo-inversion">
+      <div class="contenedor">
+        <div class="seccion__cabecera" data-reveal>
+          <h2 class="titulo-acento" id="titulo-inversion">Precios públicos, sin IVA</h2>
+          <p class="entradilla">Tu despacho no paga cuota. Lo que se paga es el consumo de documentos de cada cliente, por tramos mensuales, y una implantación única al arrancar.</p>
+        </div>
+
+        <div class="precios-rejilla" data-stagger>
+
+          <div class="bloque-precio bloque-precio--destacado" data-reveal>
+            <h3>Para el despacho</h3>
+            <p class="precio-grande"><span class="precio-grande__cifra">0&nbsp;€</span> al mes</p>
+            <ul class="lista-marcas">
+              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Panel de despacho incluido de por vida: toda tu cartera en una pantalla, con tu marca.</span></li>
+              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Sync ERP a 0&nbsp;€ al mes para tu cartera, si tu programa está conectado (hoy, Odoo).</span></li>
+              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Sin cuota mensual ni permanencia para el despacho.</span></li>
+              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Descuento de cartera de por vida: 15&nbsp;% hasta 50 clientes, 20&nbsp;% de 51 a 100, 25&nbsp;% de 101 a 150 y 30&nbsp;% de 151 a 300.</span></li>
+            </ul>
+          </div>
+
+          <div class="bloque-precio" data-reveal data-foco>
+            <h3>Implantación <span class="bloque-precio__nota-titulo">(pago único, según el tamaño de tu cartera)</span></h3>
+            <table class="tabla">
+              <thead>
+                <tr><th scope="col">Clientes en cartera</th><th scope="col">Implantación</th><th scope="col" data-fundador>Despacho Fundador (−40&nbsp;%)</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Hasta 15</th><td><span class="cifra">490&nbsp;€</span></td><td data-fundador><span class="cifra">294&nbsp;€</span></td></tr>
+                <tr><th scope="row">16–25</th><td><span class="cifra">1.500&nbsp;€</span></td><td data-fundador><span class="cifra">900&nbsp;€</span></td></tr>
+                <tr><th scope="row">26–50</th><td><span class="cifra">2.000&nbsp;€</span></td><td data-fundador><span class="cifra">1.200&nbsp;€</span></td></tr>
+                <tr><th scope="row">51–150</th><td><span class="cifra">3.000–4.000&nbsp;€</span></td><td data-fundador><span class="cifra">1.800–2.400&nbsp;€</span></td></tr>
+                <tr><th scope="row">151–300</th><td><span class="cifra">5.000–7.000&nbsp;€</span></td><td data-fundador><span class="cifra">3.000–4.200&nbsp;€</span></td></tr>
+                <tr><th scope="row">Más de 300</th><td colspan="2" data-colspan-sin-fundador="1"><span class="cifra cifra--texto">Presupuesto a medida</span></td></tr>
+              </tbody>
+            </table>
+            <p>Incluye el diagnóstico de tu cartera cliente a cliente, la configuración de cada cuenta, la aplicación con tu marca, la conexión con tu programa si está conectado, la puesta en marcha por oleadas y la formación de tu equipo. Los documentos de años anteriores se presupuestan aparte, con una muestra real.</p>
+          </div>
+
+          <div class="bloque-precio bloque-precio--ancho" data-reveal>
+            <h3>Lo que paga cada cliente de tu cartera</h3>
+            <p class="planes-intro">Cada cliente con su propia plataforma paga su tramo por los documentos que procesa al mes, con tu descuento de cartera de por vida. Lo paga él o lo asumes tú: el precio no cambia, cambia a quién llega la factura.</p>
+            <table class="tabla tabla--apilable" role="table">
+              <thead role="rowgroup">
+                <tr role="row">
+                  <th role="columnheader" scope="col">Documentos al mes</th>
+                  <th role="columnheader" scope="col">Precio de lista</th>
+                  <th role="columnheader" scope="col">Con tu descuento de cartera (−15&nbsp;% a −30&nbsp;%)</th>
+                  <th role="columnheader" scope="col" data-fundador>Despacho Fundador (−30&nbsp;%)</th>
+                </tr>
+              </thead>
+              <tbody role="rowgroup">
+                <tr role="row"><th role="rowheader" scope="row">Hasta 25</th><td role="cell" data-etiqueta="Precio de lista"><span class="cifra">5,90&nbsp;€/mes</span></td><td role="cell" data-etiqueta="Con tu descuento de cartera"><span class="cifra">5,02–4,13&nbsp;€</span></td><td role="cell" data-etiqueta="Despacho Fundador" data-fundador><span class="cifra">4,13&nbsp;€</span></td></tr>
+                <tr role="row"><th role="rowheader" scope="row">Hasta 50</th><td role="cell" data-etiqueta="Precio de lista"><span class="cifra">8,90&nbsp;€/mes</span></td><td role="cell" data-etiqueta="Con tu descuento de cartera"><span class="cifra">7,57–6,23&nbsp;€</span></td><td role="cell" data-etiqueta="Despacho Fundador" data-fundador><span class="cifra">6,23&nbsp;€</span></td></tr>
+                <tr role="row"><th role="rowheader" scope="row">Hasta 75</th><td role="cell" data-etiqueta="Precio de lista"><span class="cifra">11,90&nbsp;€/mes</span></td><td role="cell" data-etiqueta="Con tu descuento de cartera"><span class="cifra">10,12–8,33&nbsp;€</span></td><td role="cell" data-etiqueta="Despacho Fundador" data-fundador><span class="cifra">8,33&nbsp;€</span></td></tr>
+                <tr role="row"><th role="rowheader" scope="row">Hasta 100</th><td role="cell" data-etiqueta="Precio de lista"><span class="cifra">14,90&nbsp;€/mes</span></td><td role="cell" data-etiqueta="Con tu descuento de cartera"><span class="cifra">12,67–10,43&nbsp;€</span></td><td role="cell" data-etiqueta="Despacho Fundador" data-fundador><span class="cifra">10,43&nbsp;€</span></td></tr>
+                <tr role="row"><th role="rowheader" scope="row">Hasta 150</th><td role="cell" data-etiqueta="Precio de lista"><span class="cifra">19,40&nbsp;€/mes</span></td><td role="cell" data-etiqueta="Con tu descuento de cartera"><span class="cifra">16,49–13,58&nbsp;€</span></td><td role="cell" data-etiqueta="Despacho Fundador" data-fundador><span class="cifra">13,58&nbsp;€</span></td></tr>
+                <tr role="row"><th role="rowheader" scope="row">Hasta 200</th><td role="cell" data-etiqueta="Precio de lista"><span class="cifra">23,90&nbsp;€/mes</span></td><td role="cell" data-etiqueta="Con tu descuento de cartera"><span class="cifra">20,31–16,73&nbsp;€</span></td><td role="cell" data-etiqueta="Despacho Fundador" data-fundador><span class="cifra">16,73&nbsp;€</span></td></tr>
+                <tr role="row"><th role="rowheader" scope="row">Hasta 300</th><td role="cell" data-etiqueta="Precio de lista"><span class="cifra">32,90&nbsp;€/mes</span></td><td role="cell" data-etiqueta="Con tu descuento de cartera"><span class="cifra">27,96–23,03&nbsp;€</span></td><td role="cell" data-etiqueta="Despacho Fundador" data-fundador><span class="cifra">23,03&nbsp;€</span></td></tr>
+                <tr role="row"><th role="rowheader" scope="row">Hasta 400</th><td role="cell" data-etiqueta="Precio de lista"><span class="cifra">40,40&nbsp;€/mes</span></td><td role="cell" data-etiqueta="Con tu descuento de cartera"><span class="cifra">34,34–28,28&nbsp;€</span></td><td role="cell" data-etiqueta="Despacho Fundador" data-fundador><span class="cifra">28,28&nbsp;€</span></td></tr>
+                <tr role="row"><th role="rowheader" scope="row">Hasta 500</th><td role="cell" data-etiqueta="Precio de lista"><span class="cifra">44,90&nbsp;€/mes</span></td><td role="cell" data-etiqueta="Con tu descuento de cartera"><span class="cifra">38,17–31,43&nbsp;€</span></td><td role="cell" data-etiqueta="Despacho Fundador" data-fundador><span class="cifra">31,43&nbsp;€</span></td></tr>
+                <tr role="row"><th role="rowheader" scope="row">Más de 500</th><td role="cell" colspan="3" data-colspan-sin-fundador="2"><span class="cifra cifra--texto">Plan personalizado</span></td></tr>
+              </tbody>
+            </table>
+            <p>Cuenta cada factura, ticket o extracto procesado: documento no procesado, documento no contado. Sin cargo por documento extra: si un mes hay más, se pasa al tramo siguiente. Pago anual: dos meses gratis (se pagan 10 cuotas de 12).</p>
+          </div>
+
+          <div class="bloque-precio bloque-precio--ancho" data-reveal>
+            <h3>Si tus clientes solo envían documentos</h3>
+            <p>Los administras tú desde tu panel y recibes una sola factura al mes: <strong>1,25&nbsp;€ por cuenta activa más 0,025&nbsp;€ por documento procesado</strong>. Tus clientes no pagan nada. Condiciones: mínimo 25 cuentas, permanencia de 12 meses y sin descuentos encima. Puedes mezclar, cuenta a cuenta: unos clientes con su propia plataforma y otros que solo envían documentos. No hay una opción mejor: cada caso es diferente, y lo repasamos uno a uno en la reunión de onboarding.</p>
+          </div>
+
+          <div class="bloque-precio bloque-precio--ancho" data-reveal>
+            <h3>Conciliación bancaria</h3>
+            <p class="conciliacion__texto">Sube el extracto en N43 o PDF y Trazabis casa cada movimiento con los documentos ya leídos. Lo que no cuadra queda señalado para que lo resuelva tu equipo.</p>
+            <p class="conciliacion__aviso"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-info"/></svg><span>Incluida hasta 100 movimientos al mes por cuenta. Por encima, 14,90&nbsp;€ al mes de lista con tu descuento de cartera. Sin alta.</span></p>
+          </div>
+
+        </div>
+
+        <div class="nota-integracion" role="note" data-reveal>
+          <svg class="icono" aria-hidden="true" focusable="false"><use href="#i-info"/></svg>
+          <p>Hoy el programa conectado es Odoo. Holded y a3ERP están en cola de integración, sin fecha. Si usas otro, entra en la cola con tu implantación (si tiene API o formato de importación documentado), con alcance y plazo por escrito. Mientras tanto, Trazabis funciona igual: tablas, panel y exportables en PDF y Excel.</p>
+        </div>
+
+        <p class="nota-precios" data-reveal>Precios sin IVA.<span data-fundador> <strong>Despacho Fundador:</strong> 30&nbsp;% de por vida para toda tu cartera, sea cual sea su tamaño, e implantación a −40&nbsp;%, para las firmas hasta el 31 de octubre de 2026 (10 plazas, por orden de firma).</span></p>
+
+        <div class="cta-bloque" data-reveal>
+          <a class="boton boton--primario" href="#formulario" data-cta="inversion"><span>Ver si mi despacho encaja</span><svg class="icono boton__flecha" aria-hidden="true" focusable="false"><use href="#i-flecha"/></svg></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección 7b · Calculadora oficial -->
+    <section class="seccion" id="calculadora" aria-labelledby="titulo-calculadora">
+      <div class="contenedor">
+        <div class="seccion__cabecera" data-reveal>
+          <h2 class="titulo-acento" id="titulo-calculadora">Calcula tu caso</h2>
+          <p class="entradilla">Responde unas preguntas sobre tu cartera y verás tu cuota, tu implantación y qué paga cada cliente. Son los mismos precios públicos de trazabis.com.</p>
+        </div>
+        <iframe class="calculadora-oficial" id="calc-trazabis" src="calculadora.html" title="Calculadora de Trazabis para despachos" loading="lazy"></iframe>
+        <div class="cta-bloque" data-reveal>
+          <a class="boton boton--primario" href="#formulario" data-cta="calculadora"><span>Ver si mi despacho encaja</span><svg class="icono boton__flecha" aria-hidden="true" focusable="false"><use href="#i-flecha"/></svg></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección 8 · Para quién es y para quién no -->
+    <section class="seccion seccion--separada" aria-labelledby="titulo-encaje">
+      <div class="contenedor">
+        <h2 class="visualmente-oculto" id="titulo-encaje">Para quién es y para quién no</h2>
+        <div class="encaje" data-stagger>
+          <div class="encaje__columna encaje__columna--si" data-reveal data-foco>
+            <h3>Es para ti si:</h3>
+            <ul class="encaje__lista" data-stagger>
+              <li data-reveal="fundido"><span class="marca-circulo marca-circulo--si"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span><span>Tienes una asesoría o gestoría fiscal-contable con más de 50 clientes.</span></li>
+              <li data-reveal="fundido"><span class="marca-circulo marca-circulo--si"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span><span>Trabajas con Odoo, o te sirve trabajar con tablas y exportables mientras llega el conector de tu programa.</span></li>
+              <li data-reveal="fundido"><span class="marca-circulo marca-circulo--si"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span><span>Quieres que tu equipo valide lo dudoso, no que nadie revise nada.</span></li>
+              <li data-reveal="fundido"><span class="marca-circulo marca-circulo--si"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span><span>Puedes asignar una persona responsable durante la implantación.</span></li>
+            </ul>
+          </div>
+          <div class="encaje__columna encaje__columna--no" data-reveal data-foco>
+            <h3>No es para ti si:</h3>
+            <ul class="encaje__lista" data-stagger>
+              <li data-reveal="fundido"><span class="marca-circulo marca-circulo--no"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-equis"/></svg></span><span>Buscas una contabilidad 100&nbsp;% automática, sin revisión humana.</span></li>
+              <li data-reveal="fundido"><span class="marca-circulo marca-circulo--no"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-equis"/></svg></span><span>Necesitas como condición, desde el primer día, un conector que todavía no está en producción.</span></li>
+              <li data-reveal="fundido"><span class="marca-circulo marca-circulo--no"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-equis"/></svg></span><span>Buscas un desarrollo a medida o un software propio.</span></li>
+              <li data-reveal="fundido"><span class="marca-circulo marca-circulo--no"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-equis"/></svg></span><span>Buscas asesoramiento fiscal: Trazabis quita el teclear, no el decidir.</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección 9 · Seguridad -->
+    <section class="seccion seccion--azul seccion--seguridad" aria-labelledby="titulo-seguridad">
+      <div class="contenedor">
+        <div class="seccion__cabecera" data-reveal>
+          <h2 class="titulo-acento" id="titulo-seguridad">Tus datos y los de tus clientes</h2>
+        </div>
+        <ul class="seguridad" data-stagger>
+          <li data-reveal data-foco><span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-servidor"/></svg></span><p>Servidores en la Unión Europea y tratamiento conforme al RGPD.</p></li>
+          <li data-reveal data-foco><span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-candado"/></svg></span><p>Usuarios y permisos: cada persona ve solo las empresas y las funciones que le corresponden.</p></li>
+          <li data-reveal data-foco><span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-reloj"/></svg></span><p>Custodia de cinco años del original de cada documento, con registro de quién validó qué dato y cuándo.</p></li>
+          <li data-reveal data-foco><span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-descarga"/></svg></span><p>Histórico exportable en PDF y Excel, y exportación y eliminación de tus datos si te das de baja.</p></li>
+          <li data-reveal data-foco><span class="icono-caja"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-contrato"/></svg></span><p>Contrato de encargo de tratamiento.</p></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Sección 10 · Quiénes somos -->
+    <section class="seccion seccion--antracita" aria-labelledby="titulo-quienes">
+      <div class="contenedor quienes">
+        <div class="quienes__texto">
+          <h2 class="titulo-acento" id="titulo-quienes" data-reveal>Producto propio, en producción</h2>
+          <p data-reveal>Trazabis es un producto de Servicios Digitales y Automatización SL. No revendemos una herramienta de terceros: la implantamos nosotros, cliente a cliente. Y nuestro modelo está alineado con el tuyo: no cobramos cuota al despacho, ganamos cuando tu cartera lo usa.</p>
+        </div>
+        <figure class="retrato" data-reveal="escala">
+          <img src="../assets/img/ruben-bel.webp" alt="Rubén Bel Pauner, de Trazabis" width="800" height="1199" loading="lazy" decoding="async">
+          <figcaption>Rubén Bel Pauner · CEO y Fundador de Trazabis</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- Sección 11 · Preguntas frecuentes -->
+    <section class="seccion" aria-labelledby="titulo-faq">
+      <div class="contenedor contenedor--estrecho">
+        <div class="seccion__cabecera" data-reveal>
+          <h2 class="titulo-acento" id="titulo-faq">Preguntas frecuentes</h2>
+        </div>
+        <div class="faq" data-stagger>
+          <details data-reveal>
+            <summary><span class="faq__pregunta"><span>¿Gratis para el despacho? ¿Dónde está la trampa?</span><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></span></summary>
+            <div class="faq__respuesta"><p>No hay trampa: nuestro ingreso son las cuotas por consumo de tu cartera, no una cuota al despacho. El panel es tuyo de por vida y Sync ERP es 0&nbsp;€ para tu cartera si tu programa está conectado.</p></div>
+          </details>
+          <details data-reveal>
+            <summary><span class="faq__pregunta"><span>Mis clientes no lo van a usar.</span><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></span></summary>
+            <div class="faq__respuesta"><p>Solo tienen que enviar una foto, como ya hacen por WhatsApp. Quien deja de teclear es tu equipo.</p></div>
+          </details>
+          <details data-reveal>
+            <summary><span class="faq__pregunta"><span>Ya uso un OCR.</span><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></span></summary>
+            <div class="faq__respuesta"><p>Capturar no basta. Trazabis enruta cada documento por alias o NIF, lo pasa por una cola de validación con niveles de confianza, concilia con el extracto y deja el borrador del asiento en tu programa conectado. Tu equipo aprueba: nada entra en firme sin una persona.</p></div>
+          </details>
+          <details data-reveal>
+            <summary><span class="faq__pregunta"><span>Mi programa no es Odoo, ¿puedo usarlo?</span><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></span></summary>
+            <div class="faq__respuesta"><p>Hoy el programa conectado es Odoo. Holded y a3ERP están en cola de integración, sin fecha. Si usas otro, entra en la cola con tu implantación, con alcance y plazo por escrito. Mientras tanto, Trazabis funciona igual: tablas, panel y exportables en PDF y Excel.</p></div>
+          </details>
+          <details data-reveal>
+            <summary><span class="faq__pregunta"><span>¿La IA va a contabilizar sin control?</span><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></span></summary>
+            <div class="faq__respuesta"><p>No. Cada dato lleva un nivel de confianza, y lo dudoso se bloquea hasta que tu equipo lo valida.</p></div>
+          </details>
+          <details data-reveal>
+            <summary><span class="faq__pregunta"><span>¿Quién paga los planes de mis clientes?</span><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></span></summary>
+            <div class="faq__respuesta"><p>Hay tres formas, y se deciden cliente a cliente: cada cliente con su propia plataforma paga su cuota con tu descuento de cartera; tú puedes asumir ese acceso en su lugar (el precio no cambia, cambia a quién llega la factura); o, si tus clientes solo envían documentos, los administras tú y pagas una tarifa por cuenta y documento. En la reunión de onboarding lo repasamos uno a uno.</p></div>
+          </details>
+          <details data-reveal>
+            <summary><span class="faq__pregunta"><span>¿Hay permanencia?</span><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></span></summary>
+            <div class="faq__respuesta"><p>Para el despacho, no: fee 0&nbsp;€, sin cuota ni permanencia. Las cuentas con su propia plataforma tampoco tienen permanencia. Las cuentas que administras tú porque tus clientes solo envían documentos tienen un mínimo de 25 y 12 meses.</p></div>
+          </details>
+          <details data-reveal>
+            <summary><span class="faq__pregunta"><span>¿Migráis el histórico?</span><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></span></summary>
+            <div class="faq__respuesta"><p>Los documentos de años anteriores se presupuestan aparte, con una muestra real. La implantación cubre tu cartera desde el arranque.</p></div>
+          </details>
+          <details data-reveal>
+            <summary><span class="faq__pregunta"><span>¿Qué cuenta como documento?</span><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></span></summary>
+            <div class="faq__respuesta"><p>Cada factura, ticket o extracto procesado. Documento no procesado, documento no contado. Si un mes procesas más, pasas al tramo siguiente: no hay cargo por documento extra.</p></div>
+          </details>
+          <details data-reveal>
+            <summary><span class="faq__pregunta"><span>¿Qué pasa cuando envío el formulario?</span><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></span></summary>
+            <div class="faq__respuesta"><p>En unos minutos te llamará el asistente de inteligencia artificial de Trazabis para confirmar tu interés y fijar tu reunión de onboarding, gratuita.</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección 12 · Cierre y formulario -->
+    <section class="seccion seccion--gris seccion--formulario" id="formulario" aria-labelledby="formulario-titulo">
+      <div class="contenedor contenedor--lectura" id="form-contenedor">
+        <h2 class="titulo-acento" id="formulario-titulo" data-reveal>¿Vemos si tu despacho encaja?</h2>
+        <p class="entradilla" data-reveal>Responde unas preguntas sobre tu despacho y te llamaremos para fijar tu reunión de onboarding: 30 minutos, gratis.</p>
+
+        <div class="formulario-caja" data-reveal>
+          <form id="form-lead" action="#formulario" method="post" novalidate>
+            <div class="progreso">
+              <p class="progreso__texto" id="progreso-texto">Paso 1 de 2</p>
+              <div class="progreso__barra" role="progressbar" aria-labelledby="progreso-texto" aria-valuemin="1" aria-valuemax="2" aria-valuenow="1"><span></span></div>
+            </div>
+
+            <!-- Paso 1 · Tu despacho -->
+            <div class="form-paso" data-paso="1">
+              <h3 class="form-paso__titulo" tabindex="-1">Tu despacho</h3>
+
+              <fieldset class="pregunta" id="grupo-clientes_cartera">
+                <legend>¿Cuántos clientes tiene tu despacho?</legend>
+                <div class="opciones opciones--cortas">
+                  <label class="opcion"><input type="radio" name="clientes_cartera" value="menos_20" required><span>Menos de 20</span></label>
+                  <label class="opcion"><input type="radio" name="clientes_cartera" value="20_50" required><span>20–50</span></label>
+                  <label class="opcion"><input type="radio" name="clientes_cartera" value="51_100" required><span>51–100</span></label>
+                  <label class="opcion"><input type="radio" name="clientes_cartera" value="101_150" required><span>101–150</span></label>
+                  <label class="opcion"><input type="radio" name="clientes_cartera" value="151_200" required><span>151–200</span></label>
+                  <label class="opcion"><input type="radio" name="clientes_cartera" value="201_250" required><span>201–250</span></label>
+                  <label class="opcion"><input type="radio" name="clientes_cartera" value="251_300" required><span>251–300</span></label>
+                  <label class="opcion"><input type="radio" name="clientes_cartera" value="mas_300" required><span>Más de 300</span></label>
+                </div>
+                <p class="error" id="error-clientes_cartera" hidden></p>
+              </fieldset>
+
+              <fieldset class="pregunta" id="grupo-tamano_equipo">
+                <legend>¿Cuántas personas trabajan en el despacho?</legend>
+                <div class="opciones opciones--cortas opciones--tres">
+                  <label class="opcion"><input type="radio" name="tamano_equipo" value="1_2" required><span>1–2</span></label>
+                  <label class="opcion"><input type="radio" name="tamano_equipo" value="3_15" required><span>3–15</span></label>
+                  <label class="opcion"><input type="radio" name="tamano_equipo" value="mas_15" required><span>Más de 15</span></label>
+                </div>
+                <p class="error" id="error-tamano_equipo" hidden></p>
+              </fieldset>
+
+              <fieldset class="pregunta" id="grupo-cargo">
+                <legend>¿Cuál es tu cargo?</legend>
+                <div class="opciones">
+                  <label class="opcion"><input type="radio" name="cargo" value="socio_director_gerente" required><span>Socio, director o gerente</span></label>
+                  <label class="opcion"><input type="radio" name="cargo" value="responsable_contabilidad" required><span>Responsable de contabilidad</span></label>
+                  <label class="opcion"><input type="radio" name="cargo" value="otro" required><span>Otro</span></label>
+                </div>
+                <p class="error" id="error-cargo" hidden></p>
+              </fieldset>
+
+              <fieldset class="pregunta" id="grupo-programa_contable">
+                <legend>¿Qué programa contable usáis?</legend>
+                <div class="opciones opciones--cortas">
+                  <label class="opcion"><input type="radio" name="programa_contable" value="odoo" required><span>Odoo</span></label>
+                  <label class="opcion"><input type="radio" name="programa_contable" value="holded" required><span>Holded</span></label>
+                  <label class="opcion"><input type="radio" name="programa_contable" value="a3erp" required><span>a3ERP</span></label>
+                  <label class="opcion"><input type="radio" name="programa_contable" value="sage" required><span>Sage</span></label>
+                  <label class="opcion"><input type="radio" name="programa_contable" value="otro" required><span>Otro</span></label>
+                  <label class="opcion"><input type="radio" name="programa_contable" value="ninguno" required><span>Ninguno (Excel o papel)</span></label>
+                  <label class="opcion"><input type="radio" name="programa_contable" value="no_lo_se" required><span>No lo sé</span></label>
+                </div>
+                <p class="error" id="error-programa_contable" hidden></p>
+              </fieldset>
+
+              <fieldset class="pregunta" id="grupo-acepta_sin_conector" hidden>
+                <legend>¿Os sirve trabajar con tablas y exportables mientras llega el conector?</legend>
+                <div class="opciones">
+                  <label class="opcion"><input type="radio" name="acepta_sin_conector" value="si"><span>Sí</span></label>
+                  <label class="opcion"><input type="radio" name="acepta_sin_conector" value="no"><span>No, necesito el conector desde el primer día</span></label>
+                </div>
+                <p class="error" id="error-acepta_sin_conector" hidden></p>
+              </fieldset>
+
+              <fieldset class="pregunta" id="grupo-intento_previo">
+                <legend>¿Habéis intentado resolverlo antes?</legend>
+                <div class="opciones opciones--cortas">
+                  <label class="opcion"><input type="radio" name="intento_previo" value="ocr" required><span>Sí, con un OCR</span></label>
+                  <label class="opcion"><input type="radio" name="intento_previo" value="excel" required><span>Sí, con Excel</span></label>
+                  <label class="opcion"><input type="radio" name="intento_previo" value="ambos" required><span>Las dos cosas</span></label>
+                  <label class="opcion"><input type="radio" name="intento_previo" value="no" required><span>No</span></label>
+                </div>
+                <p class="error" id="error-intento_previo" hidden></p>
+              </fieldset>
+
+              <fieldset class="pregunta" id="grupo-plazo_inicio">
+                <legend>¿Cuándo queréis empezar?</legend>
+                <div class="opciones">
+                  <label class="opcion"><input type="radio" name="plazo_inicio" value="antes_cierre_trimestral" required><span>Antes del próximo cierre trimestral</span></label>
+                  <label class="opcion"><input type="radio" name="plazo_inicio" value="proximos_6_meses" required><span>En los próximos 6 meses</span></label>
+                  <label class="opcion"><input type="radio" name="plazo_inicio" value="mas_adelante" required><span>Más adelante</span></label>
+                  <label class="opcion"><input type="radio" name="plazo_inicio" value="solo_informandome" required><span>Solo me estoy informando</span></label>
+                </div>
+                <p class="error" id="error-plazo_inicio" hidden></p>
+              </fieldset>
+
+              <div class="acciones">
+                <button type="button" class="boton boton--primario" data-accion="continuar">Continuar</button>
+              </div>
+            </div>
+
+            <!-- Paso 2 · Contacto -->
+            <div class="form-paso" data-paso="2" hidden>
+              <h3 class="form-paso__titulo" tabindex="-1">Contacto</h3>
+
+              <div class="campo">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre" autocomplete="name" maxlength="120" required>
+                <p class="error" id="error-nombre" hidden></p>
+              </div>
+
+              <div class="campo">
+                <label for="despacho">Despacho</label>
+                <input type="text" id="despacho" name="despacho" autocomplete="organization" maxlength="160" required>
+                <p class="error" id="error-despacho" hidden></p>
+              </div>
+
+              <div class="campo">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" autocomplete="email" inputmode="email" maxlength="254" required>
+                <p class="error" id="error-email" hidden></p>
+              </div>
+
+              <div class="campo">
+                <label for="telefono">Teléfono móvil</label>
+                <div class="campo-telefono">
+                  <select id="telefono_prefijo" name="telefono_prefijo" autocomplete="tel-country-code" aria-label="Prefijo del país">
+                    <option value="+34" selected>+34 España</option>
+                    <option value="+376">+376 Andorra</option>
+                    <option value="+351">+351 Portugal</option>
+                    <option value="+33">+33 Francia</option>
+                    <option value="+39">+39 Italia</option>
+                    <option value="+49">+49 Alemania</option>
+                    <option value="+44">+44 Reino Unido</option>
+                    <option value="+353">+353 Irlanda</option>
+                    <option value="+32">+32 Bélgica</option>
+                    <option value="+31">+31 Países Bajos</option>
+                    <option value="+41">+41 Suiza</option>
+                    <option value="+1">+1 EE. UU. y Canadá</option>
+                    <option value="+52">+52 México</option>
+                    <option value="+54">+54 Argentina</option>
+                    <option value="+56">+56 Chile</option>
+                    <option value="+57">+57 Colombia</option>
+                    <option value="+51">+51 Perú</option>
+                    <option value="+598">+598 Uruguay</option>
+                  </select>
+                  <input type="tel" id="telefono" name="telefono" autocomplete="tel-national" inputmode="tel" maxlength="20" required>
+                </div>
+                <p class="error" id="error-telefono" hidden></p>
+              </div>
+
+              <div class="campo">
+                <label for="que_resolver">¿Qué te gustaría resolver? (opcional)</label>
+                <textarea id="que_resolver" name="que_resolver" rows="4" maxlength="500" aria-describedby="contador-que_resolver"></textarea>
+                <p class="contador" id="contador-que_resolver">0/500</p>
+                <p class="error" id="error-que_resolver" hidden></p>
+              </div>
+
+              <div class="casillas" role="group" aria-label="Consentimientos">
+                <div class="casilla">
+                  <input type="checkbox" id="acepta_privacidad" name="acepta_privacidad" required>
+                  <label for="acepta_privacidad">He leído y acepto la <a href="../legal/politica-privacidad.html" target="_blank" rel="noopener">política de privacidad<span class="visualmente-oculto"> (se abre en una pestaña nueva)</span></a>.</label>
+                  <p class="error" id="error-acepta_privacidad" hidden></p>
+                </div>
+
+                <div class="casilla">
+                  <input type="checkbox" id="acepta_llamada_ia" name="acepta_llamada_ia" required>
+                  <label for="acepta_llamada_ia">Acepto recibir una llamada de Trazabis, realizada por un asistente de inteligencia artificial, para confirmar mi interés y fijar mi reunión de onboarding.</label>
+                  <p class="error" id="error-acepta_llamada_ia" hidden></p>
+                </div>
+
+                <div class="casilla">
+                  <input type="checkbox" id="acepta_comunicaciones" name="acepta_comunicaciones">
+                  <label for="acepta_comunicaciones">Quiero recibir comunicaciones comerciales de Trazabis por email. Puedo darme de baja cuando quiera. <span class="etiqueta-opcional">Opcional</span></label>
+                </div>
+
+                <div class="casilla">
+                  <input type="checkbox" id="acepta_medicion_publicitaria" name="acepta_medicion_publicitaria">
+                  <label for="acepta_medicion_publicitaria">Acepto que mis datos de contacto se compartan cifrados con Meta para medir la eficacia de los anuncios. <span class="etiqueta-opcional">Opcional</span></label>
+                </div>
+              </div>
+
+              <!-- Campo trampa anti-spam: oculto para las personas -->
+              <div class="trampa" aria-hidden="true">
+                <label for="website">Web</label>
+                <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+              </div>
+
+              <!-- Campos ocultos (se rellenan al enviar) -->
+              <input type="hidden" name="utm_source">
+              <input type="hidden" name="utm_medium">
+              <input type="hidden" name="utm_campaign">
+              <input type="hidden" name="utm_content">
+              <input type="hidden" name="utm_term">
+              <input type="hidden" name="fbclid">
+              <input type="hidden" name="event_id">
+              <input type="hidden" name="prioridad">
+              <input type="hidden" name="landing_url">
+              <input type="hidden" name="timestamp">
+              <input type="hidden" name="version" value="despachos">
+
+              <p class="aviso-ia" id="aviso-ia"><svg class="icono" aria-hidden="true" focusable="false"><use href="#i-telefono"/></svg><span>Al enviar, te llamará un asistente de inteligencia artificial, no una persona.</span></p>
+              <div class="acciones">
+                <button type="button" class="boton boton--secundario" data-accion="volver"><span aria-hidden="true">←</span> Volver</button>
+                <button type="submit" class="boton boton--primario" aria-describedby="aviso-ia">Enviar</button>
+              </div>
+              <p class="error-envio" role="alert"></p>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- Fuera de #form-contenedor para que siga visible tras la página de gracias -->
+      <div class="contenedor contenedor--lectura">
+        <p class="nota-reserva" data-reveal>¿Prefieres reservar directamente? <a href="https://cal.com/ruben-bel/demo-trazabis" target="_blank" rel="noopener" data-cta="reserva_directa" data-agenda="reserva_directa">Reserva tu reunión de onboarding</a> · o llama al <a href="tel:+34917943471">917&nbsp;943&nbsp;471</a>.</p>
+      </div>
+    </section>
+
+    <!-- Barra fija inferior en móvil -->
+    <div class="cta-fija" id="cta-fija" data-oculta="false">
+      <a class="boton boton--primario" href="#formulario" data-cta="sticky"><span>Ver si mi despacho encaja</span><svg class="icono boton__flecha" aria-hidden="true" focusable="false"><use href="#i-flecha"/></svg></a>
+    </div>
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <span class="pie__logo"><img class="logo" src="../assets/img/logo-trazabis.webp" alt="Trazabis" width="643" height="187" loading="lazy" decoding="async"></span>
+      <div class="pie__datos">
+        <p>Servicios Digitales y Automatización SL · CIF B19369800 · Paseo de la Castellana 194, Planta Baja B, 28046 Madrid</p>
+        <p>Email: <span data-config="EMAIL_CONTACTO"><a href="mailto:escribeme@trazabis.es">escribeme@trazabis.es</a></span> · Teléfono: <span data-config="TELEFONO_CONTACTO"><a href="tel:+34917943471">+34&nbsp;917&nbsp;943&nbsp;471</a></span></p>
+      </div>
+      <ul class="pie__enlaces">
+        <li><a href="../legal/aviso-legal.html">Aviso legal</a></li>
+        <li><a href="../legal/politica-privacidad.html">Política de privacidad</a></li>
+        <li><a href="../legal/politica-cookies.html">Política de cookies</a></li>
+        <li><button type="button" class="enlace-boton" data-abrir-cookies>Configurar cookies</button></li>
+      </ul>
+      <p class="pie__copy">© <span data-anio>2026</span> Servicios Digitales y Automatización SL</p>
+    </div>
+  </footer>
+
+  <!-- Aviso antes de abrir la agenda: agenda.js lo muestra al pulsar cualquier enlace a la agenda.
+       Sin JavaScript no se abre y los enlaces llevan directamente a la agenda. -->
+  <dialog class="aviso-agenda" id="aviso-agenda" aria-labelledby="reserva-modal-titulo" aria-describedby="reserva-modal-aviso reserva-modal-texto">
+    <div class="aviso-agenda__contenido">
+      <button type="button" class="aviso-agenda__cerrar" data-agenda-cerrar aria-label="Cerrar"><svg class="icono" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button>
+      <h2 id="reserva-modal-titulo">Antes de reservar tu reunión de onboarding</h2>
+      <p class="reserva-modal__aviso" id="reserva-modal-aviso">
+        <svg class="icono" aria-hidden="true" focusable="false"><use href="#i-info"/></svg>
+        <span>Al reservar, confirmas que <strong>ya has entendido cómo funciona Trazabis</strong> y que quieres ver cómo se aplica en tu despacho antes de pagar la implantación.</span>
+      </p>
+      <p class="aviso-agenda__texto" id="reserva-modal-texto">La agenda se abre en una pestaña nueva. Elige día y hora para tu reunión de onboarding con nuestro equipo: repasaremos tu cartera cliente a cliente y veremos cómo se aplicaría Trazabis en tu despacho. Recibirás la confirmación por email.</p>
+      <div class="aviso-agenda__botones">
+        <a class="boton boton--primario" href="https://cal.com/ruben-bel/demo-trazabis" target="_blank" rel="noopener" data-agenda-aceptar>Sí, quiero reservar<span class="visualmente-oculto"> (se abre en una pestaña nueva)</span></a>
+        <button type="button" class="boton boton--secundario" data-agenda-formulario>Todavía no: ver si mi despacho encaja</button>
+      </div>
+    </div>
+  </dialog>
+</body>
+</html>
