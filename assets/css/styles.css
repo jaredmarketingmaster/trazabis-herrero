@@ -922,6 +922,56 @@ div.pendiente {
   animation: aparecerTarjeta 1.1s var(--ease-out) 0.3s both;
 }
 
+/* Franja de confianza bajo la cabecera: 2 × 2 en móvil, una línea en escritorio */
+.franja-confianza {
+  background: var(--azul-suave);
+  border-bottom: 1px solid var(--borde-suave);
+}
+
+.franja-confianza__lista {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 16px;
+  padding-block: 16px;
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  font-size: 0.875rem;
+  line-height: 1.35;
+  color: var(--azul-trazabis);
+  text-align: center;
+}
+
+.franja-confianza__lista li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 900px) {
+  .franja-confianza__lista {
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 0;
+    padding-block: 18px;
+    font-size: 0.9375rem;
+  }
+
+  .franja-confianza__lista li {
+    white-space: nowrap;
+  }
+
+  /* Separador: filete vertical hecho con CSS */
+  .franja-confianza__lista li + li::before {
+    content: "";
+    width: 1px;
+    height: 16px;
+    margin-inline: 22px;
+    background: rgba(30, 40, 82, 0.3);
+  }
+}
+
 /* --------------------------------------------------------------------------
    08. Sección 2 · El problema · Sección 3 · Capturar no basta
    -------------------------------------------------------------------------- */
