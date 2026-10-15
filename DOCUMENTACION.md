@@ -38,7 +38,7 @@ La landing no tiene menú. Enlaza fuera de sí misma a las páginas legales (des
 
 ## 2. Contenido de la landing (`/despachos/`)
 
-Las secciones aparecen en este orden. El texto es el copy literal del brief con las correcciones posteriores del cliente: el cargo de Rubén Bel Pauner (12-10-2026) y su feedback del 14-10-2026 (tarifa v9, reunión de onboarding, calculadora oficial, implantación en cinco pasos, seguridad y preguntas frecuentes). Los datos que faltan se muestran como marcadores `[PENDIENTE: …]` resaltados en amarillo. En la landing quedan visibles dos, los del abogado en las casillas del formulario: validar sus textos y decidir si se mantiene la casilla de Meta. (El email y el teléfono del pie ya se rellenan desde `config.js`; sin JavaScript se sigue viendo el marcador.)
+Las secciones aparecen en este orden. El texto es el copy literal del brief con las correcciones posteriores del cliente: el cargo de Rubén Bel Pauner (12-10-2026) y su feedback del 14-10-2026 (tarifa v9, reunión de onboarding, calculadora oficial, implantación en cinco pasos, seguridad y preguntas frecuentes). Desde el 15-10-2026 no queda ningún marcador `[PENDIENTE: …]` visible: el email, el teléfono y el domicilio del pie están escritos en el HTML y se ven también sin JavaScript.
 
 | # | Sección | Fondo | Contenido |
 | --- | --- | --- | --- |
@@ -184,7 +184,7 @@ Las fuentes de la calculadora se sirven desde `assets/fonts/` (parche marcado al
 | Acepta la política de privacidad | Sí |
 | Acepta la llamada del asistente de IA | Sí |
 | Comunicaciones comerciales por email | No |
-| Compartir datos cifrados con Meta para medir anuncios *(pendiente de decisión del abogado)* | No |
+| Compartir datos cifrados con Meta para medir anuncios | No |
 
 Junto al botón de envío se avisa de que llamará un asistente de inteligencia artificial, no una persona.
 
@@ -252,12 +252,12 @@ La API de conversiones de Meta no está en la web: la envía el sistema que reci
 
 | Página | Contenido y funcionamiento |
 | --- | --- |
-| **Aviso legal** | Datos del titular (LSSI), objeto, condiciones de uso, propiedad intelectual, responsabilidad y jurisdicción. El email y el teléfono se rellenan desde `config.js` |
-| **Política de privacidad** | Responsable, datos tratados, finalidades y bases legales, llamada del asistente de IA (para confirmar el interés y agendar la reunión de onboarding), conservación, proveedores, transferencias, derechos, menores, seguridad y cambios en la política |
-| **Política de cookies** | Qué son, tabla de cookies por proveedor y categoría, cómo aceptarlas, rechazarlas o cambiar la elección, transferencias y actualizaciones |
+| **Aviso legal** | Datos del titular (LSSI) con los datos registrales, objeto, condiciones de uso, propiedad intelectual, responsabilidad, jurisdicción y contacto. El email y el teléfono están escritos en el HTML como enlaces (y `config.js` los mantiene) |
+| **Política de privacidad** | Responsable, datos tratados, finalidades y bases legales, llamada del asistente de IA (para confirmar el interés y agendar la reunión de onboarding; se graba), conservación, proveedores (HighLevel, Cal.com, Google Meet o Zoom, Meta, Google y Microsoft), transferencias, derechos, menores, seguridad y cambios en la política |
+| **Política de cookies** | Qué son, tabla de cookies por proveedor y categoría (con sus duraciones), aviso sobre las cookies técnicas de Go High Level, cómo aceptarlas, rechazarlas o cambiar la elección, transferencias, actualizaciones y contacto |
 | **404** | Página autónoma (estilos y logo integrados) con un enlace que localiza la landing aunque el sitio esté en un subdirectorio |
 
-Las tres páginas legales son **borradores pendientes de revisión por el abogado**. Comparten cabecera, pie y banner de cookies con la landing.
+Las tres páginas legales usan los textos legales vigentes de trazabis.com, adaptados a esta landing y completados con los datos del Registro Mercantil (fecha de publicación: 15 de octubre de 2026). Los puntos que conviene que revise un abogado están en el README. Comparten cabecera, pie y banner de cookies con la landing.
 
 ---
 
@@ -285,7 +285,7 @@ Si un script de efectos falla, el resto del sitio sigue funcionando: cada bloque
 
 ## 8. Antes de publicar
 
-1. Completar los `[PENDIENTE]` (lista por responsable en el README) y revisar las cifras que muestra el vídeo demo en el panel «Resumen».
+1. Repasar la lista de pendientes por responsable del README (ya no hay marcadores visibles) y revisar las cifras que muestra el vídeo demo en el panel «Resumen».
 2. Rellenar `config.js`, como mínimo `FORM_ENDPOINT` (y `CALC_ENDPOINT` si las solicitudes de la calculadora van a otro sitio), con CORS habilitado. Sin ellos, ni el formulario ni la calculadora envían nada.
 3. Validar con el abogado los textos legales, las casillas y el banner de cookies.
 4. Configurar GTM con las comprobaciones de consentimiento de cada etiqueta.
@@ -424,6 +424,39 @@ Tras el feedback del 14-10-2026 quedaban tres textos fuera de su alcance que seg
 | Aviso legal, objeto (`legal/aviso-legal.html`) | «…permite a los interesados solicitar un diagnóstico de cartera.» | «…permite a los interesados solicitar una reunión de onboarding.» |
 | Política de privacidad, tabla de proveedores (`legal/politica-privacidad.html`) | «Agenda del diagnóstico» | «Agenda de la reunión de onboarding» |
 
-- No se tocó nada más del texto legal, que sigue pendiente de revisión por el abogado.
+- No se tocó nada más del texto legal, que entonces seguía pendiente de revisión (se completó el 15-10-2026; ver 9.4).
 - Versión de caché: `formulario.js` pasa a `?v=20261014-2` en `despachos/index.html` y en `tests/prioridad.test.html`, los dos archivos que lo cargan. Las páginas legales no cargan ese script y sus CSS y JS no cambian, así que mantienen `?v=20261014-1` (el HTML se revalida en cada visita).
 - Con esto, la única aparición de «diagnóstico» en la landing, los scripts y las páginas legales es «Incluye el diagnóstico de tu cartera cliente a cliente», en la implantación, que el cliente mantiene.
+
+### 9.4 Textos legales definitivos (15 de octubre de 2026)
+
+Paso de la versión beta a la final. Las tres páginas legales se completaron con los textos legales vigentes de trazabis.com (adaptados al usted y sin las frases que en esta landing serían falsas), con los datos registrales publicados y con los datos confirmados por Jared el 14-10-2026 (alojamiento, CRM, asistente de voz y email en HighLevel, Inc.; GA4, Clarity y Pixel de Meta instalados; llamada grabada; casilla de Meta mantenida; videollamada por Google Meet o Zoom). Fuentes y valores en la sección «Textos legales» del README.
+
+| Página · commit | Cambios |
+| --- | --- |
+| Landing · `2093323` | Pie con el domicilio definitivo (Planta Baja B, 28046; el código postal anterior era incorrecto) y con el email y el teléfono escritos como enlaces, visibles sin JavaScript. Fuera los dos marcadores del abogado del formulario: los textos de las casillas se publican como están y la casilla de Meta se mantiene, opcional y sin marcar. `TELEFONO_CONTACTO` pasa a «+34 917 943 471» para coincidir con el HTML, porque `main.js` lo reescribe con ese valor |
+| Aviso legal · `9ebc097` | Fecha; datos identificativos completos (domicilio con Chamartín, Registro Mercantil de Madrid, sección 8.ª, hoja M-830114, inscripción 1.ª, y Trazabis como marca y producto de la sociedad); objeto con Trazabis como producto de precontabilidad documental; una frase del texto oficial en condiciones de uso y en propiedad intelectual; apartado nuevo 8. Contacto |
+| Política de privacidad · `da83013` | Fecha; responsable con email de privacidad y teléfono, sin la línea del delegado de protección de datos; consentimiento como base legal de la medición con Meta; la llamada se graba en HighLevel y se avisa al comienzo; conservación con el criterio de la web oficial; tabla de proveedores definitiva (HighLevel, Cal.com, Google Meet o Zoom, Meta, Google y Microsoft); transferencias con el Marco de Privacidad de Datos o cláusulas contractuales tipo; derechos por email o correo postal |
+| Política de cookies · `f244de8` | Fecha; duraciones definitivas (`_ga` 2 años; `_clck` 1 año y `_clsk` 1 día; `_fbp` y `_fbc` 90 días); aviso de las cookies técnicas de Go High Level, que se añadirán tras escanear el sitio publicado; actualizaciones y apartado nuevo 6. Contacto con el texto oficial |
+| Las cuatro páginas · `5956737` | Espacios duros (`&nbsp;`) dentro de los enlaces de teléfono, para que el número no se parta en dos líneas (lo pedía html-validate). El texto visible no cambia |
+| Documentación | README con la sección «Textos legales» (fuentes, datos usados y revisión recomendada por un abogado) y la lista de pendientes actualizada; este apartado |
+
+- **Coherencia con el banner:** el banner y el panel de cookies nombran las mismas herramientas que la tabla: GA4 y Clarity en «Analíticas» y el Pixel de Meta en «Publicitarias». La lógica de consentimiento no cambió.
+- **Caché:** `config.js` pasa a `?v=20261014-3` en la landing y en las tres páginas legales; es el único archivo de código modificado.
+- **Marcadores:** ya no queda ninguno visible. El único es el aviso oculto del póster del vídeo de la sección 5, que solo aparece si se configura `VIDEO_URL` sin `VIDEO_POSTER`.
+
+**Verificación (15-10-2026)**
+
+- **Búsquedas:**
+  - De marcadores (`[PENDIENTE`, `[VERIFICAR`, `class="pendiente"`) en `legal/`, la landing y `404.html`: solo el aviso oculto del póster.
+  - De `28048` en todo el repositorio, salvo `calculadora.html`: 0 resultados.
+  - De las frases de trazabis.com que aquí serían falsas: 0 resultados.
+- **Domicilio:** el mismo en el pie de las cuatro páginas («Paseo de la Castellana 194, Planta Baja B, 28046 Madrid»). En los apartados de titular y responsable figura con «Chamartín», tal como lo pide el texto de esos apartados.
+- **En navegador, con y sin JavaScript (las cuatro páginas):**
+  - Ningún marcador ni fondo amarillo visible.
+  - Email, teléfono y domicilio reales en el pie.
+  - `mailto:escribeme@trazabis.es` y `tel:+34917943471` correctos.
+  - El enlace a la AEPD se abre en una pestaña nueva.
+- **Banner y panel de cookies:** las mismas herramientas y categorías que la tabla de la Política de cookies.
+- **html-validate:** los mismos avisos que antes en las cuatro páginas, sin errores nuevos.
+- **Pruebas de prioridad:** 16 de 16.

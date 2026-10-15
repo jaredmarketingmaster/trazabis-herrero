@@ -4,7 +4,7 @@ Landing de **Trazabis** para despachos de asesoría fiscal-contable que reciben 
 
 Sitio estático: HTML, CSS y JavaScript sin frameworks, sin paso de compilación y sin dependencias externas. Funciona en GitHub Pages, Netlify, Vercel o cualquier hosting estático, también publicado en un subdirectorio (todas las rutas internas son relativas).
 
-> **Antes de publicar:** la página contiene marcadores `[PENDIENTE: …]` resaltados en amarillo a propósito. La lista completa, agrupada por responsable, está en [Pendientes](#pendientes-por-responsable).
+> **Antes de publicar:** desde el 15-10-2026 no queda ningún marcador `[PENDIENTE: …]` visible. Lo que falta por decidir o comprobar, agrupado por responsable, está en [Pendientes](#pendientes-por-responsable).
 
 ---
 
@@ -19,12 +19,13 @@ Sitio estático: HTML, CSS y JavaScript sin frameworks, sin paso de compilación
 7. [Formulario](#formulario)
 8. [Medición: dataLayer, GTM y consentimiento](#medición-datalayer-gtm-y-consentimiento)
 9. [Pendientes por responsable](#pendientes-por-responsable)
-10. [Diseño visual y animaciones](#diseño-visual-y-animaciones)
-11. [Decisiones tomadas y diferencias con el brief](#decisiones-tomadas-y-diferencias-con-el-brief)
-12. [Actualización del 14-10-2026 (feedback del cliente)](#actualización-del-14-10-2026-feedback-del-cliente)
-13. [Comprobación final](#comprobación-final)
-14. [Lighthouse](#lighthouse)
-15. [Contraste de color](#contraste-de-color)
+10. [Textos legales](#textos-legales)
+11. [Diseño visual y animaciones](#diseño-visual-y-animaciones)
+12. [Decisiones tomadas y diferencias con el brief](#decisiones-tomadas-y-diferencias-con-el-brief)
+13. [Actualización del 14-10-2026 (feedback del cliente)](#actualización-del-14-10-2026-feedback-del-cliente)
+14. [Comprobación final](#comprobación-final)
+15. [Lighthouse](#lighthouse)
+16. [Contraste de color](#contraste-de-color)
 
 ---
 
@@ -82,8 +83,8 @@ En local (o con `?debug=1`, o mientras `GTM_ID` esté vacío) el sitio está en 
 | `VIDEO_URL` | Archivo de vídeo (MP4/WebM) de «Cómo funciona Trazabis, en 90 segundos» | La sección de vídeo no existe en el DOM |
 | `VIDEO_POSTER` | Imagen de póster del vídeo (constante añadida) | Si hay vídeo, se muestra `[PENDIENTE]` bajo él |
 | `TELEFONO_ASISTENTE` | Número desde el que llama el asistente de IA | La página de gracias no muestra número ni botón `.vcf` |
-| `EMAIL_CONTACTO` | Email del pie y del aviso legal (`escribeme@trazabis.es`) | Se muestra `[PENDIENTE]` |
-| `TELEFONO_CONTACTO` | Teléfono del pie y del aviso legal (`917 943 471`) | Se muestra `[PENDIENTE]` |
+| `EMAIL_CONTACTO` | Email del pie y de las páginas legales (`escribeme@trazabis.es`) | Se ve el valor escrito en el HTML (el mismo) |
+| `TELEFONO_CONTACTO` | Teléfono del pie y de las páginas legales (`+34 917 943 471`) | Se ve el valor escrito en el HTML (el mismo) |
 | `CALC_ENDPOINT` | Webhook que recibe las solicitudes de la calculadora en JSON | Se usa `FORM_ENDPOINT`; si también está vacío, la calculadora queda en vista previa y no envía nada |
 | `FUNDADOR_HASTA` | Fin del programa Despacho Fundador (`2026-10-31T23:59:59+01:00`) | No se retira nada automáticamente |
 
@@ -255,50 +256,90 @@ Se evalúa en este orden (el primero que se cumple gana), tal como lo define el 
 2. Etiquetas de GA4: respetan `analytics_storage` por sí mismas (consentimiento integrado).
 3. Etiquetas de Microsoft Clarity y del Pixel de Meta: en *Configuración avanzada → Configuración de consentimiento*, exigir consentimiento adicional: Clarity → `analytics_storage`; Pixel de Meta → `ad_storage`.
 4. No añadas el fragmento `<noscript>` de GTM: cargaría Google sin consentimiento.
-5. **API de conversiones de Meta:** no se implementa en el front-end. La envía el sistema que recibe `FORM_ENDPOINT`, con el **mismo `event_id`** que el evento del navegador, para que Meta deduplique (el Pixel debe enviar el evento `Lead` con `eventID` = `event_id`, y la API, `Lead` con `event_id` igual). Los datos de contacto cifrados (SHA-256) solo deberían enviarse si `acepta_medicion_publicitaria` es `true` *(pendiente de decisión del abogado)*. El parámetro `fbc` puede construirse en el servidor a partir de `fbclid` y de la fecha de llegada; consulta la documentación vigente de Meta antes de implementarlo.
+5. **API de conversiones de Meta:** no se implementa en el front-end. La envía el sistema que recibe `FORM_ENDPOINT`, con el **mismo `event_id`** que el evento del navegador, para que Meta deduplique (el Pixel debe enviar el evento `Lead` con `eventID` = `event_id`, y la API, `Lead` con `event_id` igual). Los datos de contacto cifrados (SHA-256) solo deberían enviarse si `acepta_medicion_publicitaria` es `true`. El parámetro `fbc` puede construirse en el servidor a partir de `fbclid` y de la fecha de llegada; consulta la documentación vigente de Meta antes de implementarlo.
 
 ## Pendientes por responsable
 
-Todos los marcadores se ven en la página resaltados en amarillo (clase `.pendiente`).
+Desde el 15-10-2026 no queda ningún marcador visible en la landing ni en las páginas legales. El único que existe está oculto: el aviso del póster del vídeo de la sección 5 (`data-video-poster-pendiente hidden`), que solo aparece si se configura `VIDEO_URL` sin `VIDEO_POSTER`.
 
 ### Cliente (Rubén)
 
-- [x] Email y teléfono de contacto: `escribeme@trazabis.es` y `917 943 471` (en `config.js` desde el 14-10-2026).
-- [ ] Datos registrales: provincia del Registro Mercantil, tomo, folio y hoja (aviso legal).
 - [ ] **Decisiones D1–D4 del feedback del 14-10-2026** (no aplicadas; ver [Actualización del 14-10-2026](#actualización-del-14-10-2026-feedback-del-cliente)).
 - [ ] Confirmar que el evento de cal.com `demo-trazabis` dura 30 minutos, como dice el copy (D4).
+- [ ] Confirmar que no hay delegado de protección de datos (ver [Revisión recomendada por un abogado](#revisión-recomendada-por-un-abogado)).
+- [ ] (Opcional) Tomo y folio del Registro Mercantil, si se quieren añadir al aviso legal.
 - [ ] **Revisar las cifras que muestra el vídeo demo.** En el panel «Resumen» (hacia el segundo 10) aparecen el porcentaje de documentos insertados sin revisión y el tiempo medio por documento, con sus objetivos. El brief prohibía mostrar en el sitio porcentajes de automatización y precisamente esos objetivos. Confirmar que se aceptan como datos de demostración o reeditar el vídeo.
 - [ ] Subtítulos del vídeo demo: si el audio tiene locución, aportar un archivo `.vtt` para añadirlo como pista de subtítulos (lo exige WCAG 1.2.2). Si solo es música, no hace falta.
 - [ ] (Opcional) `VIDEO_URL` y `VIDEO_POSTER` solo activan la sección 5 «Cómo funciona Trazabis, en 90 segundos». Como ese vídeo ya está en la cabecera, se deja vacía para no repetirlo.
 - [ ] Colores oficiales de marca (HEX) para sustituir los tokens de `styles.css`. **Ojo:** los colores medidos en el logo aportado son azul `#14376B` y morado `#8127E3`; el azul del brief (`#1E2852`) no coincide con el del logo.
 - [ ] (Opcional) Versión monocroma del logo en blanco (SVG) para el pie; mientras tanto, el logo bicolor va sobre una placa blanca.
 - [ ] (Opcional) Favicon.
-- [ ] Email para cuestiones de privacidad (política de privacidad, puntos 1 y 8). La calculadora oficial ya remite a `escribeme@trazabis.es` para ejercer derechos.
+- [ ] Solicitudes de la calculadora: su propia casilla y su capa informativa (dentro de `calculadora.html`) remiten a `trazabis.com/privacidad`, no a la política de esta landing.
 
 ### Abogado
 
-- [ ] Bases legales de la tabla de finalidades (incluida la de medición con Meta: «confirmar base legal»).
-- [ ] Casilla de medición publicitaria con Meta: mantener o eliminar. Si se elimina, quitarla del formulario, de la política de privacidad y del JSON.
-- [ ] Textos de las cuatro casillas de consentimiento (marcados en la página como pendientes de validación).
-- [ ] Textos del banner y del panel de cookies (redactados para esta landing, no venían en el brief).
-- [ ] Plazo de conservación de los datos de solicitud.
-- [ ] Grabación o transcripción de la llamada del asistente de IA (si se hace, finalidad y plazo).
-- [ ] Meta Platforms Ireland: encargado o corresponsable.
-- [ ] Filas de Google Ireland y Microsoft Ireland marcadas `[VERIFICAR]`.
-- [ ] Transferencias internacionales: mecanismo de cada proveedor (Marco de Privacidad de Datos UE-EE. UU. o cláusulas contractuales tipo) y su vigencia.
-- [ ] Delegado de protección de datos (datos o eliminar la línea).
-- [ ] Fechas de «Última actualización» de las tres páginas legales.
-- [ ] Tratamiento de las solicitudes de la calculadora: su propia casilla y su capa informativa (dentro de `calculadora.html`) remiten a `trazabis.com/privacidad`, no a la política de esta landing.
-- [ ] Duraciones de cookies marcadas `[VERIFICAR]` (con el escaneo de Jared).
+- [ ] Los puntos de [Revisión recomendada por un abogado](#revisión-recomendada-por-un-abogado). Ninguno deja marcadores en la página.
 
 ### Jared
 
 - [ ] `GTM_ID`, `FORM_ENDPOINT` (con CORS habilitado), `CALC_ENDPOINT` (si no se usa `FORM_ENDPOINT`) y `TELEFONO_ASISTENTE` en `config.js`. Hasta entonces la consola avisa de que la calculadora no envía solicitudes.
 - [ ] 1-11-2026: borrar del HTML los elementos `data-fundador` (para quien navega sin JavaScript).
-- [ ] Proveedores de la política de privacidad: alojamiento (con país y salvaguardas), CRM o sistema que recibe el formulario, setter de IA de voz, calendario y email.
+- [ ] **Comprobar el alojamiento en Go High Level** antes de publicar. Esta guía de despliegue se escribió para un hosting estático, y la landing necesita lo siguiente:
+  - Que se sirvan tal cual las carpetas `despachos/`, `legal/` y `assets/`, con rutas relativas.
+  - Que `calculadora.html` esté en el mismo origen que la landing; si no, se pierden su alto automático, el envío y la medición.
+  - Que, sin consentimiento, la plataforma no añada scripts ni peticiones a terceros.
+  - `.htaccess` no se aplicará fuera de Apache/LiteSpeed.
+- [ ] Escanear las cookies de la landing ya publicada en Go High Level y añadir a la tabla las que instale la plataforma.
 - [ ] Configuración de GTM (consentimiento de cada etiqueta, Pixel con `eventID`) y API de conversiones en el servidor.
-- [ ] Escaneo de cookies tras publicar y eliminación de las filas de herramientas que no se instalen.
 - [ ] Despliegue (HTTPS, compresión y caché en el hosting).
+
+## Textos legales
+
+Las tres páginas legales usan los **textos legales vigentes de trazabis.com**, adaptados a esta landing:
+
+- **Tratamiento de usted:** los textos de trazabis.com tutean y aquí se adaptan al usted.
+- **Sin las frases que aquí serían falsas:** que no se usan cookies de análisis de terceros, que nunca se comparten datos con terceros o que los datos se alojan en la UE.
+- **Datos completados:** con los datos confirmados por Jared el 14-10-2026 y con los datos registrales publicados.
+- **Fecha de publicación:** 15 de octubre de 2026.
+
+**Fuentes de los datos de la sociedad:**
+
+- **Titular, NIF, email y teléfono:** textos legales de trazabis.com.
+- **Domicilio:** Paseo de la Castellana 194, Planta Baja B, Chamartín, 28046 Madrid. Sale de los tres textos legales de trazabis.com; el código postal 28046 lo confirman Google Maps, JLL, LoopNet y datoscif.es, y el código postal que mostraba antes la landing era incorrecto.
+- **Registro Mercantil:** Madrid, sección 8.ª, hoja M-830114, inscripción 1.ª (26-08-2024). Es el acto de constitución publicado en el BORME del 30-08-2024 (n.º de acto 378151), según datoscif.es e infonif.economia3.com. El tomo y el folio no figuran en esas fuentes y no se han inventado.
+
+**Datos de la versión final (confirmados el 14-10-2026):**
+
+| # | Dato | Valor usado |
+| --- | --- | --- |
+| V1 | Alojamiento | HighLevel, Inc. (Go High Level) · Dallas, Texas, Estados Unidos |
+| V2 | Pixel de Meta | Sí |
+| V3 | Google Analytics 4 | Sí |
+| V4 | Microsoft Clarity | Sí |
+| V5 | Destino del formulario | HighLevel, Inc. (CRM de Go High Level) · Estados Unidos |
+| V6 | Asistente de voz con IA | HighLevel, Inc. (asistente de voz con IA de Go High Level) · Estados Unidos |
+| V7 | Grabación de la llamada | Sí, dentro de Go High Level |
+| V8 | Proveedor de email | HighLevel, Inc. (email de Go High Level) · Estados Unidos |
+| V9 | Casilla de Meta (datos cifrados) | Se mantiene |
+| V10 | Videollamada | Google Meet (Google Ireland Ltd., Irlanda) o Zoom (Zoom Communications, Inc., Estados Unidos) |
+| V11 | Fecha de publicación | 15 de octubre de 2026 |
+
+Verificaciones de los proveedores, según Jared:
+- **HighLevel:** su acuerdo de tratamiento de datos declara la certificación en el Marco de Privacidad de Datos UE-EE. UU. e incorpora las cláusulas contractuales tipo de 2021; aloja en AWS y Google Cloud, sin especificar región.
+- **Zoom:** su declaración de privacidad declara el cumplimiento del Marco de Privacidad de Datos y el uso de cláusulas contractuales tipo.
+
+### Revisión recomendada por un abogado
+
+Estos puntos están resueltos en las páginas con criterios prudentes y documentados, pero conviene que un abogado los valide antes o después de publicar:
+
+1. **Delegado de protección de datos:** se ha quitado porque la política oficial no designa a ninguno. Confirmar con Rubén que no hay DPD.
+2. **Base legal y rol de Meta** en el envío de datos cifrados (consentimiento; encargado o corresponsable).
+3. **Plazo de conservación** de los leads que no contratan y de las grabaciones de las llamadas: se usa el criterio de la web oficial («mientras exista relación o hasta que solicite su supresión»). Un abogado puede preferir un plazo concreto.
+4. **Grabación de la llamada:** la base legal (consentimiento de la casilla de la llamada) y el aviso de grabación al comienzo de la llamada.
+5. **Tomo y folio** del Registro Mercantil: no figuran en las fuentes públicas consultadas.
+6. **Transferencias a Estados Unidos:** HighLevel y Zoom están verificados (Marco de Privacidad de Datos y cláusulas contractuales tipo). Falta confirmar Cal.com.
+7. **Cookies propias de Go High Level:** se añadirán tras el escaneo del sitio publicado.
+8. **Textos de las casillas del formulario y del banner de cookies en móvil:** se publican tal como están.
 
 ## Diseño visual y animaciones
 
