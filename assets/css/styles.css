@@ -1533,6 +1533,28 @@ div.pendiente {
   gap: 20px;
 }
 
+/* Las tarjetas pueden encoger: una tabla ancha no debe ensanchar la rejilla */
+.precios-rejilla > * {
+  min-width: 0;
+}
+
+/* Tabla de implantación (3 columnas) en pantallas estrechas: cifras que pueden partir línea */
+@media (max-width: 479px) {
+  .tabla:not(.tabla--apilable) {
+    font-size: 0.875rem;
+  }
+
+  .tabla:not(.tabla--apilable) th,
+  .tabla:not(.tabla--apilable) td {
+    padding: 11px 6px;
+  }
+
+  .tabla:not(.tabla--apilable) .cifra {
+    font-size: 1rem;
+    white-space: normal;
+  }
+}
+
 .bloque-precio {
   padding: 30px 24px;
   border-radius: var(--radio-xl);
@@ -1723,14 +1745,23 @@ div.pendiente {
   .tabla--apilable td .cifra {
     text-align: right;
   }
+
+  /* Celdas sin etiqueta (p. ej., «Plan personalizado»): sin hueco a la izquierda */
+  .tabla--apilable td:not([data-etiqueta])::before {
+    display: none;
+  }
+
+  .tabla--apilable td:not([data-etiqueta]) {
+    justify-content: flex-start;
+  }
 }
 
-.trazacontrol__texto {
+.conciliacion__texto {
   font-size: 1.0625rem;
   max-width: 75ch;
 }
 
-.trazacontrol__aviso {
+.conciliacion__aviso {
   display: flex;
   gap: 12px;
   align-items: flex-start;
@@ -1743,8 +1774,25 @@ div.pendiente {
   font-weight: 500;
 }
 
-.trazacontrol__aviso .icono {
+.conciliacion__aviso .icono {
   margin-top: 1px;
+}
+
+/* Programa Despacho Fundador retirado (main.js añade hidden): sin huecos, tampoco en las tablas apiladas */
+[data-fundador][hidden] {
+  display: none !important;
+}
+
+/* Nota de precios bajo la nota de integración (mismo tamaño que el texto pequeño de la página) */
+.nota-precios {
+  margin-top: 20px;
+  font-size: 0.9375rem;
+  color: var(--texto-suave);
+  max-width: 80ch;
+}
+
+.nota-precios strong {
+  color: var(--texto);
 }
 
 .nota-integracion {

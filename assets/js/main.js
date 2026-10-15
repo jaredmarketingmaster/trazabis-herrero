@@ -108,6 +108,28 @@
     });
   }
 
+  // Programa Despacho Fundador: a partir de FUNDADOR_HASTA se ocultan sus columnas y su frase.
+  // Para probarlo: ?fecha_prueba=AAAA-MM-DD, que solo se acepta en localhost o con ?debug=1.
+  function initFundador() {
+    var limite = new Date(cfg.FUNDADOR_HASTA || "");
+    if (isNaN(limite.getTime())) return;
+    var ahora = new Date();
+    var params = new URLSearchParams(location.search);
+    var desarrollo = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) || params.get("debug") === "1";
+    var prueba = params.get("fecha_prueba");
+    if (desarrollo && prueba && /^\d{4}-\d{2}-\d{2}$/.test(prueba)) {
+      var fechaPrueba = new Date(prueba + "T12:00:00+01:00");
+      if (!isNaN(fechaPrueba.getTime())) ahora = fechaPrueba;
+    }
+    if (ahora <= limite) return;
+    Array.prototype.forEach.call(document.querySelectorAll("[data-fundador]"), function (el) {
+      el.hidden = true;
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-colspan-sin-fundador]"), function (el) {
+      el.setAttribute("colspan", el.getAttribute("data-colspan-sin-fundador"));
+    });
+  }
+
   // Preguntas frecuentes
   function initFaq() {
     Array.prototype.forEach.call(document.querySelectorAll(".faq details"), function (d) {
@@ -139,6 +161,7 @@
   safe(initCta, "cta");
   safe(initVideo, "video");
   safe(initVideoDemo, "videoDemo");
+  safe(initFundador, "fundador");
   safe(initFaq, "faq");
   safe(initBarraFija, "barraFija");
 })();
