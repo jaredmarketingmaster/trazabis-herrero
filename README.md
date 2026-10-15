@@ -16,16 +16,17 @@ Sitio estático: HTML, CSS y JavaScript sin frameworks, sin paso de compilación
 4. [Despliegue](#despliegue)
 5. [Calculadora oficial y cómo actualizarla](#calculadora-oficial)
 6. [Retirada del programa Despacho Fundador](#retirada-del-programa-despacho-fundador)
-7. [Formulario](#formulario)
-8. [Medición: dataLayer, GTM y consentimiento](#medición-datalayer-gtm-y-consentimiento)
-9. [Pendientes por responsable](#pendientes-por-responsable)
-10. [Textos legales](#textos-legales)
-11. [Diseño visual y animaciones](#diseño-visual-y-animaciones)
-12. [Decisiones tomadas y diferencias con el brief](#decisiones-tomadas-y-diferencias-con-el-brief)
-13. [Actualización del 14-10-2026 (feedback del cliente)](#actualización-del-14-10-2026-feedback-del-cliente)
-14. [Comprobación final](#comprobación-final)
-15. [Lighthouse](#lighthouse)
-16. [Contraste de color](#contraste-de-color)
+7. [Ruta C · Agenda directa](#ruta-c--agenda-directa)
+8. [Formulario](#formulario)
+9. [Medición: dataLayer, GTM y consentimiento](#medición-datalayer-gtm-y-consentimiento)
+10. [Pendientes por responsable](#pendientes-por-responsable)
+11. [Textos legales](#textos-legales)
+12. [Diseño visual y animaciones](#diseño-visual-y-animaciones)
+13. [Decisiones tomadas y diferencias con el brief](#decisiones-tomadas-y-diferencias-con-el-brief)
+14. [Actualización del 14-10-2026 (feedback del cliente)](#actualización-del-14-10-2026-feedback-del-cliente)
+15. [Comprobación final](#comprobación-final)
+16. [Lighthouse](#lighthouse)
+17. [Contraste de color](#contraste-de-color)
 
 ---
 
@@ -44,7 +45,8 @@ Sitio estático: HTML, CSS y JavaScript sin frameworks, sin paso de compilación
 /assets/js/consent.js             Banner, panel y modo de consentimiento; carga de GTM
 /assets/js/main.js                Pie, botones CTA, barra fija, FAQ, vídeo y retirada del programa Fundador
 /assets/js/formulario.js
-/assets/js/calculadora-integracion.js  Alto del iframe, envío de solicitudes y calculator_use de la calculadora
+/assets/js/calculadora-integracion.js  Alto del iframe, envío de solicitudes, calculator_use y enlaces a la agenda de la calculadora
+/assets/js/agenda.js              Aviso previo y apertura de la agenda (ruta C)
 /assets/js/efectos.js             Capa visual: aparición al scroll, luz de la cabecera, halos
 /assets/fonts/                    Montserrat y Roboto (Google Fonts, licencia OFL) alojadas aquí
 /assets/img/logo-trazabis.webp    Logo que usa la web (WebP sin pérdida, 7 KB)
@@ -60,7 +62,7 @@ Sitio estático: HTML, CSS y JavaScript sin frameworks, sin paso de compilación
 /.nojekyll                        Evita el procesado de Jekyll en GitHub Pages
 ```
 
-Orden de carga de los scripts (todos con `defer` y patrón IIFE, sin módulos): `config.js` → `datalayer.js` → `consent.js` → `main.js` → `formulario.js` → `calculadora-integracion.js` → `efectos.js`. Cada inicialización de `main.js` y `efectos.js` va envuelta en `safe()`: si una falla, el resto sigue funcionando.
+Orden de carga de los scripts (todos con `defer` y patrón IIFE, sin módulos): `config.js` → `datalayer.js` → `consent.js` → `main.js` → `formulario.js` → `agenda.js` → `calculadora-integracion.js` → `efectos.js`. Cada inicialización de `main.js` y `efectos.js` va envuelta en `safe()`: si una falla, el resto sigue funcionando.
 
 ## Probar en local
 
@@ -85,6 +87,7 @@ En local (o con `?debug=1`, o mientras `GTM_ID` esté vacío) el sitio está en 
 | `TELEFONO_ASISTENTE` | Número desde el que llama el asistente de IA | La página de gracias no muestra número ni botón `.vcf` |
 | `EMAIL_CONTACTO` | Email del pie y de las páginas legales (`escribeme@trazabis.es`) | Se ve el valor escrito en el HTML (el mismo) |
 | `TELEFONO_CONTACTO` | Teléfono del pie y de las páginas legales (`+34 917 943 471`) | Se ve el valor escrito en el HTML (el mismo) |
+| `AGENDA_URL` | Agenda de la reserva directa (hoy cal.com; en la versión publicada, el calendario de GHL) | Las puertas usan el `href` escrito en el HTML |
 | `CALC_ENDPOINT` | Webhook que recibe las solicitudes de la calculadora en JSON | Se usa `FORM_ENDPOINT`; si también está vacío, la calculadora queda en vista previa y no envía nada |
 | `FUNDADOR_HASTA` | Fin del programa Despacho Fundador (`2026-10-31T23:59:59+01:00`) | No se retira nada automáticamente |
 
@@ -104,7 +107,7 @@ En local (o con `?debug=1`, o mientras `GTM_ID` esté vacío) el sitio está en 
 
 **Cualquier hosting estático:** subir todos los archivos tal cual.
 
-**En cada despliegue que cambie CSS o JS, sube el número de versión** que llevan los enlaces a `styles.css` y a los scripts (hoy `?v=20261014-1`; `formulario.js`, `?v=20261014-2`) en `despachos/index.html`, en las tres páginas legales y en `tests/prioridad.test.html`, usando la fecha del día (`?v=AAAAMMDD-n`). Así ningún navegador ni CDN sirve una versión antigua.
+**En cada despliegue que cambie CSS o JS, sube el número de versión** que llevan los enlaces a `styles.css` y a los scripts (hoy conviven `?v=20261014-1`, `?v=20261014-2` y `?v=20261015-1`, según la última vez que cambió cada archivo) en `despachos/index.html`, en las tres páginas legales y en `tests/prioridad.test.html`, usando la fecha del día (`?v=AAAAMMDD-n`). Así ningún navegador ni CDN sirve una versión antigua.
 
 Notas:
 
@@ -146,6 +149,43 @@ El programa termina el 31-10-2026. `initFundador` (`main.js`) compara la fecha a
 
 - **Prueba:** `?debug=1&fecha_prueba=2026-11-01` (en localhost basta `?fecha_prueba=…`). En producción, sin `debug=1`, `fecha_prueba` se ignora.
 - **Tarea manual del 1-11-2026:** sin JavaScript la condición fundador se sigue viendo. Ese día, borra del HTML los elementos con `data-fundador` y sustituye cada `colspan` por el valor de su `data-colspan-sin-fundador`.
+
+## Ruta C · Agenda directa
+
+Para quien ya sabe que quiere la reunión: intención máxima, porque ya reservó. Pasa por la agenda (o por el teléfono) y no por el formulario.
+
+### En la landing
+
+- **Puertas a la agenda:**
+  - el enlace «Reserva tu reunión de onboarding» de debajo del formulario (`data-agenda="reserva_directa"`);
+  - los enlaces a la agenda de la calculadora oficial. Son de `calculadora.html`, que no se modifica: los intercepta `calculadora-integracion.js`.
+- **Aviso previo (`assets/js/agenda.js`):** al pulsar cualquier puerta se abre un aviso (`<dialog id="aviso-agenda">`) con el texto aclaratorio y, a su lado, el botón «Aceptar». «Aceptar» es un enlace normal con `target="_blank"`: abre la agenda en una pestaña nueva y cierra el aviso.
+  - El aviso se cierra con «Cerrar», con Escape o pulsando fuera, y el foco vuelve a la puerta que lo abrió.
+  - Sin JavaScript, o en navegadores sin `<dialog>`, las puertas llevan directamente a la agenda.
+- **Texto del aviso** (propuesta redactada a partir del flujo de la ruta C; **pendiente de validar por el cliente**): «Antes de abrir la agenda» — «La agenda se abre en una pestaña nueva. Elige día y hora para tu reunión de onboarding (30 minutos, gratis) y responde tres preguntas: número de clientes, programa contable y tu cargo. Así tendremos tu demo preparada. Te enviaremos un recordatorio 24 horas y otro 1 hora antes, con el acceso a la reunión. Al reservar, el asistente de IA ya no te llamará.»
+- **Agenda:** `AGENDA_URL` en `config.js`. Hoy es cal.com (`https://cal.com/ruben-bel/demo-trazabis`), para ver el funcionamiento. En la versión publicada será el calendario de GHL. Al cambiarla:
+  1. `AGENDA_URL` en `config.js` (`agenda.js` la aplica a todos los enlaces y al botón «Aceptar», también a los de la calculadora);
+  2. el `href` del enlace de reserva directa en `despachos/index.html` y el del botón «Aceptar» (los usa quien navega sin JavaScript);
+  3. la fila de Cal.com de la política de privacidad (apartado 6), que se sustituye o se quita, porque el calendario pasa a ser de HighLevel.
+- **Medición:**
+  - `cta_click` al pulsar una puerta: `reserva_directa` en la landing y `calculadora_reserva` en la calculadora;
+  - `agenda_open` al pulsar «Aceptar», con la misma `cta_location`.
+
+  La reserva en sí ocurre en la agenda, fuera de la landing: la landing no sabe si se completó.
+
+### En Go High Level (Jared, fuera de este repositorio)
+
+Así está definida la ruta C:
+
+| Paso | Qué hace |
+| --- | --- |
+| 0 min · Reserva en CRM | La reserva entra en el CRM: por webhook desde cal.com mientras se use cal.com, o directamente con el calendario de GHL. Se envía el evento **`Schedule`** a Meta **desde GHL, con la API de conversiones** (no desde la landing) |
+| Preguntas en la reserva | El formulario de la agenda pregunta el número de clientes, el programa contable y el cargo |
+| Email a Rubén | Aviso a Rubén para tener la demo lista antes de la reunión |
+| Recordatorios | 24 h y 1 h antes, con el acceso a la demo |
+| Sin llamada de IA | Quien reserva queda fuera de la llamada del asistente de IA: no se le hace agendar otra vez |
+
+El texto del aviso promete las preguntas, los recordatorios y que no habrá llamada de IA. Esas tres cosas tienen que estar configuradas en la agenda y en GHL antes de publicar.
 
 ## Formulario
 
@@ -230,7 +270,8 @@ Se evalúa en este orden (el primero que se cumple gana), tal como lo define el 
 
 | event | Cuándo | Parámetros |
 | --- | --- | --- |
-| `cta_click` | Clic en cualquier «Ver si mi despacho encaja» o en «Reserva tu reunión de onboarding» | `cta_location`: `hero` · `video` · `inversion` · `calculadora` · `sticky` · `reserva_directa` |
+| `cta_click` | Clic en cualquier «Ver si mi despacho encaja» o en una puerta a la agenda | `cta_location`: `hero` · `video` · `inversion` · `calculadora` · `sticky` · `reserva_directa` · `calculadora_reserva` |
+| `agenda_open` | «Aceptar» en el aviso previo: se abre la agenda en una pestaña nueva | `cta_location`: `reserva_directa` · `calculadora_reserva` |
 | `video_play` | Primera reproducción del vídeo | — |
 | `calculator_use` | Primera interacción con la calculadora oficial (una vez por visita) | `version: "calculadora"` |
 | `form_start` | Primera interacción con el formulario (una vez por visita) | — |
@@ -274,6 +315,7 @@ Desde el 15-10-2026 no queda ningún marcador visible en la landing ni en las p�
 - [ ] Colores oficiales de marca (HEX) para sustituir los tokens de `styles.css`. **Ojo:** los colores medidos en el logo aportado son azul `#14376B` y morado `#8127E3`; el azul del brief (`#1E2852`) no coincide con el del logo.
 - [ ] (Opcional) Versión monocroma del logo en blanco (SVG) para el pie; mientras tanto, el logo bicolor va sobre una placa blanca.
 - [ ] (Opcional) Favicon.
+- [ ] **Validar el texto del aviso previo a la agenda** (propuesta; ver [Ruta C](#ruta-c--agenda-directa)).
 - [ ] Solicitudes de la calculadora: su propia casilla y su capa informativa (dentro de `calculadora.html`) remiten a `trazabis.com/privacidad`, no a la política de esta landing.
 
 ### Abogado
@@ -289,6 +331,7 @@ Desde el 15-10-2026 no queda ningún marcador visible en la landing ni en las p�
   - Que `calculadora.html` esté en el mismo origen que la landing; si no, se pierden su alto automático, el envío y la medición.
   - Que, sin consentimiento, la plataforma no añada scripts ni peticiones a terceros.
   - `.htaccess` no se aplicará fuera de Apache/LiteSpeed.
+- [ ] **Ruta C en GHL:** reserva en el CRM, evento `Schedule` a Meta por API de conversiones, preguntas en la reserva, email a Rubén, recordatorios a 24 h y 1 h y exclusión de la llamada de IA (ver [Ruta C](#ruta-c--agenda-directa)). Al pasar al calendario de GHL, cambiar `AGENDA_URL`, los dos `href` del HTML y la fila de Cal.com de la política de privacidad.
 - [ ] Escanear las cookies de la landing ya publicada en Go High Level y añadir a la tabla las que instale la plataforma.
 - [ ] Configuración de GTM (consentimiento de cada etiqueta, Pixel con `eventID`) y API de conversiones en el servidor.
 - [ ] Despliegue (HTTPS, compresión y caché en el hosting).

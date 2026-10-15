@@ -144,9 +144,20 @@ Anuncio de Meta ──► /despachos/?utm_…&fbclid=…
 
 ### 3.3 Botones «Ver si mi despacho encaja»
 
-Hay cinco: cabecera, sección de vídeo (si existe), precios, calculadora y la barra fija inferior en móvil. Todos bajan al formulario y registran el evento `cta_click` con su ubicación. El enlace «Reserva tu reunión de onboarding» de debajo del formulario también registra `cta_click` (`reserva_directa`) y abre cal.com en una pestaña nueva, sin bajar a ningún sitio.
+Hay cinco: cabecera, sección de vídeo (si existe), precios, calculadora y la barra fija inferior en móvil. Todos bajan al formulario y registran el evento `cta_click` con su ubicación. El enlace «Reserva tu reunión de onboarding» de debajo del formulario también registra `cta_click` (`reserva_directa`), pero no baja a ningún sitio: es una puerta a la agenda (ver 3.3b).
 
 La **barra fija en móvil** (pantallas de menos de 768 px) está visible mientras se lee la página y se oculta cuando el formulario entra en pantalla.
+
+### 3.3b Ruta C · Agenda directa (`agenda.js`)
+
+Para quien prefiere reservar directamente. Las puertas a la agenda son el enlace «Reserva tu reunión de onboarding» de debajo del formulario y los enlaces a la agenda de la calculadora oficial.
+
+1. Al pulsar una puerta se abre un aviso con el texto aclaratorio y el botón «Aceptar» al lado (debajo, en móvil). El texto es una propuesta pendiente de validar: «La agenda se abre en una pestaña nueva. Elige día y hora para tu reunión de onboarding (30 minutos, gratis) y responde tres preguntas: número de clientes, programa contable y tu cargo. Así tendremos tu demo preparada. Te enviaremos un recordatorio 24 horas y otro 1 hora antes, con el acceso a la reunión. Al reservar, el asistente de IA ya no te llamará.»
+2. «Aceptar» abre la agenda en una pestaña nueva y cierra el aviso. «Cerrar», Escape o un clic fuera lo cierran sin abrir nada, y el foco vuelve a la puerta.
+3. La agenda es hoy cal.com (`AGENDA_URL`, en `config.js`); en la versión publicada será el calendario de GHL.
+4. Lo que pasa después de reservar se configura en GHL, no en la landing: la reserva entra en el CRM, se envía `Schedule` a Meta por la API de conversiones, el formulario de la agenda pregunta número de clientes, programa y cargo, Rubén recibe un email, se mandan recordatorios a 24 h y 1 h con el acceso a la demo, y no hay llamada del asistente de IA.
+
+Sin JavaScript no hay aviso: las puertas llevan directamente a la agenda.
 
 ### 3.4 Retirada automática del programa Despacho Fundador (`main.js`)
 
@@ -218,7 +229,8 @@ Todos los eventos pasan por `datalayer.js`, que **solo deja pasar una lista cerr
 
 | Evento | Cuándo |
 | --- | --- |
-| `cta_click` | Clic en un botón «Ver si mi despacho encaja» o en la reserva directa. `cta_location`: `hero` · `video` · `inversion` · `calculadora` · `sticky` · `reserva_directa` |
+| `cta_click` | Clic en un botón «Ver si mi despacho encaja» o en una puerta a la agenda. `cta_location`: `hero` · `video` · `inversion` · `calculadora` · `sticky` · `reserva_directa` · `calculadora_reserva` |
+| `agenda_open` | «Aceptar» en el aviso previo a la agenda (`cta_location`: `reserva_directa` · `calculadora_reserva`). El `Schedule` de Meta lo envía GHL al confirmarse la reserva |
 | `video_play` | Primera reproducción del vídeo demo de la cabecera (o del de la sección 5, si existe) |
 | `calculator_use` | Primera interacción con la calculadora oficial, una vez por visita (`version: "calculadora"`) |
 | `form_start` | Primera interacción con el formulario |
@@ -271,7 +283,8 @@ Las tres páginas legales usan los textos legales vigentes de trazabis.com, adap
 | `assets/js/main.js` | Año y contacto del pie, clics en los botones, vídeo demo de la cabecera y sección de vídeo, retirada del programa Despacho Fundador, preguntas frecuentes y barra fija |
 | `assets/video/` | Vídeo demo en WebM (original) y MP4 (copia de compatibilidad) |
 | `despachos/calculadora.html` | Calculadora oficial de trazabis.com (archivo del cliente; solo lleva el parche de fuentes) |
-| `assets/js/calculadora-integracion.js` | Alto del iframe, envío de las solicitudes de la calculadora y `calculator_use` |
+| `assets/js/calculadora-integracion.js` | Alto del iframe, envío de las solicitudes de la calculadora, `calculator_use` y paso de sus enlaces a la agenda por el aviso previo |
+| `assets/js/agenda.js` | Aviso previo a la agenda (ruta C), `AGENDA_URL` y evento `agenda_open` |
 | `assets/js/formulario.js` | Formulario, validación, prioridad, envío y página de gracias |
 | `assets/js/efectos.js` | Animaciones: aparición al hacer scroll, luz de la cabecera y halos |
 | `assets/css/styles.css` | Todos los estilos y los tokens de color de marca |
@@ -460,3 +473,34 @@ Paso de la versión beta a la final. Las tres páginas legales se completaron co
 - **Banner y panel de cookies:** las mismas herramientas y categorías que la tabla de la Política de cookies.
 - **html-validate:** los mismos avisos que antes en las cuatro páginas, sin errores nuevos.
 - **Pruebas de prioridad:** 16 de 16.
+
+### 9.5 Ruta C · Agenda directa (15 de octubre de 2026)
+
+A partir de la tarjeta de flujo «C · Agenda directa» y de tres decisiones de Jared:
+- se mantiene cal.com para ver el funcionamiento y en la versión publicada se conectará el calendario de GHL;
+- cualquier puerta a la agenda abre antes un aviso con el texto aclaratorio y el botón «Aceptar», y la agenda se abre en una pestaña nueva;
+- el evento `Schedule` a Meta lo envía GHL por la API de conversiones.
+
+| Archivo | Cambio |
+| --- | --- |
+| `despachos/index.html` | El enlace de reserva directa pasa a ser una puerta (`data-agenda="reserva_directa"`) y se añade el aviso `<dialog id="aviso-agenda">` con su texto y el botón «Aceptar» |
+| `assets/js/agenda.js` (nuevo) | Abre el aviso desde cualquier puerta; «Aceptar» abre la agenda en una pestaña nueva y registra `agenda_open`; aplica `AGENDA_URL`; devuelve el foco a la puerta al cerrar |
+| `assets/js/calculadora-integracion.js` | Los enlaces a la agenda de la calculadora pasan por el mismo aviso (`cta_click` con `calculadora_reserva`), sin tocar `calculadora.html` |
+| `assets/js/config.js` | Constante nueva `AGENDA_URL` (hoy cal.com) |
+| `assets/css/styles.css` | Estilos del aviso: el mismo lenguaje que el panel de cookies; texto y botón en fila desde 600 px y apilados en móvil |
+| README y este documento | Sección «Ruta C · Agenda directa», con la configuración que corresponde a GHL, y pendientes |
+
+Caché: `styles.css` y `config.js` pasan a `?v=20261015-1` en las cuatro páginas, y `calculadora-integracion.js` y `agenda.js` (nuevo) a `?v=20261015-1` en la landing.
+
+**Verificación:**
+- **En navegador, a 375 y 1440 px:**
+  - El clic en la puerta abre el aviso y ninguna pestaña.
+  - Escape y «Cerrar» lo cierran, y el foco vuelve a la puerta.
+  - «Aceptar» abre `cal.com/ruben-bel/demo-trazabis` en una pestaña nueva y cierra el aviso.
+  - Los enlaces a la agenda de la calculadora también abren el aviso.
+  - `cta_click` y `agenda_open` llegan con su `cta_location`; sin errores de consola.
+- **Sin JavaScript:** el aviso no se ve y el enlace va directo a la agenda.
+- **axe-core con el aviso abierto:** 0 infracciones.
+- **html-validate:** los mismos avisos que antes.
+
+**Pendiente:** validar el texto del aviso, que es una propuesta, y configurar en GHL lo que promete (preguntas en la reserva, recordatorios a 24 h y 1 h y exclusión de la llamada de IA).
