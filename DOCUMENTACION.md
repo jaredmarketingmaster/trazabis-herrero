@@ -2,6 +2,8 @@
 
 Este documento describe **qué contiene** el sitio y **cómo funciona**, página a página y pieza a pieza. La configuración técnica, el despliegue y la lista de pendientes están en el [README](README.md).
 
+El historial de los cambios pedidos por el cliente (12-10-2026 y 14-10-2026), cambio a cambio, está en la [sección 9](#9-historial-de-actualizaciones-a-pedido-del-cliente).
+
 ---
 
 ## 1. Visión general
@@ -289,3 +291,131 @@ Si un script de efectos falla, el resto del sitio sigue funcionando: cada bloque
 4. Configurar GTM con las comprobaciones de consentimiento de cada etiqueta.
 5. Subir todos los archivos, incluido `.htaccess`, y actualizar `?v=` en los enlaces a CSS y JS en cada despliegue.
 6. El 1-11-2026, borrar del HTML los elementos `data-fundador` para quien navegue sin JavaScript (con JavaScript desaparecen solos).
+
+---
+
+## 9. Historial de actualizaciones a pedido del cliente
+
+Todo el trabajo está en la rama `claude/trazabis-landing-despachos-jpfpwr` (pull request n.º 1 de `jaredmarketingmaster/trazabis-herrero`). **Nada se ha fusionado con `main` ni publicado**: queda pendiente de revisión.
+
+> Nota de redacción: la verificación pedida por el cliente exige que la documentación vigente no contenga los términos de su «lista roja» (el nombre del antiguo módulo de conciliación y el del antiguo conector, la errata del programa a3ERP, los planes con nombre, el descuento del primer año, etc.). Por eso este historial describe lo que se retiró sin copiar esos textos literalmente.
+
+### 9.1 Corrección del 12-10-2026
+
+Pedida por el cliente tras ver la primera versión. Commit `6473966`.
+
+| Petición | Qué se hizo |
+| --- | --- |
+| Rubén Bel Pauner es CEO y Fundador de Trazabis | Pie de foto de la sección «Quiénes somos»: «Rubén Bel Pauner · CEO y Fundador de Trazabis» |
+| Texto del módulo de conciliación bancaria | Se sustituyó el marcador pendiente por el texto del cliente («Sube el extracto en N43 o PDF y Trazabis casa cada movimiento con los documentos ya leídos…»). El 14-10-2026 el módulo pasó a llamarse **Conciliación bancaria** y cambió su precio (ver 9.2, bloque E) |
+| Sustituir la ilustración de la cabecera por el vídeo demo, sin que se descargue hasta pulsar «reproducir» | Vídeo demo en la cabecera con `preload="none"`: antes de reproducir solo se carga el póster (8 KB). Botón de reproducción propio, controles nativos al reproducir y evento `video_play`. WebM original y copia MP4 para Safari e iPhone antiguos. `.htaccess` con tipos MIME y caché de vídeo |
+
+### 9.2 Feedback del 14-10-2026
+
+El cliente entregó su revisión por escrito el 14-10-2026, junto con su calculadora oficial (`calculadora.html`, tarifa v9). Ese feedback **sustituye a todo el contenido comercial anterior**: la tarifa de agosto, los planes con nombre, el descuento del primer año, las submarcas y la errata del programa a3ERP.
+
+**Reglas que se siguieron**
+
+- Solo los cambios pedidos, uno a uno, sobre el `index.html` de la landing (no se copió la landing corregida del cliente, que traía errores de integración: un comentario HTML roto visible, notas con la clase `.legal`, dos botones eliminados, una rejilla de fases rota y un script en línea).
+- Textos nuevos copiados **carácter a carácter** (con `&nbsp;`, el signo «−» y sin recalcular céntimos).
+- Sin scripts en línea nuevos (patrón IIFE, `defer` y `safe()`), sin peticiones a terceros antes del consentimiento y con la estructura, las clases, los atributos y la indentación existentes.
+- Un commit por bloque, en español, explicando el porqué.
+
+**Cambios aplicados (C01–C31)**
+
+| Bloque · commit | Cambio | Qué se hizo |
+| --- | --- | --- |
+| **A** · `9f28699` | C01 Nota del botón de la cabecera | «Unas preguntas sobre tu despacho y te llamamos para fijar tu reunión de onboarding: 30 minutos, gratis, con un panel real en producción.» |
+| | C02 Antetítulo | **Sin cambios** (decisión pendiente D1) |
+| | C03 Franja de confianza (nueva) | Bajo la cabecera: «Servidores en la UE» · «Sin cuota para el despacho» · «Precios públicos sin IVA» · «Equipo técnico propio en Madrid». Fondo azul suave; una línea con filetes desde 900 px, 2 × 2 en móvil |
+| **B** · `8489b43` | C04 Último punto de «Con Trazabis» | «El borrador del asiento entra en tu programa; tu equipo lo aprueba» |
+| | C05 Párrafo de cierre | «…y deja el borrador del asiento en tu programa conectado. Tu equipo revisa solo lo dudoso y aprueba: nada entra en firme sin una persona.» |
+| **C** · `2f74c9c` | C06 Paso 5 | «Concilia: cruza los extractos bancarios (N43 o PDF) con los documentos ya leídos y señala lo que no cuadra.» (sin submarca) |
+| | C07 Paso 6 | Pasa de «Contabiliza» a **«Prepara el asiento:** el borrador entra en tu programa conectado (hoy Odoo) y tu equipo lo aprueba con un clic.» También se renombró su icono (`i-asiento`) |
+| **D** · `bf30bbd` | C08 Implantación | Las tres fases anteriores pasan a cinco pasos: Reunión de onboarding · 30 minutos → Propuesta por escrito · en 48 horas → Alta · la primera semana → Oleadas · por grupos de clientes → Adopción · informe al mes. Nota con el plan firmado y la **garantía** de devolución íntegra del setup. CSS nuevo `.fases--cinco`: cinco en fila desde 1100 px y una columna con flechas verticales por debajo, sin filas incompletas |
+| **E** · `8a861e2` | C09 Precios | Sección sustituida por la tarifa v9 literal del cliente: 0 € para el despacho, tabla de implantación (con columna Despacho Fundador −40 %), tabla de lo que paga cada cliente por tramos de 5,90 € a 44,90 € (con descuento de cartera y columna Fundador −30 %), clientes que solo envían documentos (1,25 € por cuenta + 0,025 € por documento), Conciliación bancaria, nota de integración (Odoo hoy; Holded y a3ERP en cola, sin fecha) y nota de precios. Se retiraron los planes con nombre, el descuento del primer año, el valor anual del panel, el antiguo conector con submarca, «sin cuota, sin mínimos y sin permanencia» para todo, el plazo de primera respuesta del soporte, el precio aparte del antiguo módulo de conciliación, la nota del estudio de viabilidad y el marcador sobre los documentos por plan. Clase nueva `.nota-precios` |
+| | C10 Retirada del programa Despacho Fundador | `FUNDADOR_HASTA` en `config.js` y `initFundador` en `main.js`: desde el 1-11-2026 se ocultan los 17 elementos `data-fundador` y se ajustan los `colspan`. Prueba con `?debug=1&fecha_prueba=2026-11-01` |
+| **F** · `c85c186` y `10768cb` | C11 Calculadora oficial | Sección nueva 7b «Calcula tu caso» con la calculadora del cliente en un iframe (`despachos/calculadora.html`) y su botón «Ver si mi despacho encaja». La sección 8 recibe `seccion--separada` para no fundirse con la 7b |
+| | C12 Integración técnica | `assets/js/calculadora-integracion.js`: alto automático del iframe, envío de las solicitudes de la calculadora a `CALC_ENDPOINT` (o `FORM_ENDPOINT`) y `calculator_use` una vez por visita. `datalayer.js` deja de admitir los parámetros de la calculadora antigua |
+| | C13 Parche de fuentes | En `calculadora.html` solo se sustituyó el enlace a Google Fonts por `@font-face` hacia `../assets/fonts`, con el comentario «PARCHE LANDING (14-10-2026)…». El resto del archivo es idéntico al del cliente, byte a byte |
+| | C14 Retirada de la calculadora antigua | Borrados su script, su prueba, su animación en `efectos.js` y sus reglas CSS, sin referencias huérfanas |
+| **G** · `b10a22c` | C15 Seguridad | Dos puntos nuevos: «Usuarios y permisos: cada persona ve solo las empresas y las funciones que le corresponden.» y «Custodia de cinco años del original de cada documento, con registro de quién validó qué dato y cuándo.» (mismos iconos) |
+| **H** · `06fb233` | C16–C21 Respuestas de las preguntas frecuentes | Textos nuevos del cliente en: «¿Gratis para el despacho?», «Ya uso un OCR», «Mi programa no es Odoo», «¿Quién paga los planes de mis clientes?», «¿Hay permanencia?» y «¿Migráis el histórico?» |
+| | C22 Pregunta nueva | «¿Qué cuenta como documento?», antes de la del formulario (pasan a ser diez) |
+| | C23 «¿Qué pasa cuando envío el formulario?» | «…para confirmar tu interés y fijar tu reunión de onboarding, gratuita.» |
+| **I** · `2d0c3b1` | C24 Entradilla del formulario | «Responde unas preguntas sobre tu despacho y te llamaremos para fijar tu reunión de onboarding: 30 minutos, gratis.» |
+| | C25 Programa contable | Opciones: Odoo, Holded, a3ERP (`a3erp`), Sage, Otro, Ninguno (Excel o papel) (`ninguno`) y No lo sé. Se quitaron la errata y el duplicado. Lógica sin cambios. Cuatro pruebas nuevas en `tests/prioridad.test.html` (16 de 16 correctas) |
+| | C26 Casilla de la llamada | «…para confirmar mi interés y fijar mi reunión de onboarding.» En la política de privacidad, la finalidad de la llamada pasa a «agendar la reunión de onboarding» (tabla de finalidades, apartado de la llamada y fila del proveedor del asistente de voz) |
+| | C27 Reserva directa | Debajo del formulario: «¿Prefieres reservar directamente? Reserva tu reunión de onboarding · o llama al 917 943 471». Enlace a cal.com en pestaña nueva con `data-cta="reserva_directa"` y teléfono como enlace `tel:`. Sigue visible tras la página de gracias. Clase nueva `.nota-reserva` |
+| **J** · `8510982` | C28 Configuración | `EMAIL_CONTACTO` = `escribeme@trazabis.es` y `TELEFONO_CONTACTO` = `917 943 471` (los marcadores del pie desaparecen). `CALC_ENDPOINT` y `FUNDADOR_HASTA` añadidos en los bloques F y E |
+| **K** · `1da222d` | C29 Banner de cookies en móvil | Por debajo de 768 px, barra inferior compacta: texto corto, «Aceptar todas» y «Rechazar todas» iguales (159 × 44 px) y «Configurar» como enlace. 157 px de alto en 375 × 667 (23,5 %); el titular se lee. Si la barra «Ver si mi despacho encaja» está visible, el banner se coloca encima. La lógica de `consent.js` no cambia; el escritorio, tampoco |
+| **L** · `86d3706` y `2236b0d` | C30 Documentación | README y este documento actualizados |
+| | C31 Caché | Todos los `?v=` de CSS y JS pasan a `20261014-1` (landing, tres páginas legales y prueba de prioridad) |
+
+**Decisiones de integración tomadas por el equipo técnico (no venían del cliente)**
+
+1. **Botones «Ver si mi despacho encaja» en precios (`inversion`) y en la calculadora (`calculadora`):** se mantienen porque la medición `cta_click` los necesita.
+2. **Parche de fuentes de la calculadora:** su enlace a Google Fonts contactaba con Google sin consentimiento. Las fuentes locales son variables (pesos 100–900); la cursiva de Roboto no existe en local y el navegador la simula.
+3. **`CALC_ENDPOINT`:** si está vacío se usa `FORM_ENDPOINT`; si también lo está, la calculadora queda en «vista previa» (no envía nada) y la consola muestra un aviso.
+4. **`initFundador`:** `fecha_prueba` solo funciona en localhost o con `?debug=1`. No se reutilizó el modo de desarrollo de `datalayer.js` porque también se activa con `GTM_ID` vacío, es decir, hoy en producción.
+5. **Reserva directa:** `reserva_directa` registra el clic sin bloquear el enlace. Va fuera del contenedor que se sustituye por la página de gracias. El teléfono es un enlace `tel:`.
+6. **Texto corto del banner móvil:** «Usamos cookies técnicas y, si aceptas, analíticas y publicitarias. Política de cookies.». El cliente no lo dio; debe validarlo el abogado.
+7. **Aviso legal:** se corrigió la errata del programa a «a3ERP» en la lista de marcas citadas, porque la verificación del cliente exige que no aparezca en las páginas legales. No se tocó nada más del texto legal.
+8. **Otros ajustes:**
+   - `aria-label` en la lista de la franja y no en su contenedor (en un `<div>` genérico no es válido).
+   - Clases del bloque de conciliación renombradas a `conciliacion__texto` y `conciliacion__aviso`.
+   - Reglas para que las tablas de precios no se salgan a 375 px.
+   - `seccion--separada` en la sección 8.
+   - Un comentario de `config.js` reescrito para no usar una palabra de la lista roja.
+
+**Verificación (14-10-2026)**
+
+- **Navegador (Playwright, 375, 768, 1024, 1280 y 1440 px):** sin scroll horizontal, cinco pasos y franja bien colocados y tablas dentro de su caja.
+- **Peticiones a terceros:** ninguna sin consentimiento, tampoco desde el iframe.
+- **Consola:** sin errores. Solo el aviso intencionado de la calculadora mientras no haya endpoint.
+- **Calculadora real:**
+  - El iframe crece solo, sin scroll interno.
+  - Una solicitud llegó a un webhook de prueba con `event_id`, `version: "calculadora"`, UTM y `fbclid`.
+  - `generate_lead` sin datos personales y `calculator_use` una vez.
+- **Medición:** `cta_click` en `hero`, `inversion`, `calculadora`, `sticky` y `reserva_directa`; `faq_open` en la pregunta nueva.
+- **Programa Fundador:** 0 de 17 elementos visibles con la fecha de prueba del 1-11, y 17 de 17 hoy.
+- **Sin JavaScript y con movimiento reducido:** contenido visible y sin animaciones infinitas.
+- **Accesibilidad (axe-core):** 0 infracciones en la landing.
+- **Lighthouse en móvil:** rendimiento 95–96, accesibilidad 100 y buenas prácticas 100.
+- **Términos de la lista roja:** 0 coincidencias en la landing, los scripts, las páginas legales, el README y este documento. Las únicas apariciones de «diagnóstico» válidas son las que el cliente mantiene.
+
+**Dudas abiertas: textos fuera del alcance del feedback que contradicen el cambio a «reunión de onboarding»**
+
+No se han modificado porque el feedback pedía no tocarlos. Necesitan decisión del cliente:
+
+| Dónde | Texto actual | Propuesta |
+| --- | --- | --- |
+| Página de gracias (`formulario.js`) | «…para confirmar tu interés y agendar tu diagnóstico de cartera.» | «…y fijar tu reunión de onboarding.» |
+| Aviso legal, objeto | «…permite a los interesados solicitar un diagnóstico de cartera.» | «…solicitar una reunión de onboarding.» |
+| Política de privacidad, tabla de proveedores | «Agenda del diagnóstico» | «Agenda de la reunión de onboarding» |
+
+**Observaciones sobre la calculadora del cliente (no modificadas)**
+
+- Su formulario remite a la política de privacidad de trazabis.com, no a la de esta landing.
+- Su lista de programas incluye «A3» y «Contasol».
+- Promete «te escribimos en menos de un día laborable», no la llamada del asistente de IA (relacionado con D2).
+- Abierta sola, axe le da 0 infracciones WCAG y 2–3 avisos de buenas prácticas: sin `<main>`, contenido fuera de regiones y orden de encabezados.
+
+**Decisiones pendientes del cliente (no aplicadas)**
+
+| # | Decisión | Cómo queda |
+| --- | --- | --- |
+| D1 | ¿Solo despachos de más de 50 clientes o todos (desde 10)? | Antetítulo «Para asesorías y gestorías con más de 50 clientes» y «Es para ti si… más de 50 clientes» |
+| D2 | ¿Estará operativo el asistente de IA el día del lanzamiento? | Se mantienen los textos del asistente de IA |
+| D3 | ¿Se usa el programa Despacho Fundador en la campaña y cuántas plazas quedan? | Visible hasta el 31-10-2026, con retirada automática |
+| D4 | ¿Cuánto dura de verdad la reunión? | «30 minutos»; falta comprobar el evento `demo-trazabis` de cal.com |
+
+**Contenido que el brief original prohibía y que ahora se muestra por indicación expresa del cliente:** el programa Despacho Fundador (descuentos del 30 % y del 40 %) y la garantía de devolución del setup.
+
+**Qué no se tocó, por indicación del cliente:**
+
+- Las secciones «¿Te suena?», vídeo (oculta), «Para quién es» (salvo el filete de separación) y «Quiénes somos».
+- El vídeo de la cabecera.
+- La lógica del formulario, salvo C24–C27.
+- Las casillas de privacidad, comunicaciones y Meta, y sus marcadores del abogado.
+- `404.html`, `.htaccess` y la redirección de la raíz.
