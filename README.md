@@ -400,7 +400,7 @@ Comprobado también tras la capa visual: con movimiento reducido no queda ningun
 | # | Comprobación | Resultado |
 | --- | --- | --- |
 | 1 | Términos prohibidos del brief (punto 9.1) y voseo | ✅ En los textos, sin coincidencias salvo excepciones. La primera es el marcador literal de la política de privacidad «[PENDIENTE: país y …]», que el brief incluye en la sección 8.2 y que se refiere a las salvaguardas de las transferencias internacionales, no a un compromiso comercial. La segunda es «Fundador» en el pie de foto de Rubén Bel Pauner («CEO y Fundador de Trazabis»), por indicación expresa del cliente. Desde el 14-10-2026, además, el cliente pide mostrar el programa Despacho Fundador y la garantía de devolución del setup. «100 %» solo aparece en «No es para ti si», negado. ⚠️ El vídeo demo muestra en pantalla cifras de ese tipo (ver pendientes). |
-| 2 | Holded, a3ERP y Sage | ✅ Holded y a3ERP solo como «en cola de integración, sin fecha», opciones del formulario o marcas citadas en el aviso legal. Sin logos de terceros. (Hasta el 14-10-2026 ponía «a2ERP», una errata.) |
+| 2 | Holded, a3ERP y Sage | ✅ Holded y a3ERP solo como «en cola de integración, sin fecha», opciones del formulario o marcas citadas en el aviso legal. Sin logos de terceros. |
 | 3 | Calculadora | Sustituida el 14-10-2026 por la oficial (ver arriba). |
 | 4 | Pregunta condicional y prioridad | ✅ `acepta_sin_conector` solo aparece si el programa no es Odoo; 12/12 pruebas de prioridad y UUID (16/16 desde el 14-10-2026). |
 | 5 | Casillas | ✅ Ninguna premarcada; sin las dos obligatorias no se envía; el aviso de IA está junto al botón. |
