@@ -16,7 +16,7 @@
   <link rel="preload" href="../assets/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="../assets/css/styles.css?v=20261014-1">
-  <script src="../assets/js/config.js?v=20261014-1" defer></script>
+  <script src="../assets/js/config.js?v=20261014-3" defer></script>
   <script src="../assets/js/datalayer.js?v=20261014-1" defer></script>
   <script src="../assets/js/consent.js?v=20261014-1" defer></script>
   <script src="../assets/js/main.js?v=20261014-1" defer></script>
@@ -635,8 +635,6 @@
               </div>
 
               <div class="casillas" role="group" aria-label="Consentimientos">
-                <p class="pendiente">[PENDIENTE abogado: validar los textos de las casillas antes de publicar]</p>
-
                 <div class="casilla">
                   <input type="checkbox" id="acepta_privacidad" name="acepta_privacidad" required>
                   <label for="acepta_privacidad">He leído y acepto la <a href="../legal/politica-privacidad.html" target="_blank" rel="noopener">política de privacidad<span class="visualmente-oculto"> (se abre en una pestaña nueva)</span></a>.</label>
@@ -657,7 +655,6 @@
                 <div class="casilla">
                   <input type="checkbox" id="acepta_medicion_publicitaria" name="acepta_medicion_publicitaria">
                   <label for="acepta_medicion_publicitaria">Acepto que mis datos de contacto se compartan cifrados con Meta para medir la eficacia de los anuncios. <span class="etiqueta-opcional">Opcional</span></label>
-                  <p class="pendiente casilla__pendiente">[PENDIENTE abogado: mantener o eliminar]</p>
                 </div>
               </div>
 
@@ -706,8 +703,8 @@
     <div class="contenedor">
       <span class="pie__logo"><img class="logo" src="../assets/img/logo-trazabis.webp" alt="Trazabis" width="643" height="187" loading="lazy" decoding="async"></span>
       <div class="pie__datos">
-        <p>Servicios Digitales y Automatización SL · CIF B19369800 · Paseo de la Castellana 194, Bajo B, 28048 Madrid</p>
-        <p>Email: <span class="pendiente" data-config="EMAIL_CONTACTO">[PENDIENTE: email de contacto]</span> · Teléfono: <span class="pendiente" data-config="TELEFONO_CONTACTO">[PENDIENTE: teléfono de contacto]</span></p>
+        <p>Servicios Digitales y Automatización SL · CIF B19369800 · Paseo de la Castellana 194, Planta Baja B, 28046 Madrid</p>
+        <p>Email: <span data-config="EMAIL_CONTACTO"><a href="mailto:escribeme@trazabis.es">escribeme@trazabis.es</a></span> · Teléfono: <span data-config="TELEFONO_CONTACTO"><a href="tel:+34917943471">+34 917 943 471</a></span></p>
       </div>
       <ul class="pie__enlaces">
         <li><a href="../legal/aviso-legal.html">Aviso legal</a></li>
