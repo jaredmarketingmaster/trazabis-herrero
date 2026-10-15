@@ -1784,6 +1784,23 @@ div.pendiente {
 }
 
 /* Nota de precios bajo la nota de integración (mismo tamaño que el texto pequeño de la página) */
+.nota-reserva {
+  margin-top: 28px;
+  text-align: center;
+  font-size: 0.9375rem;
+  color: var(--texto-suave);
+}
+
+.nota-reserva a {
+  color: var(--texto);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.nota-reserva a:hover {
+  color: var(--azul-trazabis);
+}
+
 .nota-precios {
   margin-top: 20px;
   font-size: 0.9375rem;

@@ -44,7 +44,11 @@
         ["Solo se informa, sin cumplir «alta»", con({ cargo: "otro", plazo_inicio: "solo_informandome" }), "baja"],
         ["Solo se informa, cumpliendo «alta» (orden del brief: alta antes que baja)", con({ plazo_inicio: "solo_informandome" }), "alta"],
         ["Más de 300, gerente, Excel", con({ clientes_cartera: "mas_300", intento_previo: "excel" }), "alta"],
-        ["No lo sé + acepta tablas + ambas cosas", con({ programa_contable: "no_lo_se", acepta_sin_conector: "si", intento_previo: "ambos" }), "alta"]
+        ["No lo sé + acepta tablas + ambas cosas", con({ programa_contable: "no_lo_se", acepta_sin_conector: "si", intento_previo: "ambos" }), "alta"],
+        ["a3ERP y acepta tablas", con({ programa_contable: "a3erp", acepta_sin_conector: "si" }), "alta"],
+        ["a3ERP y necesita el conector", con({ programa_contable: "a3erp", acepta_sin_conector: "no" }), "no_cerrar"],
+        ["Ninguno (Excel o papel) y acepta tablas", con({ programa_contable: "ninguno", acepta_sin_conector: "si", intento_previo: "excel" }), "alta"],
+        ["Ninguno (Excel o papel) y necesita el conector", con({ programa_contable: "ninguno", acepta_sin_conector: "no" }), "no_cerrar"]
       ];
       var fallos = 0;
       var tbody = document.getElementById("filas");

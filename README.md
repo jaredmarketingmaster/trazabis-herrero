@@ -160,7 +160,7 @@ Dos pasos con barra de progreso. Validación al pulsar «Continuar» o «Enviar�
 | `clientes_cartera` | `menos_20` · `20_50` · `51_100` · `101_150` · `151_200` · `201_250` · `251_300` · `mas_300` |
 | `tamano_equipo` | `1_2` · `3_15` · `mas_15` |
 | `cargo` | `socio_director_gerente` · `responsable_contabilidad` · `otro` |
-| `programa_contable` | `odoo` · `holded` · `a2erp` · `a3` · `sage` · `otro` · `no_lo_se` |
+| `programa_contable` | `odoo` · `holded` · `a3erp` · `sage` · `otro` · `ninguno` · `no_lo_se` |
 | `acepta_sin_conector` | `si` · `no` · `no_aplica` (Odoo) |
 | `intento_previo` | `ocr` · `excel` · `ambos` · `no` |
 | `plazo_inicio` | `antes_cierre_trimestral` · `proximos_6_meses` · `mas_adelante` · `solo_informandome` |

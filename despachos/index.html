@@ -465,7 +465,7 @@
     <section class="seccion seccion--gris seccion--formulario" id="formulario" aria-labelledby="formulario-titulo">
       <div class="contenedor contenedor--lectura" id="form-contenedor">
         <h2 class="titulo-acento" id="formulario-titulo" data-reveal>¿Vemos si tu despacho encaja?</h2>
-        <p class="entradilla" data-reveal>Responde unas preguntas sobre tu despacho y te llamaremos para agendar un diagnóstico de cartera gratuito.</p>
+        <p class="entradilla" data-reveal>Responde unas preguntas sobre tu despacho y te llamaremos para fijar tu reunión de onboarding: 30 minutos, gratis.</p>
 
         <div class="formulario-caja" data-reveal>
           <form id="form-lead" action="#formulario" method="post" novalidate>
@@ -518,10 +518,10 @@
                 <div class="opciones opciones--cortas">
                   <label class="opcion"><input type="radio" name="programa_contable" value="odoo" required><span>Odoo</span></label>
                   <label class="opcion"><input type="radio" name="programa_contable" value="holded" required><span>Holded</span></label>
-                  <label class="opcion"><input type="radio" name="programa_contable" value="a2erp" required><span>a2ERP</span></label>
-                  <label class="opcion"><input type="radio" name="programa_contable" value="a3" required><span>A3</span></label>
+                  <label class="opcion"><input type="radio" name="programa_contable" value="a3erp" required><span>a3ERP</span></label>
                   <label class="opcion"><input type="radio" name="programa_contable" value="sage" required><span>Sage</span></label>
                   <label class="opcion"><input type="radio" name="programa_contable" value="otro" required><span>Otro</span></label>
+                  <label class="opcion"><input type="radio" name="programa_contable" value="ninguno" required><span>Ninguno (Excel o papel)</span></label>
                   <label class="opcion"><input type="radio" name="programa_contable" value="no_lo_se" required><span>No lo sé</span></label>
                 </div>
                 <p class="error" id="error-programa_contable" hidden></p>
@@ -631,7 +631,7 @@
 
                 <div class="casilla">
                   <input type="checkbox" id="acepta_llamada_ia" name="acepta_llamada_ia" required>
-                  <label for="acepta_llamada_ia">Acepto recibir una llamada de Trazabis, realizada por un asistente de inteligencia artificial, para confirmar mi interés y agendar un diagnóstico de cartera.</label>
+                  <label for="acepta_llamada_ia">Acepto recibir una llamada de Trazabis, realizada por un asistente de inteligencia artificial, para confirmar mi interés y fijar mi reunión de onboarding.</label>
                   <p class="error" id="error-acepta_llamada_ia" hidden></p>
                 </div>
 
@@ -675,6 +675,10 @@
             </div>
           </form>
         </div>
+      </div>
+      <!-- Fuera de #form-contenedor para que siga visible tras la página de gracias -->
+      <div class="contenedor contenedor--lectura">
+        <p class="nota-reserva" data-reveal>¿Prefieres reservar directamente? <a href="https://cal.com/ruben-bel/demo-trazabis" target="_blank" rel="noopener" data-cta="reserva_directa">Reserva tu reunión de onboarding</a> · o llama al <a href="tel:+34917943471">917&nbsp;943&nbsp;471</a>.</p>
       </div>
     </section>
 
