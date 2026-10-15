@@ -3,6 +3,7 @@
    1. Alto automático del iframe (mensajes postMessage de la propia calculadora).
    2. Envío de las solicitudes de la calculadora (window.enviarSolicitudTrazabis dentro del iframe).
    3. Evento calculator_use en la primera interacción.
+   4. Sus enlaces a la agenda pasan por el aviso previo de agenda.js.
    Todo acceso al iframe va en try/catch: si fallara (por ejemplo, otro origen), la página sigue
    funcionando y solo se pierde la medición o el envío. */
 (function () {
@@ -107,9 +108,29 @@
     ["click", "input", "change"].forEach(function (t) { doc.addEventListener(t, registrar, true); });
   }
 
+  /* 4. Enlaces de la calculadora a la agenda: primero el aviso de agenda.js.
+     La calculadora enlaza a cal.com; si AGENDA_URL apunta a otra agenda, también se reconoce. */
+  function esAgenda(a) {
+    var hosts = ["cal.com"];
+    try { if (cfg.AGENDA_URL) hosts.push(new URL(cfg.AGENDA_URL, location.href).hostname); } catch (e) { /* URL no válida */ }
+    return hosts.indexOf(a.hostname) !== -1;
+  }
+
+  function escucharAgenda() {
+    var doc = iframe.contentDocument;
+    if (!doc) return;
+    doc.addEventListener("click", function (e) {
+      var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+      if (!a || !esAgenda(a) || !window.TrazabisAgenda) return;
+      DL.push("cta_click", { cta_location: "calculadora_reserva" });
+      if (window.TrazabisAgenda.abrir(a.href, "calculadora_reserva", a)) e.preventDefault();
+    }, true);
+  }
+
   function alCargar() {
     safe(definirEnvio, "envio");
     safe(escucharUso, "uso");
+    safe(escucharAgenda, "agenda");
   }
 
   function yaCargado() {

@@ -15,13 +15,14 @@
   <link rel="icon" href="data:,">
   <link rel="preload" href="../assets/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/styles.css?v=20261014-1">
-  <script src="../assets/js/config.js?v=20261014-3" defer></script>
+  <link rel="stylesheet" href="../assets/css/styles.css?v=20261015-1">
+  <script src="../assets/js/config.js?v=20261015-1" defer></script>
   <script src="../assets/js/datalayer.js?v=20261014-1" defer></script>
   <script src="../assets/js/consent.js?v=20261014-1" defer></script>
   <script src="../assets/js/main.js?v=20261014-1" defer></script>
   <script src="../assets/js/formulario.js?v=20261014-2" defer></script>
-  <script src="../assets/js/calculadora-integracion.js?v=20261014-1" defer></script>
+  <script src="../assets/js/agenda.js?v=20261015-1" defer></script>
+  <script src="../assets/js/calculadora-integracion.js?v=20261015-1" defer></script>
   <script src="../assets/js/efectos.js?v=20261014-1" defer></script>
 </head>
 <body>
@@ -689,7 +690,7 @@
       </div>
       <!-- Fuera de #form-contenedor para que siga visible tras la página de gracias -->
       <div class="contenedor contenedor--lectura">
-        <p class="nota-reserva" data-reveal>¿Prefieres reservar directamente? <a href="https://cal.com/ruben-bel/demo-trazabis" target="_blank" rel="noopener" data-cta="reserva_directa">Reserva tu reunión de onboarding</a> · o llama al <a href="tel:+34917943471">917&nbsp;943&nbsp;471</a>.</p>
+        <p class="nota-reserva" data-reveal>¿Prefieres reservar directamente? <a href="https://cal.com/ruben-bel/demo-trazabis" target="_blank" rel="noopener" data-cta="reserva_directa" data-agenda="reserva_directa">Reserva tu reunión de onboarding</a> · o llama al <a href="tel:+34917943471">917&nbsp;943&nbsp;471</a>.</p>
       </div>
     </section>
 
@@ -715,5 +716,20 @@
       <p class="pie__copy">© <span data-anio>2026</span> Servicios Digitales y Automatización SL</p>
     </div>
   </footer>
+
+  <!-- Aviso antes de abrir la agenda: agenda.js lo muestra al pulsar cualquier enlace a la agenda.
+       Sin JavaScript no se abre y los enlaces llevan directamente a la agenda. -->
+  <dialog class="aviso-agenda" id="aviso-agenda" aria-labelledby="aviso-agenda-titulo" aria-describedby="aviso-agenda-texto">
+    <div class="aviso-agenda__contenido">
+      <button type="button" class="aviso-agenda__cerrar" data-agenda-cerrar aria-label="Cerrar"><svg class="icono" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button>
+      <div class="aviso-agenda__cuerpo">
+        <div class="aviso-agenda__texto">
+          <h2 id="aviso-agenda-titulo">Antes de abrir la agenda</h2>
+          <p id="aviso-agenda-texto">La agenda se abre en una pestaña nueva. Elige día y hora para tu reunión de onboarding (30 minutos, gratis) y responde tres preguntas: número de clientes, programa contable y tu cargo. Así tendremos tu demo preparada. Te enviaremos un recordatorio 24 horas y otro 1 hora antes, con el acceso a la reunión. Al reservar, el asistente de IA ya no te llamará.</p>
+        </div>
+        <a class="boton boton--primario aviso-agenda__aceptar" href="https://cal.com/ruben-bel/demo-trazabis" target="_blank" rel="noopener" data-agenda-aceptar>Aceptar<span class="visualmente-oculto"> (abre la agenda en una pestaña nueva)</span></a>
+      </div>
+    </div>
+  </dialog>
 </body>
 </html>

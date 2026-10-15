@@ -8,6 +8,7 @@ window.TRAZABIS_CONFIG = {
   TELEFONO_ASISTENTE: "",// [PENDIENTE] Número desde el que llama el asistente de IA. Si está vacío, no se muestra.
   EMAIL_CONTACTO: "escribeme@trazabis.es",  // Email de contacto del pie y del aviso legal
   TELEFONO_CONTACTO: "+34 917 943 471",    // Teléfono de contacto del pie y de las páginas legales (el mismo que escriben en el HTML)
+  AGENDA_URL: "https://cal.com/ruben-bel/demo-trazabis",  // Agenda de la reserva directa (por ahora, cal.com). En la versión publicada, el calendario de GHL: cambia aquí la URL, el href del HTML (sin JavaScript) y la fila de Cal.com de la política de privacidad.
   CALC_ENDPOINT: "",     // [PENDIENTE] Webhook que recibe las solicitudes de la calculadora. Si está vacío, se usa FORM_ENDPOINT.
   FUNDADOR_HASTA: "2026-10-31T23:59:59+01:00",  // Fin del programa Despacho Fundador (hora peninsular; el 31-10-2026 ya rige el horario de invierno, UTC+1)
 };

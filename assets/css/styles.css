@@ -3112,6 +3112,93 @@ div.pendiente {
   }
 }
 
+/* Aviso antes de abrir la agenda (agenda.js): mismo lenguaje visual que el panel de cookies.
+   Texto a la izquierda y «Aceptar» a su lado en pantallas anchas; apilados en móvil. */
+.aviso-agenda {
+  --color-foco: var(--azul-trazabis);
+  width: min(100% - 24px, 680px);
+  max-height: calc(100% - 24px);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radio-lg);
+  color: var(--texto);
+  background: var(--blanco);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+}
+
+.aviso-agenda::backdrop {
+  background: rgba(15, 18, 30, 0.6);
+}
+
+@supports ((-webkit-backdrop-filter: blur(4px)) or (backdrop-filter: blur(4px))) {
+  .aviso-agenda::backdrop {
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+  }
+}
+
+.aviso-agenda__contenido {
+  position: relative;
+  padding: 24px 20px 20px;
+}
+
+.aviso-agenda__cerrar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid var(--borde);
+  border-radius: 12px;
+  background: var(--blanco);
+  color: var(--texto);
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.aviso-agenda__cerrar:hover {
+  background: var(--azul-suave);
+  border-color: var(--azul-trazabis);
+}
+
+.aviso-agenda__cuerpo {
+  display: grid;
+  gap: 20px;
+}
+
+.aviso-agenda h2 {
+  padding-right: 52px;
+  font-size: 1.375rem;
+}
+
+.aviso-agenda__texto p {
+  margin-top: 10px;
+  color: var(--texto-suave);
+}
+
+.aviso-agenda__aceptar {
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .aviso-agenda__contenido {
+    padding: 32px;
+  }
+
+  .aviso-agenda__cuerpo {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 28px;
+  }
+
+  .aviso-agenda__aceptar {
+    width: auto;
+  }
+}
+
 /* --------------------------------------------------------------------------
    18. Páginas legales
    -------------------------------------------------------------------------- */
