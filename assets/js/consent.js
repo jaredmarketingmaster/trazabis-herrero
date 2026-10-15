@@ -115,10 +115,10 @@
 
   /* ---------- Interfaz ---------- */
 
-  function crearBoton(texto, accion) {
+  function crearBoton(texto, accion, claseExtra) {
     var b = document.createElement("button");
     b.type = "button";
-    b.className = "boton boton--primario";
+    b.className = "boton boton--primario" + (claseExtra ? " " + claseExtra : "");
     b.setAttribute("data-consent", accion);
     b.textContent = texto;
     return b;
@@ -133,13 +133,16 @@
     banner.hidden = true;
     banner.innerHTML =
       '<p class="consent-banner__titulo">Cookies</p>' +
-      "<p>Usamos cookies técnicas, necesarias para que el sitio funcione. Con tu permiso, usaremos también cookies analíticas (Google Analytics 4 y Microsoft Clarity) y publicitarias (Pixel de Meta). Puedes aceptarlas, rechazarlas o configurarlas, y cambiar tu elección cuando quieras. Más información en la " +
+      '<p class="consent-banner__texto">' + "Usamos cookies técnicas, necesarias para que el sitio funcione. Con tu permiso, usaremos también cookies analíticas (Google Analytics 4 y Microsoft Clarity) y publicitarias (Pixel de Meta). Puedes aceptarlas, rechazarlas o configurarlas, y cambiar tu elección cuando quieras. Más información en la " +
+      '<a href="' + raiz + 'legal/politica-cookies.html">Política de cookies</a>.</p>' +
+      // Versión corta para la barra compacta de móvil (< 768 px); el CSS muestra solo una de las dos
+      '<p class="consent-banner__corto">Usamos cookies técnicas y, si aceptas, analíticas y publicitarias. ' +
       '<a href="' + raiz + 'legal/politica-cookies.html">Política de cookies</a>.</p>';
     var botones = document.createElement("div");
     botones.className = "consent-botones";
     botones.appendChild(crearBoton("Aceptar todas", "aceptar"));
     botones.appendChild(crearBoton("Rechazar todas", "rechazar"));
-    botones.appendChild(crearBoton("Configurar", "configurar"));
+    botones.appendChild(crearBoton("Configurar", "configurar", "consent-botones__configurar"));
     banner.appendChild(botones);
     // Va justo después del enlace «Saltar al contenido» (si existe), al principio del orden de tabulación
     var salto = document.querySelector("body > .salto");
