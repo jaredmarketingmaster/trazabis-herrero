@@ -3164,38 +3164,96 @@ div.pendiente {
   border-color: var(--azul-trazabis);
 }
 
-.aviso-agenda__cuerpo {
-  display: grid;
-  gap: 20px;
-}
-
 .aviso-agenda h2 {
   padding-right: 52px;
   font-size: 1.375rem;
 }
 
-.aviso-agenda__texto p {
-  margin-top: 10px;
+/* Aviso destacado bajo el título (#6E2FAE sobre #F1E8FF: 6,61:1) */
+.reserva-modal__aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 14px 0;
+  padding: 12px 14px;
+  border-left: 4px solid var(--acento-logo);
+  border-radius: 0 8px 8px 0;
+  background: #F1E8FF;
+  color: #6E2FAE;
+  font-size: inherit;
+  font-weight: 500;
+}
+
+.reserva-modal__aviso strong {
+  font-weight: 700;
+}
+
+.reserva-modal__aviso .icono {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 0.15em;
+  color: #6E2FAE;
+}
+
+.aviso-agenda__texto {
   color: var(--texto-suave);
 }
 
-.aviso-agenda__aceptar {
+/* Botones: apilados a todo el ancho en móvil, con «Sí, quiero reservar» arriba;
+   desde 768 px, en una fila alineada a la derecha, con el principal a la derecha */
+.aviso-agenda__botones {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.aviso-agenda__botones .boton {
   width: 100%;
+}
+
+/* Móvil: más compacta para que se vea entera sin desplazarse (375 × 667) */
+@media (max-width: 767px) {
+  .aviso-agenda h2 {
+    font-size: 1.25rem;
+  }
+
+  .aviso-agenda__contenido p {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .aviso-agenda__botones {
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .aviso-agenda__botones .boton {
+    min-height: 48px;
+    padding: 10px 16px;
+    font-size: 1rem;
+  }
 }
 
 @media (min-width: 600px) {
   .aviso-agenda__contenido {
     padding: 32px;
   }
+}
 
-  .aviso-agenda__cuerpo {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: end;
-    gap: 28px;
+@media (min-width: 768px) {
+  .aviso-agenda__botones {
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+    gap: 12px;
   }
 
-  .aviso-agenda__aceptar {
+  .aviso-agenda__botones .boton {
     width: auto;
+    padding: 12px 20px;
+    font-size: 1rem;
+    white-space: nowrap;
   }
 }
 

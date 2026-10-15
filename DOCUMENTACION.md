@@ -152,8 +152,15 @@ La **barra fija en móvil** (pantallas de menos de 768 px) está visible mientra
 
 Para quien prefiere reservar directamente. Las puertas a la agenda son el enlace «Reserva tu reunión de onboarding» de debajo del formulario y los enlaces a la agenda de la calculadora oficial.
 
-1. Al pulsar una puerta se abre un aviso con el texto aclaratorio y el botón «Aceptar» al lado (debajo, en móvil). El texto es una propuesta pendiente de validar: «La agenda se abre en una pestaña nueva. Elige día y hora para tu reunión de onboarding (30 minutos, gratis) y responde tres preguntas: número de clientes, programa contable y tu cargo. Así tendremos tu demo preparada. Te enviaremos un recordatorio 24 horas y otro 1 hora antes, con el acceso a la reunión. Al reservar, el asistente de IA ya no te llamará.»
-2. «Aceptar» abre la agenda en una pestaña nueva y cierra el aviso. «Cerrar», Escape o un clic fuera lo cierran sin abrir nada, y el foco vuelve a la puerta.
+1. Al pulsar una puerta se abre una ventana modal con estos textos, del cliente:
+   - **Título:** «Antes de reservar tu reunión de onboarding».
+   - **Aviso destacado** (fondo lavanda #F1E8FF, borde izquierdo violeta y texto #6E2FAE, con el icono de información): «Al reservar, confirmas que **ya has entendido cómo funciona Trazabis** y que quieres ver cómo se aplica en tu despacho antes de pagar la implantación.»
+   - **Texto:** «La agenda se abre en una pestaña nueva. Elige día y hora para tu reunión de onboarding con nuestro equipo: repasaremos tu cartera cliente a cliente y veremos cómo se aplicaría Trazabis en tu despacho. Recibirás la confirmación por email.»
+2. Botones:
+   - **«Sí, quiero reservar»** (principal) abre la agenda en una pestaña nueva y cierra la ventana.
+   - **«Todavía no: ver si mi despacho encaja»** (secundario) cierra la ventana, baja al formulario y deja el foco en el título del paso visible («Tu despacho» en el paso 1). Desde la calculadora, también lleva al formulario de la página principal.
+   - En escritorio van en una fila alineada a la derecha, con el principal a la derecha; en móvil, apilados a todo el ancho, con el principal arriba. En móvil la ventana es algo más compacta para verse entera sin desplazarse (375 × 667 y 360 × 640).
+   - ×, Esc o un clic fuera la cierran sin abrir nada y el foco vuelve a la puerta. Tab no sale de la ventana.
 3. La agenda es hoy cal.com (`AGENDA_URL`, en `config.js`); en la versión publicada será el calendario de GHL.
 4. Lo que pasa después de reservar se configura en GHL, no en la landing: la reserva entra en el CRM, se envía `Schedule` a Meta por la API de conversiones, el formulario de la agenda pregunta número de clientes, programa y cargo, Rubén recibe un email, se mandan recordatorios a 24 h y 1 h con el acceso a la demo, y no hay llamada del asistente de IA.
 
@@ -230,7 +237,7 @@ Todos los eventos pasan por `datalayer.js`, que **solo deja pasar una lista cerr
 | Evento | Cuándo |
 | --- | --- |
 | `cta_click` | Clic en un botón «Ver si mi despacho encaja» o en una puerta a la agenda. `cta_location`: `hero` · `video` · `inversion` · `calculadora` · `sticky` · `reserva_directa` · `calculadora_reserva` |
-| `agenda_open` | «Aceptar» en el aviso previo a la agenda (`cta_location`: `reserva_directa` · `calculadora_reserva`). El `Schedule` de Meta lo envía GHL al confirmarse la reserva |
+| `reserva_modal` | Salida de la ventana previa a la reserva: `accion` `confirmar` («Sí, quiero reservar»), `ir_formulario` («Todavía no…») o `cerrar` (×, Esc o clic fuera), con la `cta_location` de la puerta (`reserva_directa` · `calculadora_reserva`). El `Schedule` de Meta lo envía GHL al confirmarse la reserva |
 | `video_play` | Primera reproducción del vídeo demo de la cabecera (o del de la sección 5, si existe) |
 | `calculator_use` | Primera interacción con la calculadora oficial, una vez por visita (`version: "calculadora"`) |
 | `form_start` | Primera interacción con el formulario |
@@ -284,7 +291,7 @@ Las tres páginas legales usan los textos legales vigentes de trazabis.com, adap
 | `assets/video/` | Vídeo demo en WebM (original) y MP4 (copia de compatibilidad) |
 | `despachos/calculadora.html` | Calculadora oficial de trazabis.com (archivo del cliente; solo lleva el parche de fuentes) |
 | `assets/js/calculadora-integracion.js` | Alto del iframe, envío de las solicitudes de la calculadora, `calculator_use` y paso de sus enlaces a la agenda por el aviso previo |
-| `assets/js/agenda.js` | Aviso previo a la agenda (ruta C), `AGENDA_URL` y evento `agenda_open` |
+| `assets/js/agenda.js` | Ventana previa a la reserva (ruta C), `AGENDA_URL` y evento `reserva_modal` |
 | `assets/js/formulario.js` | Formulario, validación, prioridad, envío y página de gracias |
 | `assets/js/efectos.js` | Animaciones: aparición al hacer scroll, luz de la cabecera y halos |
 | `assets/css/styles.css` | Todos los estilos y los tokens de color de marca |
@@ -503,4 +510,33 @@ Caché: `styles.css` y `config.js` pasan a `?v=20261015-1` en las cuatro página
 - **axe-core con el aviso abierto:** 0 infracciones.
 - **html-validate:** los mismos avisos que antes.
 
-**Pendiente:** validar el texto del aviso, que es una propuesta, y configurar en GHL lo que promete (preguntas en la reserva, recordatorios a 24 h y 1 h y exclusión de la llamada de IA).
+**Pendiente (entonces):** validar el texto del aviso, que era una propuesta. Se sustituyó por los textos del cliente el mismo día (ver 9.6).
+
+### 9.6 Contenido definitivo de la ventana de reserva directa (15 de octubre de 2026)
+
+El cliente sustituye el contenido de la ventana que se abre al pulsar cualquier enlace a la agenda: título, un aviso destacado nuevo, el texto y dos botones en lugar de «Aceptar». No cambian el mecanismo de apertura e interceptación (el enlace de la nota de reserva y los cinco de la calculadora, sin tocar `calculadora.html`), el cierre ni los estilos generales de la ventana.
+
+| Archivo | Cambio |
+| --- | --- |
+| `despachos/index.html` | Textos del cliente: título «Antes de reservar tu reunión de onboarding» (`reserva-modal-titulo`), aviso `.reserva-modal__aviso` (`reserva-modal-aviso`) y texto (`reserva-modal-texto`); botones «Sí, quiero reservar» (enlace real a cal.com en pestaña nueva) y «Todavía no: ver si mi despacho encaja» (`<button>` con contorno). `aria-describedby="reserva-modal-aviso reserva-modal-texto"` |
+| `assets/css/styles.css` | Clase `.reserva-modal__aviso` (lavanda #F1E8FF, borde izquierdo de 4 px #8127E3, texto #6E2FAE en peso 500 y `<strong>` en 700, icono de 18 px; contraste 6,61:1). El texto ocupa todo el ancho y los botones van debajo: en fila a la derecha en escritorio, sin partir líneas, y apilados en móvil, con la ventana algo más compacta para que se vea entera |
+| `assets/js/agenda.js` | «Todavía no…» cierra, baja al formulario y deja el foco en el título del paso visible. Tab queda dentro de la ventana. Medición `reserva_modal` con `accion` |
+| `assets/js/datalayer.js` | `accion` pasa a la lista de parámetros permitidos |
+
+**Medición:** el evento `reserva_modal` no existía. Antes solo se registraba `agenda_open` al pulsar «Aceptar». Ahora `reserva_modal` lleva `accion` (`confirmar`, `ir_formulario` o `cerrar`) y la `cta_location` de la puerta, y sustituye a `agenda_open` para no medir dos veces lo mismo. El parámetro `accion` es un valor cerrado, sin datos personales.
+
+**Foco con «Todavía no…»:** va al título del paso 1, «Tu despacho». Si la persona ya está en el paso 2, el del paso 1 está oculto y el foco va al título del paso 2; si ya envió el formulario, va a la página de gracias.
+
+Caché: `styles.css` y `datalayer.js` a `?v=20261015-2` en las cuatro páginas, y `agenda.js` a `?v=20261015-2` en la landing.
+
+**Verificación (375 × 667, 360 × 640 y 1440 × 900):**
+- **Textos antiguos:** la búsqueda de «tendremos tu demo», «tres preguntas», «ya no te llamará» y «Antes de abrir la agenda» en `index.html` y los JS da 0 resultados.
+- **Puertas:** los cinco enlaces de la calculadora (con la oferta del modo guiado a la vista) y el de la nota de reserva abren la ventana.
+- **Encaje en pantalla:** la ventana se ve entera, sin desplazarse. Con el banner de cookies abierto y la barra fija visible, ninguno tapa los botones.
+- **«Sí, quiero reservar»:** abre cal.com en otra pestaña sin bloqueo.
+- **«Todavía no…»:** desde la calculadora y desde la nota, lleva al formulario con el foco en «Tu despacho»; con movimiento reducido, el salto es inmediato.
+- **Teclado:** Tab y Mayús+Tab no salen de la ventana; Esc la cierra.
+- **Medición:** `reserva_modal` con `confirmar`, `ir_formulario` y `cerrar`.
+- **Consola y accesibilidad:** sin errores; axe con 0 infracciones, sobre la ventana y sobre la página entera.
+- **html-validate:** los mismos avisos que antes.
+- **`calculadora.html`:** sin cambios (`git diff`).

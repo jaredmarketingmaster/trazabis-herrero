@@ -46,7 +46,7 @@ Sitio estático: HTML, CSS y JavaScript sin frameworks, sin paso de compilación
 /assets/js/main.js                Pie, botones CTA, barra fija, FAQ, vídeo y retirada del programa Fundador
 /assets/js/formulario.js
 /assets/js/calculadora-integracion.js  Alto del iframe, envío de solicitudes, calculator_use y enlaces a la agenda de la calculadora
-/assets/js/agenda.js              Aviso previo y apertura de la agenda (ruta C)
+/assets/js/agenda.js              Ventana previa a la reserva y apertura de la agenda (ruta C)
 /assets/js/efectos.js             Capa visual: aparición al scroll, luz de la cabecera, halos
 /assets/fonts/                    Montserrat y Roboto (Google Fonts, licencia OFL) alojadas aquí
 /assets/img/logo-trazabis.webp    Logo que usa la web (WebP sin pérdida, 7 KB)
@@ -159,17 +159,22 @@ Para quien ya sabe que quiere la reunión: intención máxima, porque ya reserv�
 - **Puertas a la agenda:**
   - el enlace «Reserva tu reunión de onboarding» de debajo del formulario (`data-agenda="reserva_directa"`);
   - los enlaces a la agenda de la calculadora oficial. Son de `calculadora.html`, que no se modifica: los intercepta `calculadora-integracion.js`.
-- **Aviso previo (`assets/js/agenda.js`):** al pulsar cualquier puerta se abre un aviso (`<dialog id="aviso-agenda">`) con el texto aclaratorio y, a su lado, el botón «Aceptar». «Aceptar» es un enlace normal con `target="_blank"`: abre la agenda en una pestaña nueva y cierra el aviso.
-  - El aviso se cierra con «Cerrar», con Escape o pulsando fuera, y el foco vuelve a la puerta que lo abrió.
+- **Ventana previa (`assets/js/agenda.js`):** al pulsar cualquier puerta se abre una ventana modal (`<dialog id="aviso-agenda">`, accesible con `aria-labelledby="reserva-modal-titulo"` y `aria-describedby="reserva-modal-aviso reserva-modal-texto"`). Sus textos, del cliente:
+  - Título: «Antes de reservar tu reunión de onboarding».
+  - Aviso destacado (fondo lavanda, borde violeta): «Al reservar, confirmas que **ya has entendido cómo funciona Trazabis** y que quieres ver cómo se aplica en tu despacho antes de pagar la implantación.»
+  - Texto: «La agenda se abre en una pestaña nueva. Elige día y hora para tu reunión de onboarding con nuestro equipo: repasaremos tu cartera cliente a cliente y veremos cómo se aplicaría Trazabis en tu despacho. Recibirás la confirmación por email.»
+  - **«Sí, quiero reservar»** (principal): enlace real a la agenda con `target="_blank"`; abre la agenda en una pestaña nueva y cierra la ventana.
+  - **«Todavía no: ver si mi despacho encaja»** (secundario, con contorno): cierra la ventana, baja a `#formulario` (con desplazamiento suave, salvo con movimiento reducido) y deja el foco en el título del paso visible del formulario: «Tu despacho» si está en el paso 1, el del paso 2 si ya estaba en él, o la página de gracias si ya se envió. Desde la calculadora hace lo mismo en la página principal.
+  - En escritorio los dos botones van en una fila alineada a la derecha, con el principal a la derecha; en móvil (< 768 px), apilados a todo el ancho, con el principal arriba.
+  - × , Esc o un clic fuera la cierran y el foco vuelve a la puerta. Tab no sale de la ventana.
   - Sin JavaScript, o en navegadores sin `<dialog>`, las puertas llevan directamente a la agenda.
-- **Texto del aviso** (propuesta redactada a partir del flujo de la ruta C; **pendiente de validar por el cliente**): «Antes de abrir la agenda» — «La agenda se abre en una pestaña nueva. Elige día y hora para tu reunión de onboarding (30 minutos, gratis) y responde tres preguntas: número de clientes, programa contable y tu cargo. Así tendremos tu demo preparada. Te enviaremos un recordatorio 24 horas y otro 1 hora antes, con el acceso a la reunión. Al reservar, el asistente de IA ya no te llamará.»
 - **Agenda:** `AGENDA_URL` en `config.js`. Hoy es cal.com (`https://cal.com/ruben-bel/demo-trazabis`), para ver el funcionamiento. En la versión publicada será el calendario de GHL. Al cambiarla:
-  1. `AGENDA_URL` en `config.js` (`agenda.js` la aplica a todos los enlaces y al botón «Aceptar», también a los de la calculadora);
-  2. el `href` del enlace de reserva directa en `despachos/index.html` y el del botón «Aceptar» (los usa quien navega sin JavaScript);
+  1. `AGENDA_URL` en `config.js` (`agenda.js` la aplica a todos los enlaces y a «Sí, quiero reservar», también a los de la calculadora);
+  2. el `href` del enlace de reserva directa en `despachos/index.html` y el de «Sí, quiero reservar» (los usa quien navega sin JavaScript);
   3. la fila de Cal.com de la política de privacidad (apartado 6), que se sustituye o se quita, porque el calendario pasa a ser de HighLevel.
 - **Medición:**
   - `cta_click` al pulsar una puerta: `reserva_directa` en la landing y `calculadora_reserva` en la calculadora;
-  - `agenda_open` al pulsar «Aceptar», con la misma `cta_location`.
+  - `reserva_modal` al salir de la ventana, con `accion` (`confirmar` para «Sí, quiero reservar», `ir_formulario` para «Todavía no…» y `cerrar` para ×, Esc o clic fuera) y la misma `cta_location`.
 
   La reserva en sí ocurre en la agenda, fuera de la landing: la landing no sabe si se completó.
 
@@ -185,7 +190,7 @@ Así está definida la ruta C:
 | Recordatorios | 24 h y 1 h antes, con el acceso a la demo |
 | Sin llamada de IA | Quien reserva queda fuera de la llamada del asistente de IA: no se le hace agendar otra vez |
 
-El texto del aviso promete las preguntas, los recordatorios y que no habrá llamada de IA. Esas tres cosas tienen que estar configuradas en la agenda y en GHL antes de publicar.
+La ventana promete que la persona recibirá la confirmación por email: la agenda (cal.com hoy, GHL en la versión publicada) tiene que enviarla.
 
 ## Formulario
 
@@ -271,7 +276,7 @@ Se evalúa en este orden (el primero que se cumple gana), tal como lo define el 
 | event | Cuándo | Parámetros |
 | --- | --- | --- |
 | `cta_click` | Clic en cualquier «Ver si mi despacho encaja» o en una puerta a la agenda | `cta_location`: `hero` · `video` · `inversion` · `calculadora` · `sticky` · `reserva_directa` · `calculadora_reserva` |
-| `agenda_open` | «Aceptar» en el aviso previo: se abre la agenda en una pestaña nueva | `cta_location`: `reserva_directa` · `calculadora_reserva` |
+| `reserva_modal` | Salida de la ventana previa a la reserva | `accion`: `confirmar` · `ir_formulario` · `cerrar`; `cta_location`: `reserva_directa` · `calculadora_reserva` |
 | `video_play` | Primera reproducción del vídeo | — |
 | `calculator_use` | Primera interacción con la calculadora oficial (una vez por visita) | `version: "calculadora"` |
 | `form_start` | Primera interacción con el formulario (una vez por visita) | — |
@@ -315,7 +320,6 @@ Desde el 15-10-2026 no queda ningún marcador visible en la landing ni en las p�
 - [ ] Colores oficiales de marca (HEX) para sustituir los tokens de `styles.css`. **Ojo:** los colores medidos en el logo aportado son azul `#14376B` y morado `#8127E3`; el azul del brief (`#1E2852`) no coincide con el del logo.
 - [ ] (Opcional) Versión monocroma del logo en blanco (SVG) para el pie; mientras tanto, el logo bicolor va sobre una placa blanca.
 - [ ] (Opcional) Favicon.
-- [ ] **Validar el texto del aviso previo a la agenda** (propuesta; ver [Ruta C](#ruta-c--agenda-directa)).
 - [ ] Solicitudes de la calculadora: su propia casilla y su capa informativa (dentro de `calculadora.html`) remiten a `trazabis.com/privacidad`, no a la política de esta landing.
 
 ### Abogado

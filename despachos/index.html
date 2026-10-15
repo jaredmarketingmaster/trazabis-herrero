@@ -15,13 +15,13 @@
   <link rel="icon" href="data:,">
   <link rel="preload" href="../assets/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/styles.css?v=20261015-1">
+  <link rel="stylesheet" href="../assets/css/styles.css?v=20261015-2">
   <script src="../assets/js/config.js?v=20261015-1" defer></script>
-  <script src="../assets/js/datalayer.js?v=20261014-1" defer></script>
+  <script src="../assets/js/datalayer.js?v=20261015-2" defer></script>
   <script src="../assets/js/consent.js?v=20261014-1" defer></script>
   <script src="../assets/js/main.js?v=20261014-1" defer></script>
   <script src="../assets/js/formulario.js?v=20261014-2" defer></script>
-  <script src="../assets/js/agenda.js?v=20261015-1" defer></script>
+  <script src="../assets/js/agenda.js?v=20261015-2" defer></script>
   <script src="../assets/js/calculadora-integracion.js?v=20261015-1" defer></script>
   <script src="../assets/js/efectos.js?v=20261014-1" defer></script>
 </head>
@@ -719,15 +719,18 @@
 
   <!-- Aviso antes de abrir la agenda: agenda.js lo muestra al pulsar cualquier enlace a la agenda.
        Sin JavaScript no se abre y los enlaces llevan directamente a la agenda. -->
-  <dialog class="aviso-agenda" id="aviso-agenda" aria-labelledby="aviso-agenda-titulo" aria-describedby="aviso-agenda-texto">
+  <dialog class="aviso-agenda" id="aviso-agenda" aria-labelledby="reserva-modal-titulo" aria-describedby="reserva-modal-aviso reserva-modal-texto">
     <div class="aviso-agenda__contenido">
       <button type="button" class="aviso-agenda__cerrar" data-agenda-cerrar aria-label="Cerrar"><svg class="icono" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button>
-      <div class="aviso-agenda__cuerpo">
-        <div class="aviso-agenda__texto">
-          <h2 id="aviso-agenda-titulo">Antes de abrir la agenda</h2>
-          <p id="aviso-agenda-texto">La agenda se abre en una pestaña nueva. Elige día y hora para tu reunión de onboarding (30 minutos, gratis) y responde tres preguntas: número de clientes, programa contable y tu cargo. Así tendremos tu demo preparada. Te enviaremos un recordatorio 24 horas y otro 1 hora antes, con el acceso a la reunión. Al reservar, el asistente de IA ya no te llamará.</p>
-        </div>
-        <a class="boton boton--primario aviso-agenda__aceptar" href="https://cal.com/ruben-bel/demo-trazabis" target="_blank" rel="noopener" data-agenda-aceptar>Aceptar<span class="visualmente-oculto"> (abre la agenda en una pestaña nueva)</span></a>
+      <h2 id="reserva-modal-titulo">Antes de reservar tu reunión de onboarding</h2>
+      <p class="reserva-modal__aviso" id="reserva-modal-aviso">
+        <svg class="icono" aria-hidden="true" focusable="false"><use href="#i-info"/></svg>
+        <span>Al reservar, confirmas que <strong>ya has entendido cómo funciona Trazabis</strong> y que quieres ver cómo se aplica en tu despacho antes de pagar la implantación.</span>
+      </p>
+      <p class="aviso-agenda__texto" id="reserva-modal-texto">La agenda se abre en una pestaña nueva. Elige día y hora para tu reunión de onboarding con nuestro equipo: repasaremos tu cartera cliente a cliente y veremos cómo se aplicaría Trazabis en tu despacho. Recibirás la confirmación por email.</p>
+      <div class="aviso-agenda__botones">
+        <a class="boton boton--primario" href="https://cal.com/ruben-bel/demo-trazabis" target="_blank" rel="noopener" data-agenda-aceptar>Sí, quiero reservar<span class="visualmente-oculto"> (se abre en una pestaña nueva)</span></a>
+        <button type="button" class="boton boton--secundario" data-agenda-formulario>Todavía no: ver si mi despacho encaja</button>
       </div>
     </div>
   </dialog>

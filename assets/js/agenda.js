@@ -1,8 +1,11 @@
-/* Aviso antes de abrir la agenda de la reserva directa.
+/* Ventana previa a la reserva directa.
    - Toda «puerta» a la agenda (enlaces con data-agenda y, desde calculadora-integracion.js,
      los enlaces a la agenda de la calculadora oficial) abre primero el diálogo #aviso-agenda.
-   - «Aceptar» es un enlace normal con target="_blank": abre la agenda en una pestaña nueva y
-     registra agenda_open con la puerta de origen (cta_location).
+   - «Sí, quiero reservar» es un enlace normal con target="_blank": abre la agenda en una pestaña
+     nueva y cierra la ventana. «Todavía no: ver si mi despacho encaja» la cierra y lleva al
+     formulario. ×, Esc o un clic fuera la cierran.
+   - Cada salida registra reserva_modal con su accion (confirmar · ir_formulario · cerrar) y la
+     puerta de origen (cta_location).
    - AGENDA_URL (config.js) fija la dirección de la agenda en todos los enlaces.
    - Sin JavaScript, o si el navegador no admite <dialog>, los enlaces llevan directamente a la agenda. */
 (function () {
@@ -32,6 +35,26 @@
   var URL_AGENDA = urlSegura(cfg.AGENDA_URL);
   var puerta = "";
   var opener = null;
+  var motivo = ""; // cómo se ha cerrado: confirmar, ir_formulario o (vacío) cerrar
+
+  function medir(accion) {
+    DL.push("reserva_modal", { accion: accion, cta_location: puerta });
+  }
+
+  // Cierra la ventana y lleva al formulario: foco en el título del paso visible
+  // (el 1, salvo que ya esté en el 2) o, si ya se envió, en la página de gracias
+  function irAlFormulario() {
+    var seccion = document.getElementById("formulario");
+    if (!seccion) return;
+    var reducido = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    seccion.scrollIntoView({ behavior: reducido ? "auto" : "smooth", block: "start" });
+    var titulo = Array.prototype.filter.call(seccion.querySelectorAll(".form-paso__titulo"), function (t) {
+      return t.getClientRects().length > 0;
+    })[0] || seccion.querySelector(".gracias") || document.getElementById("formulario-titulo");
+    if (!titulo) return;
+    if (!titulo.hasAttribute("tabindex")) titulo.setAttribute("tabindex", "-1");
+    try { titulo.focus({ preventScroll: true }); } catch (e) { /* sin foco */ }
+  }
 
   // Si hay AGENDA_URL, todos los enlaces a la agenda apuntan a ella
   function initEnlaces() {
@@ -47,6 +70,7 @@
     aceptar.href = destino;
     puerta = origen || "";
     opener = desde || document.activeElement;
+    motivo = "";
     if (!dialogo.open) dialogo.showModal();
     return true;
   }
@@ -61,19 +85,41 @@
 
   function initDialogo() {
     aceptar.addEventListener("click", function () {
-      DL.push("agenda_open", { cta_location: puerta });
+      motivo = "confirmar";
+      medir("confirmar");
       // Se cierra después de que el navegador abra la pestaña nueva
       setTimeout(function () { if (dialogo.open) dialogo.close(); }, 0);
     });
+    var formulario = dialogo.querySelector("[data-agenda-formulario]");
+    if (formulario) formulario.addEventListener("click", function () {
+      motivo = "ir_formulario";
+      medir("ir_formulario");
+      dialogo.close();
+      irAlFormulario();
+    });
     var cerrar = dialogo.querySelector("[data-agenda-cerrar]");
     if (cerrar) cerrar.addEventListener("click", function () { dialogo.close(); });
+    // Tab no sale de la ventana: del último elemento vuelve al primero, y al revés
+    dialogo.addEventListener("keydown", function (ev) {
+      if (ev.key !== "Tab") return;
+      var focos = Array.prototype.filter.call(dialogo.querySelectorAll("a[href], button:not([disabled])"), function (el) {
+        return el.getClientRects().length > 0;
+      });
+      if (!focos.length) return;
+      var primero = focos[0], ultimo = focos[focos.length - 1];
+      if (ev.shiftKey && document.activeElement === primero) { ev.preventDefault(); ultimo.focus(); }
+      else if (!ev.shiftKey && document.activeElement === ultimo) { ev.preventDefault(); primero.focus(); }
+    });
     // Clic en el fondo oscuro (fuera del contenido)
     dialogo.addEventListener("click", function (ev) { if (ev.target === dialogo) dialogo.close(); });
+    // ×, Esc y clic fuera llegan aquí sin motivo: son «cerrar»
     dialogo.addEventListener("close", function () {
-      if (opener && typeof opener.focus === "function") {
+      if (!motivo) medir("cerrar");
+      if (motivo !== "ir_formulario" && opener && typeof opener.focus === "function") {
         try { opener.focus({ preventScroll: true }); } catch (e) { /* sin foco */ }
       }
       opener = null;
+      motivo = "";
     });
   }
 

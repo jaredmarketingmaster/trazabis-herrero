@@ -16,6 +16,7 @@
     "event_id", "version", "acepta_comunicaciones", "acepta_medicion_publicitaria",
     "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term",
     "faq_question",
+    "accion",
     "analytics_storage", "ad_storage", "ad_user_data", "ad_personalization"
   ];
 
