@@ -103,7 +103,7 @@ En local (o con `?debug=1`, o mientras `GTM_ID` esté vacío) el sitio está en 
 
 **Cualquier hosting estático:** subir todos los archivos tal cual.
 
-**En cada despliegue que cambie CSS o JS, sube el número de versión** que llevan los enlaces a `styles.css` y a los scripts (hoy `?v=20261014-1`) en `despachos/index.html`, en las tres páginas legales y en `tests/prioridad.test.html`, usando la fecha del día (`?v=AAAAMMDD-n`). Así ningún navegador ni CDN sirve una versión antigua.
+**En cada despliegue que cambie CSS o JS, sube el número de versión** que llevan los enlaces a `styles.css` y a los scripts (hoy `?v=20261014-1`; `formulario.js`, `?v=20261014-2`) en `despachos/index.html`, en las tres páginas legales y en `tests/prioridad.test.html`, usando la fecha del día (`?v=AAAAMMDD-n`). Así ningún navegador ni CDN sirve una versión antigua.
 
 Notas:
 
@@ -374,7 +374,7 @@ Playwright (Chromium 141) sirviendo el sitio desde un subdirectorio (`/repo/`):
 
 | Comprobación | Resultado |
 | --- | --- |
-| Términos de la lista roja del cliente en landing, scripts, páginas legales y esta documentación | ✅ Sin coincidencias, salvo usos válidos: «Incluye el diagnóstico de tu cartera cliente a cliente» (implantación), «contabilidad 100 % automática, sin revisión humana» dentro de «No es para ti si» (negado), y `plazo_inicio` / `id="inicio"` (no son planes). ⚠️ Fuera del alcance del feedback quedan dos menciones a «diagnóstico» que el cliente debe confirmar: la página de gracias de `formulario.js` («…agendar tu diagnóstico de cartera») y el aviso legal («solicitar un diagnóstico de cartera»), además de «Agenda del diagnóstico» en la tabla de proveedores de la política de privacidad |
+| Términos de la lista roja del cliente en landing, scripts, páginas legales y esta documentación | ✅ Sin coincidencias, salvo usos válidos: «Incluye el diagnóstico de tu cartera cliente a cliente» (implantación), «contabilidad 100 % automática, sin revisión humana» dentro de «No es para ti si» (negado), y `plazo_inicio` / `id="inicio"` (no son planes). Las tres menciones a «diagnóstico» que quedaban fuera del alcance del feedback (página de gracias, aviso legal y tabla de proveedores de la política de privacidad) se alinearon después con la «reunión de onboarding» (ver la sección 9.3 de DOCUMENTACION.md) |
 | Sin scroll horizontal a 375, 768, 1024, 1280 y 1440 px | ✅ |
 | Implantación en cinco pasos | ✅ Una fila desde 1100 px; una columna con flechas verticales por debajo; sin filas incompletas |
 | Franja de confianza | ✅ Una línea desde 900 px; 2 × 2 por debajo |

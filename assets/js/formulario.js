@@ -118,7 +118,7 @@
     var p = document.createElement("p");
     p.textContent = "En unos minutos te llamará el asistente de inteligencia artificial de Trazabis" +
       (numero ? " desde el " + numero : "") +
-      " para confirmar tu interés y agendar tu diagnóstico de cartera.";
+      " para confirmar tu interés y fijar tu reunión de onboarding.";
     caja.appendChild(p);
 
     if (numero) {

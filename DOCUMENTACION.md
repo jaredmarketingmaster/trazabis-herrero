@@ -350,7 +350,7 @@ El cliente entregó su revisión por escrito el 14-10-2026, junto con su calcula
 | **J** · `8510982` | C28 Configuración | `EMAIL_CONTACTO` = `escribeme@trazabis.es` y `TELEFONO_CONTACTO` = `917 943 471` (los marcadores del pie desaparecen). `CALC_ENDPOINT` y `FUNDADOR_HASTA` añadidos en los bloques F y E |
 | **K** · `1da222d` | C29 Banner de cookies en móvil | Por debajo de 768 px, barra inferior compacta: texto corto, «Aceptar todas» y «Rechazar todas» iguales (159 × 44 px) y «Configurar» como enlace. 157 px de alto en 375 × 667 (23,5 %); el titular se lee. Si la barra «Ver si mi despacho encaja» está visible, el banner se coloca encima. La lógica de `consent.js` no cambia; el escritorio, tampoco |
 | **L** · `86d3706` y `2236b0d` | C30 Documentación | README y este documento actualizados |
-| | C31 Caché | Todos los `?v=` de CSS y JS pasan a `20261014-1` (landing, tres páginas legales y prueba de prioridad) |
+| | C31 Caché | Todos los `?v=` de CSS y JS pasan a `20261014-1` (landing, tres páginas legales y prueba de prioridad). Después, `formulario.js` pasó a `20261014-2` (ver 9.3) |
 
 **Decisiones de integración tomadas por el equipo técnico (no venían del cliente)**
 
@@ -384,15 +384,9 @@ El cliente entregó su revisión por escrito el 14-10-2026, junto con su calcula
 - **Lighthouse en móvil:** rendimiento 95–96, accesibilidad 100 y buenas prácticas 100.
 - **Términos de la lista roja:** 0 coincidencias en la landing, los scripts, las páginas legales, el README y este documento. Las únicas apariciones de «diagnóstico» válidas son las que el cliente mantiene.
 
-**Dudas abiertas: textos fuera del alcance del feedback que contradicen el cambio a «reunión de onboarding»**
+**Dudas abiertas**
 
-No se han modificado porque el feedback pedía no tocarlos. Necesitan decisión del cliente:
-
-| Dónde | Texto actual | Propuesta |
-| --- | --- | --- |
-| Página de gracias (`formulario.js`) | «…para confirmar tu interés y agendar tu diagnóstico de cartera.» | «…y fijar tu reunión de onboarding.» |
-| Aviso legal, objeto | «…permite a los interesados solicitar un diagnóstico de cartera.» | «…solicitar una reunión de onboarding.» |
-| Política de privacidad, tabla de proveedores | «Agenda del diagnóstico» | «Agenda de la reunión de onboarding» |
+Ninguna. Las tres que quedaban (textos fuera del alcance del feedback que contradecían el cambio a «reunión de onboarding») se resolvieron después; ver 9.3.
 
 **Observaciones sobre la calculadora del cliente (no modificadas)**
 
@@ -419,3 +413,17 @@ No se han modificado porque el feedback pedía no tocarlos. Necesitan decisión 
 - La lógica del formulario, salvo C24–C27.
 - Las casillas de privacidad, comunicaciones y Meta, y sus marcadores del abogado.
 - `404.html`, `.htaccess` y la redirección de la raíz.
+
+### 9.3 Alineación de los últimos textos con la «reunión de onboarding»
+
+Tras el feedback del 14-10-2026 quedaban tres textos fuera de su alcance que seguían hablando de un diagnóstico de cartera, en contradicción con el cambio pedido por el cliente. Se aplicaron las tres propuestas:
+
+| Dónde | Antes | Ahora |
+| --- | --- | --- |
+| Página de gracias (`assets/js/formulario.js`) | «…para confirmar tu interés y agendar tu diagnóstico de cartera.» | «…para confirmar tu interés y fijar tu reunión de onboarding.» |
+| Aviso legal, objeto (`legal/aviso-legal.html`) | «…permite a los interesados solicitar un diagnóstico de cartera.» | «…permite a los interesados solicitar una reunión de onboarding.» |
+| Política de privacidad, tabla de proveedores (`legal/politica-privacidad.html`) | «Agenda del diagnóstico» | «Agenda de la reunión de onboarding» |
+
+- No se tocó nada más del texto legal, que sigue pendiente de revisión por el abogado.
+- Versión de caché: `formulario.js` pasa a `?v=20261014-2` en `despachos/index.html` y en `tests/prioridad.test.html`, los dos archivos que lo cargan. Las páginas legales no cargan ese script y sus CSS y JS no cambian, así que mantienen `?v=20261014-1` (el HTML se revalida en cada visita).
+- Con esto, la única aparición de «diagnóstico» en la landing, los scripts y las páginas legales es «Incluye el diagnóstico de tu cartera cliente a cliente», en la implantación, que el cliente mantiene.
