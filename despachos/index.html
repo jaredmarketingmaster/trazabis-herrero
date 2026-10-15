@@ -15,14 +15,14 @@
   <link rel="icon" href="data:,">
   <link rel="preload" href="../assets/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/styles.css?v=20261012-2">
-  <script src="../assets/js/config.js?v=20261012-2" defer></script>
-  <script src="../assets/js/datalayer.js?v=20261012-2" defer></script>
-  <script src="../assets/js/consent.js?v=20261012-2" defer></script>
-  <script src="../assets/js/main.js?v=20261012-2" defer></script>
-  <script src="../assets/js/formulario.js?v=20261012-2" defer></script>
-  <script src="../assets/js/calculadora-integracion.js?v=20261012-2" defer></script>
-  <script src="../assets/js/efectos.js?v=20261012-2" defer></script>
+  <link rel="stylesheet" href="../assets/css/styles.css?v=20261014-1">
+  <script src="../assets/js/config.js?v=20261014-1" defer></script>
+  <script src="../assets/js/datalayer.js?v=20261014-1" defer></script>
+  <script src="../assets/js/consent.js?v=20261014-1" defer></script>
+  <script src="../assets/js/main.js?v=20261014-1" defer></script>
+  <script src="../assets/js/formulario.js?v=20261014-1" defer></script>
+  <script src="../assets/js/calculadora-integracion.js?v=20261014-1" defer></script>
+  <script src="../assets/js/efectos.js?v=20261014-1" defer></script>
 </head>
 <body>
   <!-- Iconos de línea (sprite). Trazos con pathLength="1" para dibujarlos al aparecer; rellenos tenues de dos tonos -->
@@ -353,8 +353,22 @@
       </div>
     </section>
 
+    <!-- Sección 7b · Calculadora oficial -->
+    <section class="seccion" id="calculadora" aria-labelledby="titulo-calculadora">
+      <div class="contenedor">
+        <div class="seccion__cabecera" data-reveal>
+          <h2 class="titulo-acento" id="titulo-calculadora">Calcula tu caso</h2>
+          <p class="entradilla">Responde unas preguntas sobre tu cartera y verás tu cuota, tu implantación y qué paga cada cliente. Son los mismos precios públicos de trazabis.com.</p>
+        </div>
+        <iframe class="calculadora-oficial" id="calc-trazabis" src="calculadora.html" title="Calculadora de Trazabis para despachos" loading="lazy"></iframe>
+        <div class="cta-bloque" data-reveal>
+          <a class="boton boton--primario" href="#formulario" data-cta="calculadora"><span>Ver si mi despacho encaja</span><svg class="icono boton__flecha" aria-hidden="true" focusable="false"><use href="#i-flecha"/></svg></a>
+        </div>
+      </div>
+    </section>
+
     <!-- Sección 8 · Para quién es y para quién no -->
-    <section class="seccion" aria-labelledby="titulo-encaje">
+    <section class="seccion seccion--separada" aria-labelledby="titulo-encaje">
       <div class="contenedor">
         <h2 class="visualmente-oculto" id="titulo-encaje">Para quién es y para quién no</h2>
         <div class="encaje" data-stagger>

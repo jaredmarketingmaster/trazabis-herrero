@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<!-- PARCHE LANDING (14-10-2026): fuentes servidas desde ../assets/fonts en lugar de Google Fonts. Reaplicar si el cliente envía una versión nueva de este archivo. -->
+<!-- Calculadora de Trazabis para despachos · tarifa v9 · versión aislada para landings externas (generada por calc/herrero.js el 2026-10-14). No editar a mano: los precios viven en calc/src/despachos.tpl.html. -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<meta name="robots" content="noindex">
+<title>Calculadora de Trazabis para despachos</title>
+<style>
+@font-face{font-family:"Montserrat";font-style:normal;font-weight:100 900;font-display:swap;src:url("../assets/fonts/montserrat-latin.woff2") format("woff2");unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:"Roboto";font-style:normal;font-weight:100 900;font-display:swap;src:url("../assets/fonts/roboto-latin.woff2") format("woff2");unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+</style>
+<style>
+/* Calculadora Trazabis · despachos fiscales · tarifa v9 · v5 (28-09-2026): clientes con su propia plataforma (Ruta A), que solo envían documentos (Ruta B)
+   o híbrido (A+B); aplicación base + volumen OCR de consumo, sin módulos; quién paga el acceso · modo guiado + modo libre + solicitud a Odoo y correo.
+   Generado por scratchpad/calc/build.js a partir de src/despachos.tpl.html + src/despachos-guiado.js + src/shared.* — no editar a mano. */
+:root{
+  --navy:#0C1B2B; --blue:#233B6E; --violet:#8127E3; --violet-deep:#6E2FAE;
+  --lav:#F1E8FF; --soft:#EEF2F8; --line:#D9DEE8; --red:#E3322E; --red-text:#C21725; --ink:#4A5568; --white:#FFF; --green:#047E39;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+/* notas del setup, botones grandes y texto legal: recuperados de la v2.1 */
+.setup .note{margin-top:14px;font-size:12.5px;color:var(--ink);border-top:1px dashed var(--line);padding-top:12px}
+.setup .note a{color:var(--violet-deep);font-weight:700}
+.legal{font-size:11.5px;color:var(--ink);margin-top:12px;text-align:center}
+.cta{display:block;text-align:center;background:var(--violet);color:var(--white);font:700 15px/1.25 Montserrat,sans-serif;padding:17px 20px;margin-top:20px;text-decoration:none;letter-spacing:.02em;transition:background .15s}
+.cta:hover{background:var(--violet-deep)}
+.cta:focus-visible{outline:3px solid var(--violet-deep);outline-offset:2px}
+.cta small{display:block;font:400 11.5px/1.4 Roboto,sans-serif;margin-top:6px;opacity:.9;letter-spacing:0}
+body{background:var(--white);color:var(--navy);font:16px/1.55 Roboto,system-ui,Segoe UI,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:40px 20px 80px}
+.eyebrow{font:700 12px/1 Montserrat,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--violet);display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:26px;height:3px;background:var(--violet)}
+h1{font:800 clamp(26px,4vw,38px)/1.15 Montserrat,sans-serif;letter-spacing:-.015em;margin:14px 0 8px;text-wrap:balance}
+h1 em{font-style:normal;color:var(--violet)}
+/* definiciones A / B / A+B bajo el H1 */
+.defs{display:grid;gap:10px;margin:20px 0 12px;max-width:860px}
+.def{display:flex;gap:16px;align-items:baseline;border:1px solid var(--line);border-left:4px solid var(--violet);padding:13px 18px;background:var(--white)}
+.def .dl{font:800 22px/1 Montserrat,sans-serif;letter-spacing:-.01em;color:var(--violet);min-width:58px;white-space:nowrap}
+.def .dt{font-size:14px;color:var(--ink);line-height:1.5}
+.def .dt b{color:var(--navy)}
+.defs-close{color:var(--ink);font-size:14px;margin-bottom:24px}
+.defs-close b{color:var(--navy)}
+.card{border:1px solid var(--line);background:var(--white)}
+.card .hd{padding:13px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:6px 10px;flex-wrap:wrap}
+.card .hd .t{font:700 13px/1.2 Montserrat,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
+.card .hd .s{font-size:12.5px;color:var(--ink)}
+.card .bd{padding:20px}
+/* controles */
+.controls{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.vol-big{display:flex;align-items:baseline;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.vol-big b{font:800 40px/1 Montserrat,sans-serif;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.vol-big span{color:var(--ink);font-size:14px}
+.vol-big input[type=number]{font:800 34px/1 Montserrat,sans-serif;letter-spacing:-.02em;width:160px;max-width:100%;border:1px solid var(--line);padding:5px 8px;color:var(--navy);font-variant-numeric:tabular-nums;-moz-appearance:textfield}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
+input[type=number]:focus-visible{outline:3px solid var(--violet-deep);outline-offset:2px;border-color:var(--violet)}
+input[type=range]{width:100%;appearance:none;height:6px;border-radius:3px;background:linear-gradient(to right,var(--violet) 0%,var(--violet) var(--pct,0%),var(--soft) var(--pct,0%));outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:26px;height:26px;border-radius:50%;background:var(--white);border:3px solid var(--violet);box-shadow:0 2px 6px rgba(12,27,43,.25)}
+input[type=range]:focus-visible::-webkit-slider-thumb{outline:3px solid var(--violet-deep);outline-offset:2px}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--white);border:3px solid var(--violet)}
+.vol-marks{position:relative;height:16px;font-size:11px;color:var(--ink);margin-top:8px;font-variant-numeric:tabular-nums}
+.vol-marks span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
+.vol-marks span:first-child{transform:none}
+.vol-marks span:last-child{transform:translateX(-100%)}
+.vol-marks.eq{display:flex;justify-content:space-between;position:static;height:auto}
+.vol-marks.eq span{position:static;transform:none}
+.seg{display:inline-flex;border:1px solid var(--line);margin-bottom:10px}
+.seg button{font:600 12px/1 Montserrat,sans-serif;padding:8px 12px;border:none;background:var(--white);color:var(--ink);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--navy);color:var(--white)}
+.seg button:focus-visible{outline:3px solid var(--violet-deep);outline-offset:2px}
+.derived{font-size:13px;color:var(--violet-deep);font-weight:500;margin-top:10px;min-height:20px}
+.derived.alert{color:var(--red-text)}
+.toggles{grid-column:span 2;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.tg{border:1px solid var(--line);padding:14px 16px;display:flex;gap:14px;align-items:center}
+.tg.on{border-color:var(--violet);background:linear-gradient(0deg,rgba(129,39,227,.05),rgba(129,39,227,.05)),var(--white)}
+.tg .tx{font-size:13px}
+.tg .tx b{font-family:Montserrat,sans-serif}
+.tg .tx .v{color:var(--violet-deep)}
+.sw{width:46px;height:26px;border-radius:13px;background:var(--line);border:none;position:relative;cursor:pointer;transition:background .15s;flex:none}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--white);transition:left .15s;box-shadow:0 1px 3px rgba(12,27,43,.3)}
+.sw[aria-pressed=true]{background:var(--violet)}
+.sw[aria-pressed=true]::after{left:23px}
+.sw:focus-visible{outline:3px solid var(--violet-deep);outline-offset:2px}
+.globals{grid-column:span 2;display:flex;gap:8px 26px;flex-wrap:wrap;padding:12px 16px;background:var(--soft);font-size:13px;color:var(--ink)}
+.globals b{color:var(--navy);font-variant-numeric:tabular-nums}
+/* selector de ruta */
+.modes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:20px}
+.mode{border:1px solid var(--line);background:var(--white);text-align:left;padding:16px 18px;cursor:pointer;font:inherit;color:inherit;transition:border-color .15s}
+.mode .mk{font:700 10.5px/1 Montserrat,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);display:block}
+.mode .mt{font:800 15.5px/1.3 Montserrat,sans-serif;margin:6px 0 4px;letter-spacing:-.01em;display:block}
+.mode .mp{font-size:12.5px;color:var(--ink);line-height:1.5;display:block}
+.mode[aria-pressed=true]{border-color:var(--violet);border-width:2px;padding:15px 17px;background:linear-gradient(0deg,rgba(129,39,227,.05),rgba(129,39,227,.05)),var(--white)}
+.mode[aria-pressed=true] .mk{color:var(--violet)}
+.mode:focus-visible{outline:3px solid var(--violet-deep);outline-offset:2px}
+/* panel de resultado */
+.res{margin-top:20px}
+.res .top{padding:18px 22px;color:var(--white);background:var(--navy)}
+.res .rk{font:700 11px/1 Montserrat,sans-serif;letter-spacing:.16em;text-transform:uppercase;opacity:.75}
+.res .rt{font:800 19px/1.25 Montserrat,sans-serif;margin-top:6px;letter-spacing:-.01em;text-wrap:balance}
+.res .rx{padding:14px 22px;font-size:13.5px;color:var(--ink);border-bottom:1px solid var(--soft)}
+.res .inner{border:1px solid var(--line);border-top:none}
+.badge{margin:14px 22px 0;display:inline-flex;background:var(--lav);color:var(--violet-deep);font:700 11.5px/1.3 Montserrat,sans-serif;letter-spacing:.06em;padding:7px 10px;text-transform:uppercase}
+.figs{padding:8px 22px 4px}
+.fig{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:9px 0;border-bottom:1px dashed var(--soft);font-size:14px}
+.fig:last-child{border-bottom:none}
+.fig .l{color:var(--ink)}
+.fig .l small{display:block;font-size:11.5px;color:var(--ink)}
+.fig .r{font:700 17px/1 Montserrat,sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap}
+.fig .r s{font:400 12.5px Roboto,sans-serif;color:var(--ink);margin-right:6px}
+.fig.big .r{font-size:26px;color:var(--violet-deep)}
+.fig .r.zero{color:var(--green)}
+.grp{margin:10px 22px 0;padding:10px 14px 8px;background:var(--soft)}
+.grp .gt{font:700 11px/1.35 Montserrat,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
+.grp .fig{border-bottom-color:#E2E9F3}
+.grp .gvol{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:6px 12px;padding:6px 0 8px;border-bottom:1px dashed #E2E9F3;font-size:12.5px;color:var(--ink)}
+.grp .gvol b{font:800 15px/1 Montserrat,sans-serif;color:var(--navy);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.grp .gvol input[type=range]{height:5px;background:linear-gradient(to right,var(--violet) 0%,var(--violet) var(--pct,0%),var(--white) var(--pct,0%))}
+.grp .gvol input[type=number]{font:800 16px/1 Montserrat,sans-serif;width:120px;max-width:100%;border:1px solid var(--line);padding:6px 8px;color:var(--navy);background:var(--white);font-variant-numeric:tabular-nums;-moz-appearance:textfield;justify-self:start}
+.grp .gmarks{grid-column:2;margin-top:0}
+.grp .seg{margin:0}
+.grp .gd{font-size:12px;color:var(--violet-deep);padding:6px 0 2px}
+.grp .gd.alert{color:var(--red-text)}
+.conds{margin:14px 22px 18px;padding:12px 14px;background:var(--soft);font-size:12px;color:var(--ink);line-height:1.7}
+.conds b{color:var(--navy)}
+.noB{margin:16px 22px 20px;border-left:3px solid var(--red);background:#FDECEC;padding:14px 16px;font-size:13.5px}
+.noB b{color:var(--red-text)}
+.custom{margin:16px 22px 20px;border-left:3px solid var(--violet);background:var(--lav);padding:14px 16px;font-size:13.5px}
+/* split A+B */
+.split{margin:16px 22px 4px;padding:16px 16px 12px;border:1px solid var(--line)}
+.split .st{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px;font-size:13px;color:var(--ink)}
+.split .st b{font:800 18px/1 Montserrat,sans-serif;color:var(--navy);font-variant-numeric:tabular-nums}
+.split .legend{display:flex;justify-content:space-between;gap:10px;font-size:11.5px;color:var(--ink);margin-top:8px}
+.split .legend .lb b{color:var(--blue)}
+.split .legend .rb{text-align:right}
+.split .legend .rb b{color:var(--violet-deep)}
+/* nota neutral + setup */
+.neutral{margin-top:20px;border-left:3px solid var(--violet);background:var(--lav);padding:16px 20px;font-size:14px}
+.neutral a{color:var(--violet-deep);font-weight:700}
+.setup{margin-top:20px}
+.setup table{width:100%;border-collapse:collapse;font-size:14px}
+.setup th{background:var(--navy);color:var(--white);font:600 11px/1.3 Montserrat,sans-serif;letter-spacing:.08em;text-transform:uppercase;text-align:left;padding:10px 12px;vertical-align:bottom}
+.setup td{padding:14px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.setup td .big{font:800 22px/1.1 Montserrat,sans-serif;font-variant-numeric:tabular-nums;display:block}
+.setup td .per{display:block;font-size:12.5px;color:var(--ink);margin-top:3px;font-variant-numeric:tabular-nums}
+.setup td.of .big{color:var(--violet-deep)}
+.setup td.of{background:var(--lav)}
+.setup td s{color:var(--ink)}
+@media (max-width:900px){
+  .controls,.toggles,.modes{grid-template-columns:minmax(0,1fr)}
+  .toggles,.globals{grid-column:span 1}
+  /* móvil: etiqueta y valor en la primera fila; deslizador y marcas a todo el ancho debajo */
+  .grp .gvol{grid-template-columns:minmax(0,1fr) auto}
+  .grp .gvol>span{grid-column:1;grid-row:1}
+  .grp .gvol b{grid-column:2;grid-row:1}
+  .grp .gvol input[type=range]{grid-column:1/-1;grid-row:2}
+  .grp .gvol input[type=number]{grid-column:1/-1;grid-row:2}
+  .grp .gmarks{grid-column:1/-1;grid-row:3}
+  .wrap{padding-bottom:120px}
+  .bar{position:fixed;left:0;right:0;bottom:0;background:var(--navy);color:var(--white);display:flex;align-items:center;gap:12px;padding:10px 14px;z-index:9;box-shadow:0 -4px 16px rgba(12,27,43,.25)}
+  .bar .t{font:600 12px/1.3 Montserrat,sans-serif;color:#C6D2E2;min-width:0}
+  .bar a{margin-left:auto;flex:none;max-width:160px;background:var(--violet);color:var(--white);text-decoration:none;font:700 12.5px/1.2 Montserrat,sans-serif;padding:10px 12px;text-align:center}
+  /* tabla del setup apilada en móvil */
+  .setup table,.setup tbody,.setup tr,.setup td{display:block;width:100%}
+  .setup thead{display:none}
+  .setup td{border:none;padding:8px 0}
+  .setup tr{border-bottom:1px solid var(--line);padding-bottom:6px}
+  .setup td::before{content:attr(data-th);display:block;font:600 11px/1.3 Montserrat,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin-bottom:4px}
+  .setup td.of{padding:10px 12px}
+  .setup td .big{font-size:20px}
+  .sol-grid{grid-template-columns:minmax(0,1fr)}
+}
+@media (min-width:901px){.bar{display:none}}
+/* ===== v4 · con plataforma / sin plataforma ===== */
+.lead{font-size:16px;color:var(--ink);max-width:70ch;margin:2px 0 18px}
+.plataformas{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;margin:0 0 16px;max-width:920px}
+.pl{border:1px solid var(--line);background:var(--white);padding:14px 18px 16px}
+.pl.con{border-top:4px solid var(--violet)}
+.pl.sin{border-top:4px solid var(--blue)}
+.pl-h b{display:block;font:800 18px/1.2 Montserrat,sans-serif;letter-spacing:-.01em;color:var(--navy)}
+.pl dl{margin-top:4px}
+.pl dt{font:700 10.5px/1.3 Montserrat,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-top:10px}
+.pl dd{font-size:13.5px;color:var(--ink);line-height:1.5}
+.pl dd b{color:var(--navy)}
+.mode .impl{margin-bottom:6px}
+.ruta{margin-top:20px}
+.ruta .modes{margin-top:0}
+.split .st b.con{color:var(--violet-deep)}
+.split .st b.sin{color:var(--blue)}
+.ocr-t{font-size:13px;color:var(--ink);margin:0 0 8px;max-width:48ch}
+.ocr-t b{color:var(--navy);font-family:Montserrat,sans-serif}
+.vhint{font-size:12.5px;color:var(--ink);margin:0 0 10px;max-width:46ch}
+.gtitle{margin:16px 22px 0;padding-top:14px;border-top:1px solid var(--line);font:800 15.5px/1.3 Montserrat,sans-serif;color:var(--navy)}
+.gtitle:first-child{border-top:none;padding-top:0}
+.gtitle small{display:block;font:400 12.5px/1.45 Roboto,sans-serif;color:var(--ink);margin-top:2px}
+.incl{margin:6px 22px 0;font-size:12.5px;color:var(--ink);border-left:3px solid var(--green);padding:6px 10px;background:#F1FAF4}
+.incl b{color:var(--navy)}
+.subcard{margin:14px 22px 0;border:1px solid var(--line);background:var(--white)}
+.subcard .sh{padding:10px 14px;border-bottom:1px solid var(--line);font:700 11.5px/1.3 Montserrat,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--violet-deep)}
+.subcard .si{padding:10px 14px 6px;font-size:13px;color:var(--ink)}
+.mod-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;padding:12px 14px;border-top:1px dashed var(--line);align-items:start}
+.mod-row .sw{margin-top:2px}
+.mod-row .mn{font:700 14px/1.3 Montserrat,sans-serif;color:var(--navy)}
+.mod-row .beta{font:700 10px/1 Montserrat,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--violet-deep);background:var(--lav);padding:2px 6px;margin-left:6px;vertical-align:middle}
+.mod-row .md{display:block;font-size:12.5px;color:var(--ink);margin-top:2px}
+.mod-row .mp{display:block;font-size:13px;color:var(--violet-deep);font-weight:600;margin-top:4px;font-variant-numeric:tabular-nums}
+.mod-row .mp s{color:var(--ink);font-weight:400;margin-left:6px}
+.mod-row .mc{grid-column:2;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px 16px;margin-top:8px;align-items:end}
+.mod-row .mc label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--ink)}
+.mod-row select{font:500 13px/1.2 Roboto,sans-serif;border:1px solid #7A8599;padding:7px 8px;max-width:100%;width:100%}
+.mod-row .kv{font:700 13px/1.2 Montserrat,sans-serif;color:var(--navy);font-variant-numeric:tabular-nums}
+.mod-row .mc input[type=range]{margin-top:12px}
+.mod-row .msub{grid-column:1/-1;font-size:12.5px;color:var(--navy);font-variant-numeric:tabular-nums}
+.subcard .pie{padding:10px 14px 12px;border-top:1px solid var(--line);background:var(--soft);font-size:13px;color:var(--ink)}
+.subcard .pie b{color:var(--navy)}
+.paga,.qp{margin-top:20px}
+.pg-ayuda{font-size:13.5px;color:var(--ink);max-width:80ch}
+.pg-opts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin:12px 0 14px}
+.pg{text-align:left;border:1px solid var(--line);background:var(--white);padding:14px 16px;cursor:pointer;font:inherit;color:inherit;transition:border-color .15s}
+.pg:hover{border-color:var(--violet)}
+.pg:focus-visible{outline:3px solid var(--violet-deep);outline-offset:2px}
+.pg b{display:block;font:800 15px/1.3 Montserrat,sans-serif;color:var(--navy);margin-top:2px}
+.pg .ps{display:block;font-size:12.5px;color:var(--ink);margin-top:2px}
+.pg[aria-pressed=true]{border:2px solid var(--violet);padding:13px 15px;background:linear-gradient(0deg,rgba(129,39,227,.05),rgba(129,39,227,.05)),var(--white)}
+.qp .bd.figs{padding:6px 20px 8px}
+@media (max-width:600px){
+  .plataformas,.pg-opts{grid-template-columns:minmax(0,1fr)}
+  .mod-row .mc{grid-template-columns:minmax(0,1fr);grid-column:1/-1}
+}
+/* ===== COMÚN · segmento, modo, embudo guiado y solicitud ===== */
+/* página de un solo aspecto (claro): los campos llevan fondo y texto explícitos para que se lean aunque el visor esté en tema oscuro */
+:root{color-scheme:light only}
+/* Rubén (28-09): la celda de la cifra, en blanco y los números en negro, pase lo que pase con el tema del visor */
+input[type=number]{background:#FFFFFF!important;background-color:#FFFFFF!important;color:#000000!important;-webkit-text-fill-color:#000000!important;caret-color:#000000;color-scheme:light;opacity:1}
+input[type=number],input[type=text],input[type=email],input[type=tel],input:not([type]),select,textarea{background-color:var(--white);color:var(--navy);-webkit-text-fill-color:var(--navy);caret-color:var(--violet)}
+.impl{display:block;font:600 11px/1.35 Montserrat,sans-serif;letter-spacing:.04em;color:var(--violet-deep);margin-bottom:4px}
+/* selector de segmento: qué implica cada opción, encima de su nombre */
+.seg-bar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 22px}
+.seg-card{display:block;border:1px solid var(--line);background:var(--white);padding:12px 14px;text-decoration:none;color:var(--navy);transition:border-color .15s,background .15s}
+.seg-card:hover{border-color:var(--violet)}
+.seg-card:focus-visible{outline:3px solid var(--violet-deep);outline-offset:2px}
+.seg-card b{display:block;font:800 15px/1.25 Montserrat,sans-serif}
+.seg-card .ds{display:block;font-size:12.5px;color:var(--ink);margin-top:3px;line-height:1.4}
+.seg-card[aria-current=page]{border:2px solid var(--violet);padding:11px 13px;background:linear-gradient(0deg,rgba(129,39,227,.05),rgba(129,39,227,.05)),var(--white)}
+.seg-card[aria-current=page] b::after{content:" · estás aquí";font:600 11px Roboto,sans-serif;color:var(--violet-deep)}
+/* pestañas de modo */
+.modos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border:1px solid var(--line);margin-bottom:0}
+.modo-tab{text-align:left;background:var(--soft);border:none;border-bottom:3px solid transparent;padding:12px 16px;cursor:pointer;font:inherit;color:var(--ink)}
+.modo-tab + .modo-tab{border-left:1px solid var(--line)}
+.modo-tab b{display:block;font:800 15px/1.25 Montserrat,sans-serif;color:var(--navy)}
+.modo-tab[aria-selected=true]{background:var(--white);border-bottom-color:var(--violet)}
+.modo-tab:focus-visible{outline:3px solid var(--violet-deep);outline-offset:-3px}
+.panel-modo{margin-bottom:24px}
+/* embudo guiado: una pantalla por paso, con la flecha para continuar a la derecha */
+.emb{border:1px solid var(--line);border-top:none;background:var(--white);scroll-margin-top:8px}
+.emb-cab{display:flex;align-items:center;gap:14px;padding:16px 20px 0}
+.emb-paso{flex:none;font:700 11.5px/1 Montserrat,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--violet)}
+.emb-prog{flex:1;height:6px;background:var(--soft);border-radius:3px;overflow:hidden}
+.emb-prog i{display:block;height:100%;width:var(--p,0%);background:var(--violet);border-radius:3px;transition:width .3s}
+.emb-body{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:24px;padding:18px 20px 22px}
+.emb-body.fin{grid-template-columns:minmax(0,1fr)}
+.emb-preg{position:relative;display:flex;flex-direction:column;min-height:430px;padding:0 70px}
+.emb-q{font:800 clamp(20px,2.6vw,26px)/1.25 Montserrat,sans-serif;letter-spacing:-.01em;margin:4px 0 6px;text-wrap:balance}
+.emb-q:focus{outline:none}
+.emb-ayuda{font-size:14px;color:var(--ink);margin-bottom:14px;max-width:62ch}
+.emb-impl-grupo{margin-bottom:8px}
+.emb-opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.emb-opts.fichas{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+.emb-opt{display:flex;gap:10px;align-items:flex-start;text-align:left;border:1px solid var(--line);background:var(--white);padding:12px 14px;font:500 14.5px/1.35 Roboto,sans-serif;color:var(--navy);cursor:pointer;transition:border-color .15s,background .15s}
+.emb-opt:hover{border-color:var(--violet)}
+.emb-opt:focus-visible{outline:3px solid var(--violet-deep);outline-offset:2px}
+.emb-opt[aria-pressed=true]{border-color:var(--violet);background:var(--lav)}
+.emb-opt[aria-pressed=true] .lb{color:var(--violet-deep);font-weight:700}
+.emb-opt .mk{flex:none;width:16px;height:16px;margin-top:3px;border:2px solid #7A8599;border-radius:50%}
+.emb-opt.multi .mk{border-radius:3px}
+.emb-opt[aria-pressed=true] .mk{border-color:var(--violet);background:var(--violet);box-shadow:inset 0 0 0 2px var(--white)}
+.emb-opt .tx{display:block;min-width:0}
+.emb-opt .lb{display:block}
+.emb-opt .emb-opt-ds{display:block;font-size:12.5px;color:var(--ink);font-weight:400;margin-top:2px;line-height:1.4}
+.emb-opt .emb-opt-nota{display:block;font-size:12px;color:var(--ink);font-weight:400;margin-top:4px;line-height:1.4}
+.emb-opt .emb-opt-corto{display:none;font-size:12px;color:var(--ink);font-weight:400;margin-top:1px;line-height:1.3}
+.emb-nota{font-size:13px;color:var(--ink);margin-top:12px;max-width:66ch;line-height:1.5}
+.emb-fld-sug{font-size:12.5px;color:var(--violet-deep)}
+.emb-fld-sug:empty{display:none}
+.emb-fld-sug .lnk{font:600 12.5px Roboto,sans-serif;color:var(--violet-deep);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline}
+.emb-fld-ayuda.aviso{color:var(--violet-deep)}
+.emb-fld-ayuda:empty{display:none}
+.emb-rgpd .lnk{font:400 11.5px Roboto,sans-serif;color:var(--violet-deep);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline}
+.emb-capa2{border:1px solid var(--line);background:var(--soft);padding:14px 16px;font-size:12.5px;line-height:1.55;color:var(--ink);max-width:70ch}
+.emb-capa2 h5{font:700 13px/1.3 Montserrat,sans-serif;color:var(--navy);margin:10px 0 4px}
+.emb-capa2 h5:first-child,.emb-capa2 .cerrar+h5{margin-top:0}
+.emb-capa2 p{margin:0 0 4px}
+.emb-capa2 .cerrar{float:right;margin:0 0 6px 12px;font:600 12.5px Roboto,sans-serif;color:var(--violet-deep);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline}
+.emb-capa2 .cerrar:focus-visible{outline:3px solid var(--violet-deep);outline-offset:2px}
+.emb-resumen{display:none}
+.emb-resumen summary{cursor:pointer;font:700 12px/1.3 Montserrat,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--violet-deep);padding:8px 0}
+.emb-resumen[open] summary{margin-bottom:6px}
+/* el plegable del móvil lleva el mismo contenido que el lateral de escritorio: mismos estilos */
+.emb-aside-in h4{font:700 11px/1.3 Montserrat,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--violet-deep);margin-bottom:8px}
+.emb-aside-in .tot{font:800 24px/1.1 Montserrat,sans-serif;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--navy)}
+.emb-aside-in .tot.txt{font-size:16px;line-height:1.3}
+.emb-aside-in ul{list-style:none;margin-top:6px;display:grid;gap:4px;padding:0}
+.emb-aside-in li{display:flex;gap:8px;color:var(--ink)}
+.emb-aside-in li::before{content:"✓";color:var(--violet-deep);font-weight:700;flex:none}
+.emb-aside-in .nota{display:block;margin-top:8px;font-size:12.5px;color:var(--ink)}
+.emb-resumen .emb-aside-in.recortado .emb-quien,.emb-resumen .emb-aside-in.recortado h4,.emb-resumen .emb-aside-in.recortado .nota,.emb-resumen .emb-aside-in.recortado li:nth-child(n+4){display:none}
+.emb-resumen .emb-aside-in.recortado ul{margin-top:0}
+.emb-resumen .emb-aside-in.recortado li{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.emb-resumen .emb-vertodo{display:block;min-height:44px;margin-top:2px;padding:10px 0;font:600 13px Roboto,sans-serif;color:var(--violet-deep);background:none;border:none;cursor:pointer;text-decoration:underline}
+.emb-resumen .emb-aside-in{border-left:3px solid var(--violet);background:var(--lav);padding:12px 14px;font-size:13px}
+.emb-confirm{border:1px solid var(--violet);background:var(--lav);padding:10px 14px;font-size:13.5px;margin:12px 20px 0;display:flex;gap:8px 14px;flex-wrap:wrap;align-items:center}
+.emb-confirm .emb-next{padding:9px 14px;font-size:13px;margin-left:0}
+.emb-confirm .lnk{font:500 13.5px Roboto,sans-serif;color:var(--violet-deep);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline}
+/* deslizador de cantidad: lo que implica, el número grande y la barra con las paradas acordadas */
+.emb-desl{margin-top:2px;max-width:620px}
+.emb-desl .impl{font-size:12.5px}
+.emb-valor{display:flex;align-items:baseline;gap:4px 10px;flex-wrap:wrap;margin:6px 0 18px}
+.emb-valor b{font:800 clamp(34px,5vw,46px)/1 Montserrat,sans-serif;letter-spacing:-.02em;color:var(--navy);font-variant-numeric:tabular-nums}
+.emb-valor span{font:600 15px/1.3 Montserrat,sans-serif;color:var(--ink)}
+.emb-marcas{position:relative;height:18px;margin-top:10px;font-size:11.5px;color:var(--ink);font-variant-numeric:tabular-nums}
+.emb-marcas span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
+.emb-marcas span.ini{transform:none}
+.emb-marcas span.fin{transform:translateX(-100%)}
+.emb-num{display:flex;gap:8px 10px;align-items:center;flex-wrap:wrap;margin-top:22px;font-size:13.5px;color:var(--ink)}
+.emb-num input{font:800 20px/1 Montserrat,sans-serif;width:150px;max-width:100%;border:1px solid #7A8599;padding:9px 12px;background:var(--white);color:var(--navy);-webkit-text-fill-color:var(--navy);font-variant-numeric:tabular-nums;-moz-appearance:textfield}
+.emb-num input::-webkit-inner-spin-button,.emb-num input::-webkit-outer-spin-button{-webkit-appearance:none}
+.emb-num input:focus-visible{outline:3px solid var(--violet-deep);outline-offset:2px;border-color:var(--violet)}
+.emb-num-ok{font:600 13px/1.3 Montserrat,sans-serif;color:var(--violet-deep)}
+/* pasos de campo (nombre, correo, teléfono): un campo grande por línea, la casilla y la capa RGPD debajo */
+.emb-campo{display:grid;gap:14px;max-width:560px}
+.emb-fld{display:flex;flex-direction:column;gap:6px}
+.emb-fld > span{font:600 12.5px/1.2 Montserrat,sans-serif;color:var(--navy)}
+.emb-fld > span em{font:400 12px Roboto,sans-serif;color:var(--ink)}
+.emb-fld input{font:500 18px/1.3 Roboto,sans-serif;color:var(--navy);border:1px solid #7A8599;padding:12px 14px;background:var(--white);width:100%;border-radius:0;-webkit-text-fill-color:var(--navy)}
+.emb-fld input:focus-visible{outline:3px solid var(--violet-deep);outline-offset:2px;border-color:var(--violet)}
+.emb-fld input[aria-invalid=true]{border-color:var(--red-text)}
+.emb-fld-err{font-size:12.5px;color:var(--red-text);min-height:0}
+.emb-fld-err:empty{display:none}
+.emb-campo-err{font-weight:500}
+.emb-fld-ayuda{font-size:12.5px;color:var(--ink)}
+.emb-campo .chk{margin:2px 0 0}
+.emb-campo .chk span em{font-style:normal;color:var(--ink)}
+.emb-rgpd{margin:0}
+/* navegación: «Continuar» abajo a la derecha y flechas grandes a los lados */
+.emb-nav{display:flex;gap:10px 16px;align-items:center;flex-wrap:wrap;margin-top:auto;padding-top:22px}
+.emb-back{background:none;border:none;padding:0;cursor:pointer;font:500 14px/1.3 Roboto,sans-serif;color:var(--ink);text-decoration:underline}
+.emb-pista{font-size:13px;color:var(--ink)}
+.emb-back:focus-visible,.emb-next:focus-visible{outline:3px solid var(--violet-deep);outline-offset:2px}
+.emb-next{margin-left:auto;background:var(--violet);color:var(--white);border:none;cursor:pointer;font:700 15px/1.2 Montserrat,sans-serif;padding:14px 22px}
+.emb-next:hover:not(:disabled):not([aria-disabled="true"]){background:var(--violet-deep)}
+.emb-next:disabled,.emb-next[aria-disabled="true"]{opacity:.45;cursor:not-allowed}
+.emb-motivo{width:100%;margin:0;font-size:12.5px;font-weight:500;color:var(--red-text)}
+.emb-motivo:empty{display:none}
+.emb-flecha{position:absolute;top:50%;width:54px;height:54px;margin-top:-27px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font:700 24px/1 Montserrat,sans-serif;transition:background .15s,transform .15s}
+.emb-flecha.der{right:0;border:none;background:var(--violet);color:var(--white);box-shadow:0 6px 18px rgba(129,39,227,.35)}
+.emb-flecha.der:hover:not(:disabled):not([aria-disabled="true"]){background:var(--violet-deep);transform:translateX(3px)}
+.emb-flecha.izq{left:0;border:1px solid var(--line);background:var(--white);color:var(--violet-deep)}
+.emb-flecha.izq:hover{border-color:var(--violet)}
+.emb-flecha:disabled,.emb-flecha[aria-disabled="true"]{background:var(--soft);color:#9AA5B8;box-shadow:none;cursor:not-allowed}
+.emb-flecha:focus-visible{outline:3px solid var(--violet-deep);outline-offset:2px}
+.emb-aside{align-self:start;border-left:3px solid var(--violet);background:var(--lav);padding:14px 16px;font-size:13.5px}
+.emb-aside h4{font:700 11px/1.3 Montserrat,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--violet-deep);margin-bottom:8px}
+.emb-aside .tot{font:800 28px/1.1 Montserrat,sans-serif;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--navy)}
+.emb-aside .tot small{font:700 13px Montserrat,sans-serif;color:var(--ink)}
+.emb-aside .tot.txt{font-size:18px;line-height:1.3}
+.emb-aside ul{list-style:none;margin-top:8px;display:grid;gap:4px}
+.emb-aside li{display:flex;gap:8px;color:var(--ink)}
+.emb-aside li::before{content:"✓";color:var(--violet-deep);font-weight:700;flex:none}
+.emb-aside .nota{display:block;margin-top:8px;font-size:12.5px;color:var(--ink)}
+/* oferta configurada */
+.of-cab{display:flex;justify-content:space-between;align-items:flex-end;gap:12px 24px;flex-wrap:wrap;background:var(--navy);color:var(--white);padding:20px 22px}
+.of-cab .k{font:700 11px/1 Montserrat,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#CCABFE}
+.of-cab .tt{font:800 clamp(19px,2.4vw,24px)/1.25 Montserrat,sans-serif;margin-top:6px;text-wrap:balance}
+.of-cab .pr{font:800 38px/1 Montserrat,sans-serif;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.of-cab .pr small{font:700 15px Montserrat,sans-serif;color:#AAB8CC}
+.of-cab .pr.txt{font-size:22px;white-space:normal}
+.of-cab .sub{font-size:13px;color:#C6D2E2;margin-top:4px}
+.of-in{border:1px solid var(--line);border-top:none;padding:16px 22px 20px}
+.of-txt{font-size:14px;color:var(--ink);margin-bottom:12px;max-width:72ch}
+.of-txt b{color:var(--navy)}
+.of-fila{display:flex;justify-content:space-between;gap:14px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.of-fila span{color:var(--ink)}
+.of-fila b{font-variant-numeric:tabular-nums;text-align:right;font-weight:500}
+/* el importe nunca se parte: si no cabe junto al concepto, baja entero a la línea siguiente */
+.of-fila{flex-wrap:wrap;align-items:baseline;row-gap:2px}
+.of-fila b{margin-left:auto;white-space:normal;max-width:100%}
+.of-fila.dest b{white-space:normal}
+.of-fila s{color:var(--ink);margin-right:6px;font-size:12.5px}
+.of-fila.dest b{color:var(--violet-deep);font:700 16px Montserrat,sans-serif}
+.of-conds{margin-top:12px;font-size:12.5px;color:var(--ink);line-height:1.6}
+.of-urg{margin-top:12px;border-left:3px solid var(--violet);background:var(--lav);padding:10px 12px;font-size:13px}
+.of-acts{display:flex;gap:10px 18px;align-items:center;flex-wrap:wrap;margin-top:18px}
+.of-acts .emb-next{padding:14px 20px;font-size:15px}
+.of-acts a,.of-acts .lnk{font:500 14px/1.3 Roboto,sans-serif;color:var(--violet-deep);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline}
+.of-acts a:focus-visible,.of-acts .lnk:focus-visible{outline:3px solid var(--violet-deep);outline-offset:2px}
+.libre-cab{display:flex;justify-content:space-between;align-items:baseline;gap:8px 16px;flex-wrap:wrap;border:1px solid var(--line);border-top:none;padding:12px 16px;margin-bottom:16px;background:var(--white);font-size:13.5px;color:var(--ink)}
+.libre-cab .lnk{font:500 13.5px Roboto,sans-serif;color:var(--violet-deep);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline}
+/* solicitud de información */
+.rgpd{font-size:11.5px;color:var(--ink);line-height:1.5;margin:-4px 0 12px;max-width:80ch}
+button.cta{width:100%;border:none;cursor:pointer}
+.solicitud{margin-top:0;margin-bottom:24px;border-top:4px solid var(--violet);scroll-margin-top:16px}
+.sol-intro{font-size:14px;color:var(--ink);margin-bottom:14px;max-width:70ch}
+.sol-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px 16px}
+.fld{display:flex;flex-direction:column;gap:5px}
+.fld.full{grid-column:1/-1}
+.fld > span{font:600 12px/1.2 Montserrat,sans-serif;color:var(--navy)}
+.fld input,.fld select,.fld textarea{font:400 16px/1.35 Roboto,sans-serif;color:var(--navy);border:1px solid #7A8599;padding:10px 12px;min-height:48px;background:var(--white);width:100%;border-radius:0}
+.fld textarea{resize:vertical;min-height:72px}
+.fld input:focus-visible,.fld select:focus-visible,.fld textarea:focus-visible{outline:3px solid var(--violet-deep);outline-offset:2px;border-color:var(--violet)}
+.fld [aria-invalid=true]{border-color:var(--red-text)}
+.trampa{position:absolute!important;left:-9999px;width:1px;height:1px;opacity:0}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--ink);margin:14px 0 10px}
+.chk input{margin-top:3px;width:18px;height:18px;accent-color:var(--violet);flex:none}
+.chk a{color:var(--violet-deep)}
+.chk.bad{color:var(--red-text)}
+.sol-envio{margin:4px 0 12px;font-size:13px;color:var(--ink)}
+.sol-envio summary{cursor:pointer;font-weight:500;color:var(--blue)}
+.rs{margin-top:12px}
+.rs h4{font:700 11px/1.3 Montserrat,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:4px}
+.rs-row{display:flex;justify-content:space-between;gap:14px;padding:4px 0;border-bottom:1px dashed var(--line);font-size:12.5px}
+.rs-row span{color:var(--ink)}
+.rs-row b{color:var(--navy);font-weight:500;text-align:right;font-variant-numeric:tabular-nums}
+.sol-err{color:var(--red-text);font-size:13px;min-height:18px;margin-bottom:8px}
+.sol-btn{background:var(--violet);color:var(--white);border:none;cursor:pointer;font:700 15px/1.25 Montserrat,sans-serif;padding:15px 22px}
+.sol-btn:hover{background:var(--violet-deep)}
+.sol-btn:focus-visible{outline:3px solid var(--violet-deep);outline-offset:2px}
+.sol-btn:disabled{opacity:.6;cursor:wait}
+.sol-ok{border-left:4px solid var(--violet);background:var(--lav);padding:16px 18px;font-size:14px}
+.sol-ok .tt{font:800 17px/1.3 Montserrat,sans-serif;margin-bottom:6px}
+.sol-ok .prev{margin-top:12px;background:var(--white);padding:4px 14px 12px;border:1px solid var(--line)}
+.sol-ok a,.sol-ok .lnk{color:var(--violet-deep);font-weight:700;background:none;border:none;padding:0;cursor:pointer;text-decoration:underline;font-size:14px}
+@media (max-width:900px){
+  .seg-bar{grid-template-columns:minmax(0,1fr)}
+  .emb-body{grid-template-columns:minmax(0,1fr)}
+  .emb-aside{display:none}
+  .emb-resumen{display:block;margin:10px 20px 0}
+  .sol-grid{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:640px){
+  .emb-cab{padding:14px 16px 0}
+  .emb-resumen{margin:8px 16px 0}
+  .emb-confirm{margin:10px 16px 0}
+  .emb-body{padding:14px 16px 18px}
+  .emb-preg{min-height:0;padding:0}
+  .emb-flecha{display:none}
+  .emb-q{font-size:20px}
+  .emb-ayuda{font-size:13px;margin-bottom:10px}
+  .emb-opts{grid-template-columns:minmax(0,1fr);gap:8px}
+  .emb-opts.fichas{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .emb-opt{padding:9px 12px;font-size:14px;line-height:1.3}
+  .emb-pista{order:-1;width:100%}
+  /* «Atrás / Continuar» siempre a mano: fijos encima de la barra inferior mientras el paso no cabe */
+  .emb-nav{position:sticky;bottom:var(--barra,0px);z-index:2;background:var(--white);margin:0 -16px -18px;padding:12px 16px 14px;border-top:1px solid var(--line)}
+  .emb-pista:empty{display:none}
+  .emb-next{padding:13px 18px}
+  .emb-nav{padding-top:16px}
+}
+@media (prefers-reduced-motion:reduce){.emb-prog i,.emb-flecha{transition:none}}
+
+/* 30-09: debajo del texto de cada opción, lo que implica en costes, breve y entre paréntesis */
+.emb-opt .impl-bajo{display:block;font:500 12.5px/1.35 Roboto,sans-serif;color:var(--violet-deep);margin-top:3px}
+.emb-impl-grupo{font:500 12.5px/1.35 Roboto,sans-serif;color:var(--violet-deep)}
+.emb-body.sin-lateral{grid-template-columns:minmax(0,1fr)}
+.emb-modos{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 10px}
+.emb-modos .emb-chip{border:1px solid var(--line);background:var(--white);color:var(--navy);font:500 13.5px/1.2 Roboto,sans-serif;padding:9px 14px;cursor:pointer;min-height:40px}
+.emb-modos .emb-chip[aria-pressed=true]{border-color:var(--violet);background:var(--lav);color:var(--violet-deep);font-weight:700}
+.emb-modos .emb-chip:focus-visible{outline:3px solid var(--violet-deep);outline-offset:2px}
+
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- barra de segmentos retirada: calculadora solo de despachos -->
+  <p class="eyebrow">Precios para despachos fiscales</p>
+  <h1>¿Cómo son tus clientes?<br><em>Con su propia plataforma, solo envían documentos o híbrido</em>.</h1>
+  <!--INTRO-->
+  <p class="lead">Lo que les diferencia es su capacidad de usar herramientas digitales: unos quieren su propio panel y otros solo te envían documentos. Nos dices cuántos de cada tipo y tú decides quién paga el acceso.</p>
+  <div class="plataformas">
+    <div class="pl con">
+      <div class="pl-h"><span class="impl">Usa herramientas digitales · su propio panel · paga quien tú decidas</span><b>Con su propia plataforma</b></div>
+      <dl>
+        <dt>Qué tiene tu cliente</dt><dd>Su propio panel de administración, con tu marca: sube sus gastos y ve sus números, sus facturas y lo que tiene pendiente.</dd>
+        <dt>Qué consume</dt><dd>La <b>aplicación base</b> y su <b>volumen OCR</b> (los documentos que digitaliza al mes), con la cuota de su tramo.</dd>
+        <dt>Quién paga</dt><dd>Tú decides: <b>lo asumes tú o lo repercutes</b> a cada cliente.</dd>
+        <dt>Qué haces tú</dt><dd>Lo revisas y lo apruebas todo desde tu panel.</dd>
+      </dl>
+    </div>
+    <div class="pl sin">
+      <div class="pl-h"><span class="impl">No tiene panel propio · lo gestionas tú · no paga nada</span><b>Solo envían documentos</b></div>
+      <dl>
+        <dt>Qué tiene tu cliente</dt><dd>Solo una pantalla: <b>sube sus gastos y ve qué documentos le faltan</b>.</dd>
+        <dt>Qué consume</dt><dd>Su <b>volumen OCR</b>, que va en tu factura por cuenta y documento procesado.</dd>
+        <dt>Quién paga</dt><dd><b>Nunca paga nada</b>: su cuenta va en tu factura.</dd>
+        <dt>Qué haces tú</dt><dd>Lo gestionas todo desde tu panel.</dd>
+      </dl>
+    </div>
+  </div>
+  <p class="defs-close">Lo que les diferencia es su <b>capacidad de usar herramientas digitales</b>. Y puedes tener de los dos tipos: es el <b>híbrido</b>.</p>
+  <div class="defs">
+    <div class="def"><span class="dl">A</span><span class="dt"><b>Todos con su propia plataforma.</b> Cada cliente con su panel, la aplicación base y su volumen OCR. El acceso lo asumes tú o lo paga cada cliente.</span></div>
+    <div class="def"><span class="dl">B</span><span class="dt"><b>Todos solo envían documentos.</b> Lo gestionas todo desde tu panel y recibes una sola factura al mes, por cuentas y volumen OCR procesado. Tus clientes no pagan nada.</span></div>
+    <div class="def"><span class="dl">A+B</span><span class="dt"><b>Híbrido.</b> Unos clientes con su propia plataforma y otros que solo envían documentos. Nos dices cuántos de cada tipo.</span></div>
+  </div>
+  <p class="defs-close"><b>No hay una ruta mejor: cada caso es diferente.</b> Responde unas preguntas cortas en el modo guiado y te enseñamos tu caso con sus números, o calcúlalo tú en el modo libre. Antes de decidir, reserva tu reunión de onboarding: te proponemos una solución personalizada para tu cartera.</p>
+  <!--/INTRO-->
+
+  <div class="modos" id="modos" role="tablist" aria-label="Cómo quieres calcularlo">
+    <button type="button" class="modo-tab" id="tabGuiado" role="tab" aria-selected="true" aria-controls="panelGuiado"><span class="impl">Unas preguntas cortas: cómo son tus clientes y su volumen OCR, con tus números</span><b>Guiado · 1 minuto</b></button>
+    <button type="button" class="modo-tab" id="tabLibre" role="tab" aria-selected="false" aria-controls="panelLibre" tabindex="-1"><span class="impl">Mueves tú cada dato, partiendo de tus respuestas</span><b>Calcular libremente</b></button>
+  </div>
+  <section class="panel-modo emb" id="panelGuiado" role="tabpanel" aria-labelledby="tabGuiado">
+    <div class="emb-cab"><span class="emb-paso" id="embPaso">Paso 1</span><div class="emb-prog" aria-hidden="true"><i id="embProg"></i></div></div>
+    <div id="embConfirmVivo" role="status"><div class="emb-confirm" id="embConfirm" tabindex="-1" hidden></div></div>
+    <div class="emb-body" id="embBody">
+      <div class="emb-etapa">
+        <div class="emb-preg" id="embPreg">
+          <button type="button" class="emb-flecha izq" id="embPrev" aria-label="Paso anterior" title="Paso anterior" hidden>←</button>
+          <h2 class="emb-q" id="embQ" tabindex="-1"></h2>
+          <p class="emb-ayuda" id="embAyuda"></p>
+          <span class="impl emb-impl-grupo" id="embImplGrupo" hidden></span>
+          <div class="emb-opts" id="embOpts" role="group"></div>
+          <p class="emb-nota" id="embNota" hidden></p>
+          <div class="emb-desl" id="embDesl" hidden>
+            <div class="emb-modos" id="embModos" role="group" hidden></div>
+            <span class="impl" id="embDeslImpl" aria-live="polite"></span>
+            <div class="emb-valor"><b id="embValor"></b><span id="embUnidad"></span></div>
+            <input type="range" id="embRange" min="0" max="1" step="1" value="0">
+            <div class="emb-marcas" id="embMarcas" aria-hidden="true"></div>
+            <div class="emb-num" id="embNum" hidden><label for="embNumIn" id="embNumLbl"></label><input type="number" id="embNumIn" min="1" max="99999" step="1" inputmode="numeric"><span class="emb-num-ok" id="embNumOk" aria-live="polite"></span></div>
+          </div>
+          <div class="emb-campo" id="embCampo" hidden></div>
+          <div class="emb-nav"><button type="button" class="emb-back" id="embBack" hidden>← Atrás</button><span class="emb-pista" id="embPista"></span><button type="button" class="emb-next" id="embNext">Continuar →</button><p class="emb-motivo" id="embMotivo" role="alert"></p></div>
+          <button type="button" class="emb-flecha der" id="embFlecha" aria-label="Continuar" title="Continuar">→</button>
+        </div>
+        <div id="embOferta" tabindex="-1" hidden></div>
+        <p class="vh" id="embVivo" role="status" aria-live="polite" aria-atomic="true"></p>
+      </div>
+      <aside class="emb-aside" id="embAside" aria-live="polite"></aside>
+    </div>
+  </section>
+
+  <section class="panel-modo" id="panelLibre" role="tabpanel" aria-labelledby="tabLibre" hidden>
+  <div class="libre-cab"><span id="libreCab">Mueves tú cada dato.</span><button type="button" class="lnk" data-acc="guiado">Volver al modo guiado</button></div>
+  <!-- ===== TU DESPACHO: clientes y documentos ===== -->
+  <div class="card" id="calc">
+    <div class="hd"><span class="t">Tu despacho</span><span class="s">tus clientes y tu volumen OCR</span></div>
+    <div class="bd controls">
+      <div>
+        <div class="vol-big"><b id="vCli">150</b><span>clientes en cartera</span></div>
+        <input type="range" id="rCli" min="10" max="300" step="5" value="150" aria-label="Clientes en cartera">
+        <div class="vol-marks eq" aria-hidden="true"><span>10</span><span>100</span><span>200</span><span>300</span></div>
+      </div>
+      <div id="cDocs">
+        <p class="ocr-t"><b>Volumen OCR</b> · documentos que entran al mes para digitalizar. Es un solo dato: dalo como te sea más fácil.</p>
+        <div class="seg" role="group" aria-label="Cómo indicar el volumen OCR">
+          <button id="vmMedia" aria-pressed="true">Media por cliente</button>
+          <button id="vmTotal" aria-pressed="false">Total de la cartera</button>
+        </div>
+        <p class="vhint" id="vHint"></p>
+        <div id="vMediaBox">
+          <div class="vol-big"><b id="vDocs">50</b><span>documentos al mes de media por cliente</span></div>
+          <input type="range" id="rDocs" min="0" max="29" step="1" value="8" aria-label="Documentos de media por cliente y mes">
+          <div class="vol-marks" id="mDocs" aria-hidden="true"></div>
+        </div>
+        <div id="vTotalBox" hidden>
+          <div class="vol-big"><input type="number" id="nTot" min="1" max="999999" step="1" value="7500" inputmode="numeric" aria-label="Documentos al mes entre todos tus clientes"><span>documentos al mes en toda tu cartera</span></div>
+        </div>
+        <div class="derived" id="vDer" aria-live="polite"></div>
+      </div>
+      <div class="toggles">
+        <div class="tg on" id="tgFund">
+          <button class="sw" id="swFund" aria-pressed="true" aria-label="Aplicar condición Despacho Fundador"></button>
+          <span class="tx"><b>Despacho Fundador</b> · hasta el 31-10-2026 · 10 plazas<br><span class="v">−30 % de por vida en la plataforma de tus clientes y setup a −40 %</span></span>
+        </div>
+      </div>
+      <div class="globals">
+        <span>Volumen OCR: <b id="gDocs">7.500</b> documentos al mes</span>
+        <span>Al año: <b id="gYear">90.000</b> documentos</span>
+        <span>Horas que recupera tu equipo: <b id="gHrs">~563</b> h/mes · estimación prudente</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ¿CÓMO SON TUS CLIENTES? ===== -->
+  <div class="card ruta" id="rutaCard">
+    <div class="hd"><span class="t">¿Cómo son tus clientes?</span><span class="s">según su capacidad de usar herramientas digitales</span></div>
+    <div class="bd">
+      <div class="modes" role="group" aria-label="Elige tu ruta">
+        <button class="mode" id="mA" aria-pressed="false">
+          <span class="impl">Usan herramientas digitales · cada uno con su panel</span>
+          <span class="mk">Ruta A · Con plataforma</span>
+          <span class="mt">Todos con su propia plataforma</span>
+          <span class="mp">Cada cliente tiene su propio panel con la aplicación base. Tú decides quién paga el acceso.</span>
+        </button>
+        <button class="mode" id="mB" aria-pressed="false">
+          <span class="impl">Una sola factura al despacho · tus clientes pagan 0 €</span>
+          <span class="mk">Ruta B · Solo envían documentos</span>
+          <span class="mt">Todos solo envían documentos</span>
+          <span class="mp">No tienen panel propio: suben sus gastos y ven qué les falta. Lo gestionas tú todo desde tu panel, con una sola factura al mes por cuentas y volumen OCR. No pagan nada.</span>
+        </button>
+        <button class="mode" id="mM" aria-pressed="true">
+          <span class="impl">Unos con panel propio y otros que solo envían documentos</span>
+          <span class="mk">Ruta A+B · Híbrido</span>
+          <span class="mt">Híbrido: de los dos tipos</span>
+          <span class="mp">Unos clientes con su propia plataforma y otros que solo envían documentos. Con la barra indicas cuántos de cada tipo.</span>
+        </button>
+      </div>
+      <div id="mixBox">
+        <div class="split" style="margin-left:0;margin-right:0">
+          <div class="st"><span><b class="con" id="vApp">100</b> con su propia plataforma</span><span><b class="sin" id="vAdm">50</b> solo envían documentos</span></div>
+          <input type="range" id="rAdm" min="5" max="145" step="5" value="50" aria-label="Clientes que solo envían documentos">
+          <div class="gd" id="admFijo" hidden>Con 10 clientes, el híbrido es 5 y 5: el reparto exacto lo fijamos en la reunión de onboarding.</div>
+          <div class="legend" id="admLegend"><span class="lb"><b>← más con plataforma propia</b></span><span class="rb"><b>más que solo envían documentos →</b></span></div>
+        </div>
+        <div class="tg" id="tgVolSep" style="margin-top:12px">
+          <button class="sw" id="swVolSep" aria-pressed="false" aria-label="Volumen distinto para cada grupo"></button>
+          <span class="tx"><b>Volumen distinto para cada grupo</b><br><span class="v" id="volSepTx"></span></span>
+        </div>
+        <div id="volSepBox" hidden>
+          <div class="grp" id="gAppVol" style="margin-left:0;margin-right:0">
+            <div class="gt">Documentos de tus <span id="gAppN">100</span> clientes con su propia plataforma</div>
+            <div class="seg" role="group" aria-label="Volumen de los clientes con plataforma"><button id="amMedia" aria-pressed="true">Media por cliente</button><button id="amTotal" aria-pressed="false">Total del mes del grupo</button></div>
+            <div class="gvol" id="gAppMedia"><span>Media del grupo</span><input type="range" id="rDocsApp" min="0" max="29" step="1" value="8" aria-label="Documentos de media por cliente con plataforma"><b id="vDocsApp">50 documentos</b><div class="vol-marks gmarks" id="mApp" aria-hidden="true"></div></div>
+            <div class="gvol" id="gAppTotal" hidden><span>Documentos al mes del grupo</span><input type="number" id="nApp" min="0" max="999999" step="1" value="5000" inputmode="numeric" aria-label="Documentos al mes de los clientes con plataforma"><b></b></div>
+            <div class="gd" id="gAppDer"></div>
+          </div>
+          <div class="grp" id="gAdmVol" style="margin-left:0;margin-right:0">
+            <div class="gt">Documentos de tus <span id="gAdmN">50</span> clientes que solo envían documentos</div>
+            <div class="seg" role="group" aria-label="Volumen de los clientes que solo envían documentos"><button id="bmMedia" aria-pressed="true">Media por cliente</button><button id="bmTotal" aria-pressed="false">Total del mes del grupo</button></div>
+            <div class="gvol" id="gAdmMedia"><span>Media del grupo</span><input type="range" id="rDocsAdm" min="0" max="29" step="1" value="8" aria-label="Documentos de media por cliente que solo envía documentos"><b id="vDocsAdm">50 documentos</b><div class="vol-marks gmarks" id="mAdm" aria-hidden="true"></div></div>
+            <div class="gvol" id="gAdmTotal" hidden><span>Documentos al mes del grupo</span><input type="number" id="nAdm" min="0" max="999999" step="1" value="2500" inputmode="numeric" aria-label="Documentos al mes de los clientes que solo envían documentos"><b></b></div>
+            <div class="gd" id="gAdmDer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RESULTADO ===== -->
+  <div class="res">
+    <div class="top"><div class="rk" id="rEyebrow"></div><div class="rt" id="rTitle"></div></div>
+    <div class="inner" aria-live="polite">
+      <div class="rx" id="rIntro"></div>
+
+      <div id="gApp">
+        <div class="gtitle"><span id="gAppT">100 clientes con su propia plataforma · aplicación base</span><small>Cada uno con su panel y el volumen OCR de su tramo, con el descuento de tu cartera de por vida. La paga quien tú decidas: tú o cada cliente.</small></div>
+        <span class="badge" id="aBadge"></span>
+        <div class="custom" id="aCustom" hidden>Más de 500 documentos de media por cliente: <b>plan personalizado</b>. Te damos la cifra en la reunión de onboarding.</div>
+        <div class="figs" id="aFigs">
+          <div class="fig"><span class="l">Aplicación base, por cliente<small id="aSm"></small></span><span class="r" id="aCuota"></span></div>
+          <div class="fig"><span class="l">Entre tus clientes con plataforma</span><span class="r" id="aTotal"></span></div>
+        </div>
+        <div class="conds"><b>Con plataforma:</b> sin mínimos y sin permanencia. El descuento de la cuota crece con tus clientes en Trazabis y es de por vida: −15 % hasta 50, −20 % hasta 100, −25 % hasta 150 y −30 % a partir de 151<span class="fund-only"> (Despacho Fundador: −30 % directo)</span>. Cada cliente paga el tramo de su propio volumen: con la media te damos una cifra orientativa.</div>
+      </div>
+
+      <div id="gAdm">
+        <div class="gtitle"><span id="gAdmT">50 clientes que solo envían documentos</span><small>Sin panel propio: una pantalla para subir sus gastos y ver qué documentos les faltan; tú lo gestionas todo desde tu panel.</small></div>
+        <div class="noB" id="bNo" hidden><b>La Ruta B (todos solo envían documentos) empieza en 25 clientes.</b> Con tu cartera de hoy, mira «Con plataforma» o «Híbrido»: el tamaño del grupo que solo envía documentos lo confirmamos en la reunión de onboarding.</div>
+        <div id="admOk">
+          <div class="figs">
+            <div class="fig big"><span class="l">Tu factura mensual por estos clientes<small id="bSm"></small></span><span class="r" id="bFee"></span></div>
+            <div class="fig"><span class="l">Por cuenta</span><span class="r" id="bPer"></span></div>
+            <div class="fig"><span class="l">Pagan estos clientes</span><span class="r zero">0 €, siempre</span></div>
+          </div>
+          <div class="custom" id="admPeq" hidden>Tu grupo que solo envía documentos tiene menos de 25 clientes: su tamaño lo confirmamos en la reunión de onboarding.</div>
+          <div class="conds"><b>Solo envían documentos:</b> mínimo 25 cuentas · permanencia de 12 meses · las dudas de esos clientes las atiende primero tu despacho · sin descuentos encima<span class="fund-only">, tampoco el de fundador</span> · la cuenta sin actividad en el mes no se factura · lo que llega en Excel no cuenta como documento procesado.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ¿A QUIÉN REPERCUTES EL ACCESO? ===== -->
+  <div class="card paga" id="cardPaga">
+    <div class="hd"><span class="t">¿Asumes tú el acceso a la plataforma o lo repercutes?</span><span class="s" id="pgSub"></span></div>
+    <div class="bd">
+      <p class="pg-ayuda" id="pgAyuda"></p>
+      <div class="pg-opts" role="group" aria-label="Quién paga el acceso a la plataforma">
+        <button type="button" class="pg" id="pgDesp" aria-pressed="false"><span class="impl" id="pgDespImpl"></span><b>Lo asumo yo</b><span class="ps">La factura me llega a mí.</span></button>
+        <button type="button" class="pg" id="pgCli" aria-pressed="true"><span class="impl" id="pgCliImpl"></span><b>Lo repercuto a cada cliente</b><span class="ps">Cada cliente con plataforma paga su acceso.</span></button>
+      </div>
+      <div class="tg" id="tgAnual">
+        <button class="sw" id="swAnual" aria-pressed="false" aria-label="Pago anual de la plataforma"></button>
+        <span class="tx" id="anualTx"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== QUIÉN PAGA QUÉ ===== -->
+  <div class="card qp" id="quienPaga">
+    <div class="hd"><span class="t">Quién paga qué</span><span class="s">precios sin IVA</span></div>
+    <div class="bd figs">
+      <div class="fig big"><span class="l">Tu factura mensual como despacho<small id="qpDespSm"></small></span><span class="r" id="qpDesp"></span></div>
+      <div class="fig" id="qpCliRow"><span class="l">Paga cada cliente con plataforma<small id="qpCliSm"></small></span><span class="r" id="qpCli"></span></div>
+      <div class="fig" id="qpSinRow"><span class="l">Pagan tus clientes que solo envían documentos</span><span class="r zero">0 €</span></div>
+    </div>
+  </div>
+
+  <div class="neutral">¿Con su propia plataforma, solo envían documentos o híbrido? <b>No hay una ruta mejor: cada caso es diferente.</b> Depende de cómo trabajas tú y de cómo trabaja cada cliente. <a href="https://cal.com/ruben-bel/demo-trazabis" target="_blank" rel="noopener">Reserva tu reunión de onboarding</a>: en 30 minutos repasamos tus clientes uno a uno y te proponemos una solución personalizada, con tu reparto y tu cifra exacta.</div>
+
+  <div class="card setup">
+    <div class="hd"><span class="t">Tu setup de implantación · pago único, común a las tres rutas</span><span class="s">llave en mano: tu cartera la configuramos nosotros</span></div>
+    <div class="bd">
+      <table>
+        <thead><tr><th>Plan de implantación</th><th>Clientes</th><th>Tarifa</th><th id="thOf">Precio ofertado · Despacho Fundador (−40 %)</th></tr></thead>
+        <tbody><tr>
+          <td data-th="Plan de implantación"><span class="big" id="sPlan"></span><span class="per">para tu cartera</span></td>
+          <td data-th="Clientes"><span class="big" id="sN"></span><span class="per">clientes</span></td>
+          <td data-th="Tarifa"><span class="big" id="sTar"></span><span class="per" id="sTarCli"></span></td>
+          <td class="of" id="tdOf" data-th="Precio ofertado · Despacho Fundador (−40 %)"><span class="big" id="sOf"></span><span class="per" id="sOfCli"></span></td>
+        </tr></tbody>
+      </table>
+      <div class="note"><b>Incluye:</b> diagnóstico de tu cartera cliente a cliente, configuración de cada cuenta, la aplicación con tu marca, conexión con tu programa de contabilidad si está conectado (hoy: Odoo; Holded y a3ERP en cola, sin fecha), puesta en marcha por grupos de clientes y formación de tu equipo. <b>Garantía de implantación:</b> si al cerrar la implantación tu cartera no está operativa según el plan firmado, te devolvemos el setup íntegro. Pasar los documentos de años anteriores se presupuesta aparte, con una muestra real. <a href="https://cal.com/ruben-bel/demo-trazabis" target="_blank" rel="noopener">Reserva tu reunión de onboarding</a> y te lo proponemos por escrito en 48 h.</div>
+    </div>
+  </div>
+
+  <button type="button" class="cta" data-acc="solicitar">Solicitar información con este cálculo<small>Te escribimos en menos de un día laborable con una propuesta para tu cartera.</small></button>
+  </section>
+
+  <div class="card solicitud" id="solCard" hidden>
+    <div class="hd"><span class="t" id="solTitulo">Solicita información sobre tu oferta</span><span class="s">te respondemos en menos de un día laborable</span></div>
+    <div class="bd">
+      <p class="sol-intro">Déjanos tus datos y te escribimos con una propuesta para tu cartera. Tus respuestas del test y tu cálculo viajan con la solicitud: no tendrás que repetir nada.</p>
+      <form id="solForm" method="post" novalidate>
+        <div class="sol-grid">
+          <label class="fld"><span>Nombre y apellidos *</span><input id="fNombre" name="nombre" autocomplete="name" maxlength="120" required></label>
+          <label class="fld"><span>Despacho *</span><input id="fEmpresa" name="empresa" autocomplete="organization" maxlength="120" required></label>
+          <label class="fld"><span>Correo electrónico *</span><input id="fEmail" type="email" name="email" autocomplete="email" maxlength="160" required></label>
+          <label class="fld"><span>Teléfono</span><input id="fTel" type="tel" name="telefono" autocomplete="tel" maxlength="30"></label>
+          <label class="fld"><span>Programa de contabilidad</span><select id="fPrograma" name="programa">
+            <option value="">Selecciona (opcional)</option><option>Contasol</option><option>A3</option><option>Sage</option><option>Holded</option><option>Odoo</option><option>a3ERP</option><option>Otro programa</option><option>Sin programa / no lo sé</option>
+          </select></label>
+          <label class="fld full"><span>¿Algo que debamos saber?</span><textarea id="fMensaje" name="mensaje" maxlength="1000" rows="3"></textarea></label>
+        </div>
+        <input class="trampa" id="fWeb" name="web" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <label class="chk" id="fOkLbl"><input type="checkbox" id="fOk" required><span>He leído la <a href="https://trazabis.com/privacidad" target="_blank" rel="noopener">política de privacidad</a> y acepto que Servicios Digitales y Automatización SL (Trazabis) use estos datos para responder a mi solicitud.</span></label>
+        <p class="rgpd">Responsable: Servicios Digitales y Automatización SL. Finalidad: responder a tu solicitud y enviarte la propuesta. Legitimación: tu consentimiento. Tus datos se guardan en nuestro CRM y no se ceden a terceros salvo obligación legal. Puedes ejercer tus derechos de acceso, rectificación, supresión y los demás que te reconoce la ley escribiendo a escribeme@trazabis.es. Más información en la política de privacidad.</p>
+        <details class="sol-envio" id="solEnvio"><summary>Qué nos envías con la solicitud</summary><div id="solResumen"></div></details>
+        <p class="sol-err" id="solErr" role="alert"></p>
+        <button class="sol-btn" type="submit" id="solBtn">Solicitar información</button>
+      </form>
+      <div class="sol-ok" id="solOk" tabindex="-1" hidden aria-live="polite"></div>
+    </div>
+  </div>
+
+  <a class="cta" href="https://cal.com/ruben-bel/demo-trazabis" target="_blank" rel="noopener">Reserva tu reunión de onboarding: 30 minutos, gratis<small>Repasamos tu cartera cliente a cliente, ves un panel real en producción y te proponemos una solución personalizada en 48 h.</small></a>
+  <p class="legal">Precios sin IVA. La ruta y el reparto de clientes se fijan en la reunión de onboarding y se revisan en renovación. Trazabis no sustituye a una asesoría fiscal: cero papel, no cero validación.</p>
+</div>
+
+<div class="bar"><span class="t">Solución personalizada para tu cartera · 30 min, gratis</span><a href="https://cal.com/ruben-bel/demo-trazabis" target="_blank" rel="noopener">Reserva tu reunión de onboarding</a></div>
+
+<script>
+'use strict';
+/* ===== Tarifa v9 · canal despachos · clientes con plataforma (Ruta A), sin plataforma (Ruta B) o híbrido (A+B) ===== */
+var ESC=[[25,5.90],[50,8.90],[75,11.90],[100,14.90],[150,19.40],[200,23.90],[300,32.90],[400,40.40],[500,44.90]];
+var CUENTA_B=1.25, DOC_B=0.025;
+/* horas que recupera el equipo: modelo prudente publicado (~3 h por cliente con 40 documentos) = 0,075 h por documento */
+var H_DOC=0.075;
+/* paradas de volumen medio: de 5 en 5 hasta 50, de 10 en 10 hasta 100, de 25 en 25 hasta 500 (30 paradas) */
+var STOPS=[];
+(function(){var v;for(v=10;v<=50;v+=5)STOPS.push(v);for(v=60;v<=100;v+=10)STOPS.push(v);for(v=125;v<=500;v+=25)STOPS.push(v);})();
+var I50=STOPS.indexOf(50);
+/* condición Despacho Fundador: solo hasta el 31-10-2026 (prorrogada el 29-09 desde el 30-09); después el toggle, las frases de fundador y la columna de precio ofertado desaparecen solos */
+var FUND_HASTA=new Date('2026-10-31T23:59:59'); var FUND_OK=(new Date())<=FUND_HASTA;
+var CAL='https://cal.com/ruben-bel/demo-trazabis';
+/* Módulos para clientes con plataforma · PRECIO ESPECIAL DE DISTRIBUCIÓN = tarifa v9 con el descuento de la cartera
+   («al descuento de tu tramo»: −15/−20/−25/−30 %, Despacho Fundador −30 %), techo −30 %; IA agéntica, techo −20 %.
+   Es precio final: sin pack ni pago anual encima. Sync ERP y la Conciliación hasta 100 movimientos van incluidos (0 €). */
+/* los clientes del despacho tienen la aplicación base y un volumen OCR de consumo: sin módulos */
+var MODS_DESP=[];
+
+/* Estado. mode: 'a' = todos con plataforma · 'b' = todos sin plataforma · 'm' = híbrido. adm = clientes SIN plataforma en el híbrido.
+   Volumen global (vm 'media' | 'total', vi parada, vt total) en las tres rutas; volSep = volumen distinto por grupo en el híbrido.
+   paga: quién paga el acceso a la plataforma ('cliente' | 'despacho'). mods: módulos por cliente con plataforma (on, tramo t, n clientes). */
+var S={cli:150, mode:'m', adm:50, vm:'media', vi:I50, vt:7500, volSep:false,
+       app:{vm:'media',vi:I50,vt:5000}, admb:{vm:'media',vi:I50,vt:2500},
+       fund:FUND_OK, anual:false, paga:'cliente',
+       mods:{},
+       test:{}, orientado:null, propuesta:null};
+
+var $=function(id){return document.getElementById(id)};
+/* de-DE da el mismo formato que es-ES (1.234,56) pero sí agrupa los miles de 4 cifras */
+var eur=function(n){return n.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'};
+var num=function(n){return Math.round(n).toLocaleString('de-DE')};
+var num1=function(n){return n.toLocaleString('de-DE',{minimumFractionDigits:0,maximumFractionDigits:1})};
+var eurNum=function(n){return n.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})};
+var r2=function(v){return Math.round(v*100)/100};
+
+function bloques(n){ if(n<=50)return .15; if(n<=100)return .20; if(n<=150)return .25; return .30; }
+function setup(n){
+  if(n<=15) return {nm:'Autoguiado',t:[490],f:[294]};
+  if(n<=25) return {nm:'Exprés 25',t:[1500],f:[900]};
+  if(n<=50) return {nm:'Exprés',t:[2000],f:[1200]};
+  if(n<=150) return {nm:'Cartera',t:[3000,4000],f:[1800,2400]};
+  return {nm:'Despacho Escala',t:[5000,7000],f:[3000,4200]};
+}
+var rango=function(a,fmt){return a.length>1?fmt(a[0])+' – '+fmt(a[1]):fmt(a[0])};
+/* volumen de un grupo: media por cliente y documentos reales; un grupo sin clientes no tiene documentos */
+function volumen(b,n){
+  if(!n) return {media:0, docs:0};
+  if(b.vm==='media') return {media:STOPS[b.vi], docs:n*STOPS[b.vi]};
+  return {media:b.vt/n, docs:b.vt};
+}
+/* tramo del cliente con plataforma: el primer tramo que cubre la media (redondeada hacia arriba); −1 = personalizado */
+function tramo(media){ var m=Math.ceil(media); for(var k=0;k<ESC.length;k++){ if(ESC[k][0]>=m) return k; } return -1; }
+function dtoCartera(st){ return (st.fund&&FUND_OK)?.30:bloques(st.cli); }
+/* precio de un módulo por cliente y mes (v5: sin módulos; se conserva para el motor) */
+function pd(m,t,dto){ return r2(m.tiers[t][1]*(1-Math.min(dto,m.techo))); }
+/* en el híbrido siempre hay al menos 5 con plataforma y 5 sin */
+function repartoAdm(n,adm){ return Math.max(5,Math.min(n-5,adm)); }
+/* UNA sola fuente de cálculo para el modo libre, la oferta del guiado, la solicitud y los textos de «lo que implica» */
+function calcDesp(st){
+  st=st||S;
+  var n=st.cli, M=st.mode==='a'?0:(st.mode==='b'?n:repartoAdm(n,st.adm)), N=n-M;
+  var dto=dtoCartera(st), fA=st.anual?10/12:1;
+  var o={n:n,N:N,M:M,dto:dto,fA:fA};
+  var docsA, docsS, mediaA, mediaS;
+  if(st.mode==='m'&&st.volSep){ var VA=volumen(st.app,N), VS=volumen(st.admb,M); docsA=VA.docs; mediaA=VA.media; docsS=VS.docs; mediaS=VS.media; }
+  else if(st.vm==='media'){ var m=STOPS[st.vi]; docsA=N*m; docsS=M*m; mediaA=N?m:0; mediaS=M?m:0; }
+  else { docsA=Math.ceil(st.vt*N/n); docsS=st.vt-docsA; mediaA=N?docsA/N:0; mediaS=M?docsS/M:0; }
+  o.docsA=docsA; o.docsS=docsS; o.mediaA=mediaA; o.mediaS=mediaS; o.gd=docsA+docsS;
+  /* plataforma: cuota por cliente, redondeada a céntimos; entre todos = cuota × clientes */
+  o.ti=-2; o.cuotaCli=0; o.cuotaRef=0; o.cuotas=0; o.custom=false;
+  if(N>0){ o.ti=tramo(mediaA); if(o.ti>=0){ o.cuotaRef=r2(ESC[o.ti][1]*fA); o.cuotaCli=r2(ESC[o.ti][1]*(1-dto)*fA); o.cuotas=r2(o.cuotaCli*N); } else o.custom=true; }
+  /* módulos: solo para clientes con plataforma */
+  o.filasMod=[]; var mods=0, altas=0;
+  if(N>0) MODS_DESP.forEach(function(md){ var x=st.mods[md.id]; if(!x||!x.on) return; var k=Math.max(1,Math.min(x.n,N)), p=pd(md,x.t,dto), sub=r2(p*k);
+    mods+=sub; altas+=md.alta*k; o.filasMod.push({m:md,t:x.t,k:k,p:p,sub:sub,lista:md.tiers[x.t][1]}); });
+  o.modsMes=r2(mods); o.altas=altas;
+  /* sin plataforma: 1,25 € por cuenta + 0,025 € por documento real, sin descuentos */
+  o.feeSin=M>0?r2(M*CUENTA_B+docsS*DOC_B):0; o.porCta=M>0?r2(o.feeSin/M):0;
+  o.bNo=st.mode==='b'&&n<25; o.avisoPeq=st.mode==='m'&&M>0&&M<25;
+  /* pago anual de la plataforma: 10 cuotas en un pago al año (cuotaCli es su equivalente mensual) */
+  o.anual=!!st.anual&&N>0&&o.ti>=0;
+  if(o.anual){ o.anualCli=r2(ESC[o.ti][1]*(1-dto)*10); o.anualPlat=r2(o.anualCli*N); o.anualRef=r2(ESC[o.ti][1]*10); }
+  /* quién paga: el precio no cambia, cambia a quién le llega la factura; los clientes sin plataforma nunca pagan */
+  o.conApp=r2(o.cuotas+o.modsMes);
+  o.asume=st.paga==='despacho'&&N>0;
+  o.despachoMes=r2(o.feeSin+(o.asume?o.conApp:0));
+  o.clientesMes=(N>0&&!o.asume)?o.conApp:0;
+  o.mesReal=r2(o.feeSin+(o.asume?o.modsMes:0)); /* lo que llega al despacho cada mes cuando la plataforma va en pago anual */
+  return o;
+}
+/* «lo que implica» cada opción de quién paga: la usan el modo libre y el paso «paga» del guiado */
+function implPaga(o,quien){
+  if(quien==='despacho') return o.custom?'Tu factura: '+eur(o.feeSin)+'/mes + la plataforma de tus clientes, a medida':
+    (o.anual?(o.mesReal>0?'Tu factura: '+eur(o.mesReal)+'/mes + un pago al año de ':'Tu factura: un pago al año de ')+eur(o.anualPlat)+' · tus clientes pagan 0 €':'Tu factura mensual: '+eur(o.despachoMes)+' · tus clientes pagan 0 €');
+  return (o.custom?'Cada cliente paga la cuota de su tramo, a medida':'Cada cliente paga '+(o.anual?eur(o.anualCli)+' al año':eur(o.cuotaCli)+'/mes'))+(o.M>0?' · a ti te llegan '+eur(o.feeSin)+'/mes':' · a ti no te llega factura');
+}
+/* el mismo volumen OCR, dado de la otra forma: total ↔ media por cliente (a la parada más cercana) */
+function volAMedia(b,k){ if(b.vm!=='media'&&k>0) b.vi=STOPS.indexOf(paradaCercana(b.vt/k)); b.vm='media'; }
+function volATotal(b,k){ if(b.vm!=='total') b.vt=k*STOPS[b.vi]; b.vm='total'; }
+function pct(el,v,min,max){ el.style.setProperty('--pct',((v-min)/((max-min)||1)*100)+'%'); }
+/* marcas del deslizador colocadas en su parada real */
+function marcas(el,vals){ el.innerHTML=''; vals.forEach(function(v){ var s=document.createElement('span'); s.textContent=num(v); s.style.left=(STOPS.indexOf(v)/(STOPS.length-1)*100)+'%'; el.appendChild(s); }); }
+marcas($('mDocs'),[10,50,100,250,500]); marcas($('mApp'),[10,50,100,250,500]); marcas($('mAdm'),[10,50,100,250,500]);
+
+
+/* ---- eventos ---- */
+$('rCli').addEventListener('input',function(e){S.cli=+e.target.value; render()});
+$('vmMedia').addEventListener('click',function(){ volAMedia(S,S.cli); render(); });
+$('vmTotal').addEventListener('click',function(){ volATotal(S,S.cli); render(); });
+$('rDocs').addEventListener('input',function(e){S.vi=+e.target.value;render()});
+$('nTot').addEventListener('input',function(e){var v=parseInt(e.target.value,10); if(isFinite(v)&&v>=0){S.vt=v;render(true)}});
+$('swFund').addEventListener('click',function(){S.fund=!S.fund;render()});
+$('swAnual').addEventListener('click',function(){S.anual=!S.anual;render()});
+$('mA').addEventListener('click',function(){S.mode='a';render()});
+$('mB').addEventListener('click',function(){S.mode='b';render()});
+$('mM').addEventListener('click',function(){ if(S.mode!=='m'&&(S.adm<5||S.adm>S.cli-5)) S.adm=repartoAdm(S.cli,Math.round(S.cli/2/5)*5); S.mode='m'; render(); });
+$('rAdm').addEventListener('input',function(e){S.adm=+e.target.value;render()});
+$('swVolSep').addEventListener('click',function(){
+  if(!S.volSep){ var o=calcDesp(); S.app={vm:S.vm,vi:S.vi,vt:o.docsA}; S.admb={vm:S.vm,vi:S.vi,vt:o.docsS}; }
+  S.volSep=!S.volSep; render();
+});
+$('amMedia').addEventListener('click',function(){ volAMedia(S.app,calcDesp().N); render(); });
+$('amTotal').addEventListener('click',function(){ volATotal(S.app,calcDesp().N); render(); });
+$('bmMedia').addEventListener('click',function(){ volAMedia(S.admb,calcDesp().M); render(); });
+$('bmTotal').addEventListener('click',function(){ volATotal(S.admb,calcDesp().M); render(); });
+$('rDocsApp').addEventListener('input',function(e){S.app.vi=+e.target.value;render()});
+$('rDocsAdm').addEventListener('input',function(e){S.admb.vi=+e.target.value;render()});
+$('nApp').addEventListener('input',function(e){var v=parseInt(e.target.value,10); if(isFinite(v)&&v>=0){S.app.vt=v;render(true)}});
+$('nAdm').addEventListener('input',function(e){var v=parseInt(e.target.value,10); if(isFinite(v)&&v>=0){S.admb.vt=v;render(true)}});
+$('pgDesp').addEventListener('click',function(){S.paga='despacho';render()});
+$('pgCli').addEventListener('click',function(){S.paga='cliente';render()});
+/* al salir de un campo vacío se repone el último valor válido */
+['nTot','nApp','nAdm'].forEach(function(id){ $(id).addEventListener('blur',function(){render()}); });
+if(!FUND_OK){ $('tgFund').hidden=true; Array.prototype.forEach.call(document.querySelectorAll('.fund-only'),function(e){e.hidden=true}); }
+
+function render(typing){ pintar(typing); if($('solEnvio').open) actualizarResumen(); refrescarGuiado(); }
+function pintar(typing){
+  var n=S.cli, mix=S.mode==='m', of=S.fund&&FUND_OK;
+  if(mix) S.adm=repartoAdm(n,S.adm);
+  var o=calcDesp(), N=o.N, M=o.M;
+  $('libreCab').textContent='Mueves tú cada dato.'+(S.orientado?' Lo que respondiste en el modo guiado ya está aplicado.':'');
+  /* tu despacho: clientes y volumen global (vale en las tres rutas) */
+  $('rCli').value=n; pct($('rCli'),n,10,300); $('vCli').textContent=num(n);
+  $('vmMedia').setAttribute('aria-pressed',S.vm==='media'?'true':'false');
+  $('vmTotal').setAttribute('aria-pressed',S.vm==='total'?'true':'false');
+  $('vMediaBox').hidden=S.vm!=='media'; $('vTotalBox').hidden=S.vm!=='total';
+  $('vHint').textContent=S.vm==='media'?'Como media al mes por cliente de tu cartera: el total del mes dividido entre tus clientes, no el de un cliente normal ni el del más grande.':'Como total del mes: todos los documentos que entran en un mes normal de todos tus clientes.';
+  $('rDocs').value=S.vi; pct($('rDocs'),S.vi,0,STOPS.length-1); $('vDocs').textContent=num(STOPS[S.vi]);
+  if(!typing) $('nTot').value=S.vt;
+  var mediaG=o.gd/n, tG=N>0?o.ti:tramo(mediaG), der=$('vDer'), media1=S.vm==='media'?('= '+num(o.gd)+' documentos al mes en toda tu cartera'):('≈ '+num1(mediaG)+' documentos al mes de media por cliente');
+  der.classList.toggle('alert',tG<0&&N>0);
+  if(mix&&S.volSep) der.textContent='En el híbrido has puesto un volumen distinto para cada grupo: lo ves abajo.';
+  else if(tG<0&&N>0) der.textContent=media1+': más de 500, plan personalizado. Te damos la cifra en la reunión de onboarding.';
+  else if(S.mode==='a') der.textContent=media1+' · cada cliente con plataforma paga el tramo de hasta '+num(ESC[tG][0])+' documentos.';
+  else if(S.mode==='b') der.textContent=media1+(o.bNo?' · la Ruta B empieza en 25 clientes.':' · se factura por los '+num(o.docsS)+' documentos procesados al mes.');
+  else der.textContent=media1+' · repartimos según cuántos son: '+num(o.docsA)+' documentos de tus clientes con su propia plataforma y '+num(o.docsS)+' de los que solo envían documentos.';
+  $('tgFund').classList.toggle('on',S.fund); $('swFund').setAttribute('aria-pressed',S.fund?'true':'false');
+  $('gDocs').textContent=num(o.gd); $('gYear').textContent=num(o.gd*12); $('gHrs').textContent='~'+num(o.gd*H_DOC);
+  /* ¿con o sin plataforma? */
+  $('mA').setAttribute('aria-pressed',S.mode==='a'?'true':'false');
+  $('mB').setAttribute('aria-pressed',S.mode==='b'?'true':'false');
+  $('mM').setAttribute('aria-pressed',mix?'true':'false');
+  $('mixBox').hidden=!mix;
+  if(mix){
+    $('rAdm').min=5; $('rAdm').max=Math.max(5,n-5); $('rAdm').value=S.adm; pct($('rAdm'),S.adm,5,Math.max(6,n-5));
+    $('rAdm').setAttribute('aria-valuetext',num(M)+' que solo envían documentos y '+num(N)+' con su propia plataforma');
+    var fijo=n<=10; $('rAdm').hidden=fijo; $('admLegend').hidden=fijo; $('admFijo').hidden=!fijo;
+    $('vApp').textContent=num(N); $('vAdm').textContent=num(M);
+    $('tgVolSep').classList.toggle('on',S.volSep); $('swVolSep').setAttribute('aria-pressed',S.volSep?'true':'false');
+    $('volSepTx').textContent=S.volSep?'Cada grupo con su propio volumen: no envía lo mismo el cliente con su panel que el que solo sube fotos.':'Apagado: repartimos tu volumen según cuántos son: '+num(o.docsA)+' y '+num(o.docsS)+' documentos al mes.';
+    $('volSepBox').hidden=!S.volSep;
+    if(S.volSep){
+      $('gAppN').textContent=num(N); $('gAdmN').textContent=num(M);
+      [['am','gApp','rDocsApp','vDocsApp','nApp','gAppDer',S.app,N,'con su propia plataforma'],['bm','gAdm','rDocsAdm','vDocsAdm','nAdm','gAdmDer',S.admb,M,'que solo envían documentos']].forEach(function(g){
+        var b=g[6], V=volumen(b,g[7]);
+        $(g[0]+'Media').setAttribute('aria-pressed',b.vm==='media'?'true':'false'); $(g[0]+'Total').setAttribute('aria-pressed',b.vm==='total'?'true':'false');
+        $(g[1]+'Media').hidden=b.vm!=='media'; $(g[1]+'Total').hidden=b.vm!=='total';
+        $(g[2]).value=b.vi; pct($(g[2]),b.vi,0,STOPS.length-1); $(g[3]).textContent=num(STOPS[b.vi])+' documentos';
+        if(!typing) $(g[4]).value=b.vt;
+        $(g[5]).textContent=(b.vm==='media'?'La media de tus clientes '+g[8]+'. ':'Todos los documentos de un mes de tus clientes '+g[8]+'. ')+'≈ '+num1(V.media)+' de media · '+num(V.docs)+' documentos al mes.';
+      });
+    }
+  }
+  /* resultado */
+  var cab={
+    a:['Ruta A · Con plataforma','Todos tus clientes con su propia plataforma.','Cada cliente tiene su propio panel con la aplicación base y paga la cuota del tramo de su volumen OCR, con el descuento de tu cartera de por vida. El acceso lo asumes tú o lo paga cada cliente: lo decides abajo.'],
+    b:['Ruta B · Solo envían documentos','Solo envían documentos: lo gestionas todo desde tu panel.','Tus clientes no tienen panel propio: una pantalla para subir sus gastos y ver qué documentos les faltan. No pagan nada: tú recibes una sola factura al mes, por cuentas activas y volumen OCR procesado de verdad, no por tramos.'],
+    m:['Ruta A+B · Híbrido','Tu cartera, repartida cliente a cliente.','Los clientes con su propia plataforma tienen su panel con la aplicación base; el acceso lo asumes tú o lo paga cada uno. Los que solo envían documentos suben sus gastos, no pagan nada y van en tu factura, por cuentas y volumen OCR.']
+  }[S.mode];
+  $('rEyebrow').textContent=cab[0]; $('rTitle').textContent=cab[1]; $('rIntro').textContent=cab[2];
+  /* clientes con plataforma */
+  $('gApp').hidden=N===0;
+  if(N>0){
+    $('gAppT').textContent=num(N)+' clientes con su propia plataforma · aplicación base';
+    $('aBadge').textContent=of?'Descuento de tu cartera: −30 % de por vida · Fundador':('Descuento de tu cartera: −'+Math.round(o.dto*100)+' % de por vida · por clientes en Trazabis');
+    $('aCustom').hidden=!o.custom; $('aFigs').hidden=o.custom;
+    if(!o.custom){
+      $('aSm').textContent='volumen OCR de hasta '+num(ESC[o.ti][0])+' documentos al mes'+(S.vm==='total'||S.volSep?' (media de '+num1(o.mediaA)+')':'')+(o.anual?' · pago anual (≈ '+eur(o.cuotaCli)+'/mes)':'');
+      $('aCuota').innerHTML=o.anual?'<s>'+eur(o.anualRef)+'</s>'+eur(o.anualCli)+'/año':'<s>'+eur(o.cuotaRef)+'</s>'+eur(o.cuotaCli)+'/mes';
+      $('aTotal').textContent=o.anual?eur(o.anualPlat)+'/año':eur(o.cuotas)+'/mes';
+    }
+  }
+  /* clientes sin plataforma */
+  $('gAdm').hidden=M===0;
+  if(M>0){
+    $('gAdmT').textContent=num(M)+' clientes que solo envían documentos';
+    $('bNo').hidden=!o.bNo; $('admOk').hidden=o.bNo;
+    if(!o.bNo){
+      $('bSm').textContent=num(M)+' cuentas × 1,25 € + '+num(o.docsS)+' documentos × 0,025 €';
+      $('bFee').textContent=eur(o.feeSin)+'/mes'; $('bPer').textContent=eur(o.porCta)+'/mes';
+      $('admPeq').hidden=!o.avisoPeq;
+    }
+  }
+  /* ¿a quién repercutes el acceso? (solo si hay clientes con plataforma) */
+  $('cardPaga').hidden=N===0;
+  if(N>0){
+    $('pgSub').textContent='solo para tus '+num(N)+' clientes con su propia plataforma';
+    $('pgAyuda').textContent='El precio es el mismo; solo cambia a quién le llega la factura. Incluye la cuota de la aplicación base con su volumen OCR.'+(M>0?' Tus '+num(M)+' clientes que solo envían documentos no pueden pagar nada: sus cuentas van siempre en tu factura.':'');
+    $('pgDespImpl').textContent=implPaga(calcDesp(Object.assign({},S,{paga:'despacho'})),'despacho');
+    $('pgCliImpl').textContent=implPaga(calcDesp(Object.assign({},S,{paga:'cliente'})),'cliente');
+    $('pgDesp').setAttribute('aria-pressed',o.asume?'true':'false'); $('pgCli').setAttribute('aria-pressed',o.asume?'false':'true');
+    $('tgAnual').hidden=o.custom; $('tgAnual').classList.toggle('on',S.anual); $('swAnual').setAttribute('aria-pressed',S.anual?'true':'false');
+    $('anualTx').innerHTML=(o.asume?'<b>Pagas anual la plataforma de tus clientes</b>':'<b>Tus clientes con plataforma pagan anual</b>')+'<br><span class="v">2 meses gratis de 12 en la cuota; se suma al descuento de tu cartera.</span>';
+  }
+  /* quién paga qué */
+  var cli1=function(k){ return num(k)+(k===1?' cliente':' clientes'); };
+  var partes=[];
+  if(o.bNo){ $('qpDesp').textContent='Desde 25 cuentas'; }
+  else if(o.custom&&N>0){
+    /* plan personalizado: la plataforma va a medida; lo demás se sigue viendo con su cifra */
+    $('qpDesp').textContent=o.asume?'A medida':(M>0?eur(o.feeSin)+'/mes':'0 €');
+    if(M>0) partes.push(cli1(M)+' que solo envían documentos: '+eur(o.feeSin));
+    if(o.asume) partes.push('plataforma de '+cli1(N)+': a medida');
+  } else if(o.anual&&o.asume){
+    $('qpDesp').textContent=eur(o.mesReal)+'/mes';
+    if(M>0) partes.push(cli1(M)+' que solo envían documentos: '+eur(o.feeSin));
+    partes.push('más un pago al año de '+eur(o.anualPlat)+' por la plataforma de '+cli1(N));
+  } else {
+    $('qpDesp').textContent=eur(o.despachoMes)+'/mes';
+    if(M>0) partes.push(cli1(M)+' que solo envían documentos: '+eur(o.feeSin)); if(o.asume) partes.push('plataforma de '+cli1(N)+': '+eur(o.conApp));
+  }
+  $('qpDespSm').textContent=partes.length?partes.join(' + ').replace(' + más ',' · más '):(N>0?'lo pagan tus clientes con plataforma: a ti no te llega factura':'');
+  $('qpCliRow').hidden=N===0;
+  if(N>0){
+    if(o.asume){ $('qpCli').textContent='0 €'; $('qpCliSm').textContent='lo asumes tú'; }
+    else if(o.custom){ $('qpCli').textContent='A medida'; $('qpCliSm').textContent='la cuota de su tramo'; }
+    else if(o.anual){ $('qpCli').textContent=eur(o.anualCli)+'/año'; $('qpCliSm').textContent='en un pago al año'; }
+    else { $('qpCli').textContent=eur(o.cuotaCli)+'/mes'; $('qpCliSm').textContent='entre todos, '+eur(o.conApp)+'/mes'; }
+  }
+  $('qpSinRow').hidden=M===0;
+
+  /* Setup: tarifa y precio ofertado, los dos con su precio por cliente */
+  var st=setup(n), showOf=S.fund&&FUND_OK;
+  $('sPlan').textContent=st.nm; $('sN').textContent=num(n);
+  $('sTar').innerHTML=showOf?('<s>'+rango(st.t,function(x){return num(x)+' €'})+'</s>'):rango(st.t,function(x){return num(x)+' €'});
+  $('sTarCli').textContent=rango(st.t,function(x){return eur(x/n)})+' por cliente';
+  $('thOf').hidden=!showOf; $('tdOf').hidden=!showOf;
+  if(showOf){ $('sOf').textContent=rango(st.f,function(x){return num(x)+' €'}); $('sOfCli').textContent=rango(st.f,function(x){return eur(x/n)})+' por cliente'; }
+}
+
+/* ===== MODO GUIADO · despachos v5 (28-09-2026): clientes con su propia plataforma, que solo envían documentos, o híbrido =====
+   1 clientes · 2 volumen OCR (media al mes por cliente o total del mes de toda la cartera: es un solo dato) ·
+   3 ¿cómo son tus clientes? (lo que les diferencia: su capacidad de usar herramientas digitales) ·
+   4 ¿cuántos de cada tipo? (solo en el híbrido) · 5 ¿asumes tú el acceso o lo repercutes? (si hay clientes con plataforma).
+   Los clientes del despacho tienen la aplicación base y un volumen OCR de consumo: aquí no hay módulos.
+   Nunca se comparan rutas por precio. Encima de cada opción, lo que implica. */
+var QUIZ=[
+ {id:'clientes',texto:'¿Cuántos clientes llevas en el despacho?',ayuda:'Cuenta todas las empresas y autónomos a los que llevas la contabilidad o los impuestos, aunque sean pequeños. Mueve la barra hasta tu cifra; si llevas más de 300, pon 300 y lo afinamos en la reunión.'},
+ {id:'docs',texto:'¿Cuál es tu volumen OCR al mes?',ayuda:'Las facturas y tickets de tus clientes que entran al mes para digitalizar. Dínoslo como prefieras: la media por cliente o el total de toda tu cartera.'},
+ {id:'tipo',texto:'¿Cómo son tus clientes?',ayuda:'Lo que les diferencia es su capacidad de usar herramientas digitales: unos quieren su propio panel y otros solo te envían documentos.',
+  opciones:[{texto:'Todos tienen su propia plataforma: usan herramientas digitales y quieren su panel.',ruta:'A'},
+            {texto:'Solo envían documentos: no tienen un panel propio.',ruta:'B'},
+            {texto:'Híbrido: unos tienen su propio panel y otros solo envían documentos.',ruta:'AB'}]}
+];
+var TEXTOS={
+ aviso:'Es una orientación, no una decisión. No hay una ruta mejor: cada caso es diferente. En la reunión de onboarding repasamos tus clientes uno a uno y te proponemos la solución personalizada para tu despacho.',
+ A:{titulo:'Ruta A: todos tus clientes con su propia plataforma.',texto:'Tus clientes usan herramientas digitales y quieren ver sus números. Cada uno tiene su propio panel de administración, con la aplicación base y el volumen OCR de su tramo, y tú lo revisas y apruebas todo desde el tuyo. {paga}. En la reunión de onboarding repasamos tu cartera cliente a cliente y te proponemos la solución personalizada para tu despacho.'},
+ B:{titulo:'Ruta B: todos solo envían documentos, gestionados desde tu panel.',texto:'Tus clientes solo te envían documentos: no tienen panel propio. Tienen una pantalla para subir sus gastos y ver qué documentos les faltan, y tú lo gestionas todo desde tu panel, con una sola factura al mes por cuentas y volumen OCR (≈ {totalDocsAdm} documentos al mes entre todos). Ellos no pagan nada. Condiciones: mínimo 25 cuentas, permanencia de 12 meses y las dudas de esos clientes las atiende primero tu despacho. En la reunión de onboarding repasamos tus clientes uno a uno y te proponemos la solución personalizada para tu despacho.'},
+ AB:{titulo:'Ruta A+B: híbrido, cliente a cliente.',texto:'Tu cartera va a dos velocidades según su capacidad de usar herramientas digitales: <b>{clientesApp} clientes con su propia plataforma</b> y <b>{cuentasAdm} que solo envían documentos</b>, que gestionas tú desde tu panel (≈ {totalDocsAdm} documentos al mes entre esos). {paga}; los que solo envían documentos no pagan nada. Puedes mover el reparto en el modo libre; en la reunión de onboarding lo fijamos cliente a cliente y te proponemos la solución personalizada para tu despacho.'},
+ pequenaB:'La Ruta B (todos tus clientes solo envían documentos) empieza en 25 clientes: con tu cartera de hoy, lo vemos contigo en la reunión de onboarding.',
+ afinar:'Con volúmenes tan distintos, el tramo real se fija cliente a cliente en la reunión.',
+ bloquePeq:'El tamaño del grupo que solo envía documentos lo confirmamos en la reunión.',
+ etiqueta:{A:'Ruta A',B:'Ruta B',AB:'Ruta A+B',pequena:'Ruta A (cartera de menos de 25 clientes)'}
+};
+var VCLI=[]; (function(){ for(var v=10;v<=300;v+=5) VCLI.push(v); })();
+function paradaCercana(m){ var k=0; for(var j=1;j<STOPS.length;j++){ if(Math.abs(STOPS[j]-m)<Math.abs(STOPS[k]-m)) k=j; } return STOPS[k]; }
+function quizPorId(id){ return QUIZ.filter(function(q){return q.id===id})[0]; }
+function pasoPorId(id){ return PASOS.filter(function(p){return p.id===id})[0]; }
+function nCli(n){ return num(n)+(n===1?' cliente':' clientes'); }
+/* en el híbrido siempre hay al menos 5 de cada tipo */
+function repartoTest(cli,v){ return Math.max(5,Math.min(cli-5,v)); }
+function conPlatInicial(cli){ return repartoTest(cli,Math.round(cli/2/5)*5); }
+/* Respuestas → ruta, reparto y textos. Devuelve null hasta tener clientes, volumen y tipo de clientes. */
+function evaluarTest(){
+  var cli=S.test.clientes, docs=S.test.docs, tipo=S.test.tipo;
+  if(cli==null||docs==null||tipo==null) return null;
+  var ruta=quizPorId('tipo').opciones[tipo].ruta, x=S.test.docsTotal, N, M;
+  if(ruta==='A'){ N=cli; M=0; }
+  else if(ruta==='B'){ N=0; M=cli; }
+  else { N=repartoTest(cli,S.test.conPlat!=null?S.test.conPlat:conPlatInicial(cli)); M=cli-N; }
+  var media=(x!=null)?x/cli:docs;
+  var totalDocsAdm=(x!=null)?(x-Math.ceil(x*N/cli)):M*docs;
+  var mode=ruta==='B'?'b':(ruta==='AB'?'m':'a');
+  return {resultado:ruta,mode:mode,cli:cli,N:N,M:M,app:N,adm:M,docs:docs,docsTotal:(x!=null?x:null),media:media,titulo:TEXTOS[ruta].titulo};
+}
+function Nt(){ var r=evaluarTest(); return r?r.N:0; }
+/* en la página única (OCULTA_PRECIO) las cifras de la factura no se enseñan hasta la oferta */
+function sinCifras(){ return typeof OCULTA_PRECIO!=='undefined'&&OCULTA_PRECIO&&EMB.fase!=='oferta'; }
+/* estado de la calculadora que sale de las respuestas (sin tocar S): lo usan el paso «quién paga» y aplicarOrientacion */
+function estadoDesdeTest(pagaForzada){
+  var r=evaluarTest(); if(!r) return null;
+  var st=JSON.parse(JSON.stringify(S));
+  st.cli=r.cli; st.mode=r.mode; st.adm=r.mode==='m'?r.M:(r.mode==='b'?r.cli:st.adm); st.volSep=false;
+  var x=r.docsTotal, vi;
+  if(x!=null){ vi=STOPS.indexOf(paradaCercana(x/r.cli)); var xa=Math.ceil(x*r.N/r.cli); st.vm='total'; st.vt=x; st.vi=vi; st.app={vm:'total',vi:vi,vt:xa}; st.admb={vm:'total',vi:vi,vt:x-xa}; }
+  else { vi=STOPS.indexOf(r.docs); if(vi<0) vi=I50; st.vm='media'; st.vi=vi; st.vt=r.cli*r.docs; st.app={vm:'media',vi:vi,vt:r.N*r.docs}; st.admb={vm:'media',vi:vi,vt:r.M*r.docs}; }
+  var pp=pasoPorId('paga');
+  st.paga=pagaForzada||((r.N>0&&pp&&visible(pp)&&S.test.paga!=null)?['despacho','cliente'][S.test.paga]:'cliente');
+  st.orientado=r.mode; st.propuesta={N:r.N,M:r.M};
+  return st;
+}
+/* prerrelleno de la calculadora con las respuestas: cartera, ruta, reparto, volumen OCR (el total escrito se conserva) y quién paga */
+function aplicarOrientacion(){
+  var st=estadoDesdeTest(); if(!st) return null;
+  ['cli','mode','adm','volSep','vm','vt','vi','app','admb','paga','orientado','propuesta'].forEach(function(k){ S[k]=st[k]; });
+  render();
+  return evaluarTest();
+}
+function implClientes(v){ var st=setup(v), of=S.fund&&FUND_OK; return (v<25?'La Ruta B (todos solo envían documentos) empieza en 25 clientes · ':'')+'Setup '+st.nm+': '+rango(of?st.f:st.t,function(x){return num(x)+' €'})+(of?' con condición fundador':''); }
+function implDocs(v,r){
+  var cli=S.test.clientes||50, x=(r&&r.x!=null)?r.x:null, media=(x!=null)?x/cli:v, total=(x!=null)?x:v*cli, ti=tramo(media);
+  var t='Volumen OCR: '+num(total)+' documentos al mes en toda tu cartera'+(x!=null?' (≈ '+num1(media)+' de media por cliente)':'');
+  t+=ti<0?' · con plataforma, más de 500 de media: plan personalizado':' · con plataforma, tramo de hasta '+num(ESC[ti][0])+' por cliente';
+  if(media>200&&ti>=0) t+=' · se afina cliente a cliente';
+  return t;
+}
+/* paso «¿Cómo son tus clientes?»: qué elige (arriba) y, debajo, lo que implica en costes, breve (precios de lista) */
+var TIPO_CLARO={
+  A:{t:'Todos usan su propio panel',ds:'Usan herramientas digitales y quieren ver sus números. Ruta A.'},
+  B:{t:'Todos solo te envían documentos',ds:'No quieren panel: suben sus gastos y tú lo gestionas todo desde el tuyo. Ruta B.'},
+  AB:{t:'Unos con panel y otros solo envían documentos',ds:'Tu cartera va a dos velocidades. Ruta A+B, híbrido.'}};
+function costeTipo(o){
+  var cli=S.test.clientes||50;
+  if(o.ruta==='A') return 'cada cliente, su cuota por volumen desde 5,90 €/mes, con el descuento de tu cartera';
+  if(o.ruta==='B') return cli<25?'desde 25 clientes: con menos, lo vemos en la reunión':'1,25 € por cliente + 0,025 € por documento, en tu factura';
+  return 'cada grupo con su precio; el reparto, en el paso siguiente';
+}
+function implTipo(o){
+  var cli=S.test.clientes||50;
+  if(o.ruta==='A') return 'Ruta A · con plataforma: cada cliente con su propio panel de administración';
+  if(o.ruta==='B') return cli<25?'Ruta B · empieza en 25 clientes: con menos, lo vemos en la reunión':'Ruta B · solo envían documentos: lo gestionas tú todo desde tu panel, con una sola factura';
+  return cli<=10?'Ruta A+B · híbrido: con '+nCli(cli)+', 5 con su propio panel y 5 que solo envían documentos; el reparto exacto lo fijamos en la reunión':'Ruta A+B · híbrido: en el paso siguiente nos dices cuántos de cada tipo';
+}
+function modoDocs(){ return S.test.docsModo||(S.test.docsTotal!=null?'total':'media'); }
+function reacotarReparto(){
+  var cli=S.test.clientes; if(cli==null||S.test.conPlat==null) return;
+  var v=repartoTest(cli,S.test.conPlat); S.test.conPlat=v; if(EMB.resp.reparto) EMB.resp.reparto={n:v};
+}
+var PASOS=[
+  {id:'clientes', q:quizPorId('clientes').texto, ayuda:quizPorId('clientes').ayuda,
+    deslizador:{valores:VCLI, inicial:50, unidad:'clientes', texto:function(v){ return num(v); },
+      marcas:[[10,'10'],[50,'50'],[100,'100'],[200,'200'],[300,'300']],
+      impl:function(v){ return implClientes(v); },
+      aplicar:function(v){ S.test.clientes=v;
+        if(S.test.docsTotal!=null){ var md=paradaCercana(S.test.docsTotal/v); S.test.docs=md; if(EMB.resp.docs) EMB.resp.docs={n:md,x:S.test.docsTotal}; }
+        reacotarReparto(); },
+      resumen:function(r){ return nCli(r.n); }}},
+  {id:'docs', q:quizPorId('docs').texto, ayuda:quizPorId('docs').ayuda,
+    deslizador:{valores:STOPS, inicial:50, unidad:function(){ return modoDocs()==='total'?'documentos al mes en toda la cartera':'documentos al mes de media por cliente'; }, texto:function(v){ return num(v); },
+      textoResp:function(v,r){ if(modoDocs()==='total') return (r&&r.x!=null)?num(r.x):'—'; return (r&&r.x!=null)?'≈ '+num1(r.x/(S.test.clientes||50)):num(v); },
+      /* media por cliente (barra) o total de la cartera (número): la persona elige cómo nos lo dice */
+      modos:[{id:'media',t:'Media por cliente'},{id:'total',t:'Total de la cartera'}], modosEtiqueta:'Cómo nos das el volumen', modo:function(){ return modoDocs(); }, modoExacto:'total',
+      faltaExacto:function(){ return 'Escribe el total de documentos al mes de tus '+nCli(S.test.clientes||50)+'.'; },
+      cambiarModo:function(m){ S.test.docsModo=m; if(m==='media'&&S.test.docsTotal!=null){ S.test.docsTotal=null; if(EMB.resp.docs) EMB.resp.docs={n:EMB.resp.docs.n}; } },
+      marcas:[[10,'10'],[50,'50'],[100,'100'],[250,'250'],[500,'500']],
+      impl:implDocs,
+      /* mover la barra borra el total escrito; escribir el total lo conserva tal cual (no se convierte en la parada) */
+      aplicar:function(v,r){ S.test.docs=v; S.test.docsTotal=(r&&r.x!=null)?r.x:null; },
+      resumen:function(r){ var cli=S.test.clientes||50; return r.x!=null?(num(r.x)+' al mes en toda la cartera (≈ '+num1(r.x/cli)+' de media por cliente)'):(num(r.n)+' de media por cliente ('+num(r.n*cli)+' al mes en toda la cartera)'); },
+      exacto:{etiqueta:function(){ return 'Total de documentos al mes de tus '+nCli(S.test.clientes||50)+':'; }, max:999999,
+        aResp:function(x){ return {n:paradaCercana(x/(S.test.clientes||50))}; },
+        ok:function(r){ return '✓ Aplicado: '+num(r.x)+' documentos al mes en toda la cartera (≈ '+num1(r.x/(S.test.clientes||50))+' de media por cliente)'; }}}},
+  {id:'tipo', q:quizPorId('tipo').texto, ayuda:quizPorId('tipo').ayuda,
+    opciones:quizPorId('tipo').opciones.map(function(o){ var x=TIPO_CLARO[o.ruta]; return {t:x.t, ds:x.ds, impl:function(){ return costeTipo(o); }}; }),
+    aplicar:function(o,j){ S.test.tipo=j; }},
+  {id:'reparto', q:function(){ return '¿Cuántos de tus '+nCli(S.test.clientes||50)+' tienen su propia plataforma?'; },
+    ayuda:'Los demás solo te envían documentos. Es orientativo: lo ajustas en el modo libre y lo fijamos cliente a cliente en la reunión.',
+    mostrar:function(){ var t=S.test.tipo; return t==null||(quizPorId('tipo').opciones[t].ruta==='AB'&&(S.test.clientes||50)>10); },
+    deslizador:{valores:function(){ var cli=S.test.clientes||50, a=[]; for(var v=5;v<=Math.max(5,cli-5);v+=5) a.push(v); return a; },
+      inicial:function(){ return conPlatInicial(S.test.clientes||50); }, unidad:'con su propia plataforma', texto:function(v){ return num(v); },
+      marcas:function(){ var cli=S.test.clientes||50, u=Math.max(5,cli-5); return u>5?[[5,'5'],[u,num(u)]]:[[5,'5']]; },
+      impl:function(v){ var cli=S.test.clientes||50, m=cli-v; return nCli(v)+' con su propio panel · '+num(m)+' solo envían documentos'+(m<25?' · el grupo que solo envía documentos, por debajo de 25, lo confirmamos en la reunión':''); },
+      aplicar:function(v){ S.test.conPlat=v; },
+      resumen:function(r){ var cli=S.test.clientes||50, v=repartoTest(cli,r.n); return nCli(v)+' con su propia plataforma y '+num(cli-v)+' que solo envían documentos'; }}},
+  {id:'paga', q:'Por último: ¿asumes tú el acceso a la plataforma o lo repercutes a cada cliente?',
+    ayuda:function(){ var r=evaluarTest(); return 'El precio es el mismo; solo cambia a quién le llega la factura. Incluye la cuota de la aplicación base con su volumen OCR.'+(r&&r.M>0?' Tus '+num(r.M)+' clientes que solo envían documentos no pueden pagar nada: sus cuentas van siempre en tu factura.':''); },
+    mostrar:function(){ var r=evaluarTest(); return !r||r.N>0; },
+    opciones:[
+      {t:'Lo asumo yo', ds:'La factura me llega a mí.', impl:function(){ if(sinCifras()) return 'una sola factura a tu despacho · tus clientes pagan 0 €'; var st=estadoDesdeTest('despacho'); return st?implPaga(calcDesp(st),'despacho'):''; }},
+      {t:'Lo repercuto a cada cliente', ds:'Cada cliente con plataforma paga su acceso.', impl:function(){ if(sinCifras()) return 'cada cliente paga su cuota · a ti, solo lo de los que envían documentos'; var st=estadoDesdeTest('cliente'); return st?implPaga(calcDesp(st),'cliente'):''; }}],
+    aplicar:function(o,j){ S.test.paga=j===0?0:1; }}
+];
+/* al terminar se aplica lo respondido; si las respuestas no cambiaron, no se pisa lo tocado en el modo libre */
+function alTerminarEmbudo(){ var k=JSON.stringify(S.test); if(k!==EMB.aplicado){ aplicarOrientacion(); EMB.aplicado=k; } }
+function alPasarALibre(){
+  if(EMB.fase==='oferta') return;
+  var k=JSON.stringify(S.test); if(k===EMB.aplicado) return;
+  if(evaluarTest()){ alTerminarEmbudo(); return; }
+  if(S.test.clientes!=null) S.cli=S.test.clientes;
+  if(S.test.docsTotal!=null){ S.vm='total'; S.vt=S.test.docsTotal; S.vi=STOPS.indexOf(paradaCercana(S.test.docsTotal/S.cli)); }
+  else if(S.test.docs!=null){ S.vm='media'; S.vi=STOPS.indexOf(S.test.docs); S.vt=S.cli*S.test.docs; }
+  EMB.aplicado=k; render();
+}
+/* «Volver a empezar» borra también las respuestas del test */
+function alReiniciarEmbudo(){ S.cli=150; S.mode='m'; S.adm=50; S.vm='media'; S.vi=I50; S.vt=7500; S.volSep=false; S.app={vm:'media',vi:I50,vt:5000}; S.admb={vm:'media',vi:I50,vt:2500}; S.anual=false; S.paga='cliente'; S.mods={}; S.test={}; S.orientado=null; S.propuesta=null; render(); }
+/* ¿el cálculo actual es el que salió del test? (si no, la oferta y la solicitud lo dicen) */
+function ajustadoEnLibre(){
+  var st=estadoDesdeTest(); if(!st) return false;
+  if(st.mode!==S.mode||st.cli!==S.cli) return true;
+  if(S.mode==='m'&&(st.adm!==S.adm||S.volSep)) return true;
+  if(st.vm!==S.vm||(S.vm==='total'?st.vt!==S.vt:st.vi!==S.vi)) return true;
+  var o=calcDesp(); return o.N>0&&st.paga!==S.paga;
+}
+/* el texto de la orientación, con las cifras del cálculo actual cuando la ruta es la del test */
+function textoOrientacion(r,o){
+  var mismo=S.mode===r.mode, N=mismo?o.N:r.N, M=mismo?o.M:r.M;
+  var docsAdm=mismo?o.docsS:((r.docsTotal!=null)?(r.docsTotal-Math.ceil(r.docsTotal*r.N/r.cli)):r.M*r.docs);
+  var asume=mismo?o.asume:(S.test.paga===0);
+  var pagaTxt=N>0?(asume?'El acceso a la plataforma lo asumes tú':'Cada cliente paga su acceso a la plataforma'):'';
+  var txt=TEXTOS[r.resultado].texto.split('{clientesApp}').join(num(N)).split('{cuentasAdm}').join(num(M)).split('{totalDocsAdm}').join(num(docsAdm)).split('{paga}').join(pagaTxt);
+  if(r.resultado==='B'&&(mismo?o.bNo:r.cli<25)) txt+='<br><br>'+TEXTOS.pequenaB;
+  if(r.resultado==='AB'&&(mismo?o.n:r.cli)<=10) txt=txt.split('Puedes mover el reparto en el modo libre; en').join('Con '+num(mismo?o.n:r.cli)+' clientes el híbrido es 5 y 5; en');
+  var media=mismo?(o.n?o.gd/o.n:0):r.media;
+  if(media>200) txt+='<br><br>'+TEXTOS.afinar;
+  return txt;
+}
+function asideHTML(){
+  var li=[], r=evaluarTest(), cli=S.test.clientes;
+  if(cli!=null) li.push('Cartera: '+nCli(cli));
+  if(S.test.docs!=null){ var c=cli||50; li.push('Volumen OCR: '+(S.test.docsTotal!=null?(num(S.test.docsTotal)+' al mes en toda la cartera (≈ '+num1(S.test.docsTotal/c)+' de media por cliente)'):(num(S.test.docs*c)+' al mes en toda la cartera ('+num(S.test.docs)+' de media por cliente)'))); }
+  if(S.test.tipo!=null) li.push('Tus clientes: '+['todos con su propia plataforma','todos solo envían documentos','híbrido'][S.test.tipo]);
+  if(r&&r.mode==='m') li.push('Reparto: '+num(r.N)+' con su propia plataforma · '+num(r.M)+' solo envían documentos');
+  if(r&&r.N>0&&S.test.paga!=null) li.push('Acceso a la plataforma: '+(S.test.paga===0?'lo asumes tú':'lo paga cada cliente'));
+  return '<h4>Tu caso hasta ahora</h4>'+(li.length?'<ul>'+li.map(function(t){return '<li>'+esc(t)+'</li>'}).join('')+'</ul>':'<div class="tot txt">Responde y montamos tu caso</div>')+
+    '<span class="nota">Tus números salen al terminar. No comparamos rutas por precio: cada caso es diferente.</span>';
+}
+function rutaNombre(mode){ return mode==='a'?'Ruta A · Con plataforma':(mode==='b'?'Ruta B · Solo envían documentos':'Ruta A+B · Híbrido'); }
+function textoClientes(o){ return num(o.n)+(o.M===0?', todos con su propia plataforma':(o.N===0?', todos solo envían documentos':' · '+num(o.N)+' con su propia plataforma y '+num(o.M)+' que solo envían documentos')); }
+function textoVolumen(o){
+  if(S.mode==='m'&&S.volSep) return num(o.docsA)+' de tus clientes con plataforma y '+num(o.docsS)+' de los que solo envían documentos ('+num(o.gd)+' al mes en toda la cartera)';
+  if(S.vm==='total') return num(S.vt)+' al mes en toda la cartera (≈ '+num1(o.gd/o.n)+' de media por cliente)';
+  return num(STOPS[S.vi])+' de media por cliente ('+num(o.gd)+' al mes en toda la cartera)';
+}
+function ofertaHTML(){
+  var r=evaluarTest();
+  if(!r) return '<div class="of-in"><p class="of-txt">Te faltan preguntas por responder para ver tu caso.</p><div class="of-acts"><button type="button" class="emb-next" data-acc="reiniciar">Volver a las preguntas</button><button type="button" class="lnk" data-acc="libre">Calcular libremente</button></div></div>';
+  var o=calcDesp(), n=o.n, st=setup(n), of=S.fund&&FUND_OK;
+  var pr, prTxt=false, sub, unidad='/mes';
+  if(o.bNo){ pr='Desde 25 cuentas'; prTxt=true; sub='la Ruta B (todos solo envían documentos) empieza en 25 clientes'; }
+  else if(o.custom&&o.N>0){ pr='Plan personalizado'; prTxt=true; sub='más de 500 documentos de media por cliente: te damos la cifra en la reunión'; }
+  else if(o.anual&&o.asume&&o.mesReal===0){ pr=eurNum(o.anualPlat); unidad='/año'; sub='tu despacho, en un pago al año por la plataforma de tus '+nCli(o.N)+' · tus clientes no pagan nada'; }
+  else if(o.despachoMes>0){ pr=eurNum(o.anual&&o.asume?o.mesReal:o.despachoMes); sub='tu factura mensual como despacho'+(o.anual&&o.asume?' + un pago al año de '+eur(o.anualPlat)+' por la plataforma':'')+' · '+(o.N>0&&!o.asume?'cada cliente con plataforma paga '+(o.anual?eur(o.anualCli)+' al año':eur(o.cuotaCli)+'/mes'):'tus clientes no pagan nada'); }
+  else { pr=o.anual?eurNum(o.anualCli):eurNum(o.cuotaCli); unidad=o.anual?'/año':'/mes'; sub='paga cada cliente con plataforma'+(o.anual?' en un pago al año':'')+' · tu despacho, 0 €'; }
+  var cab='<div class="of-cab"><div><div class="k">Tu caso · '+esc(TEXTOS.etiqueta[r.resultado])+' · '+esc(S.mode==='a'?'Con plataforma':(S.mode==='b'?'Solo envían documentos':'Híbrido'))+'</div><div class="tt">'+esc(r.titulo)+'</div></div><div>'+
+    '<div class="pr'+(prTxt?' txt':'')+'">'+esc(pr)+(prTxt?'':' €<small>'+unidad+'</small>')+'</div><div class="sub">'+esc(sub)+'</div><div class="sub unico">'+esc('+ setup '+rango(of?st.f:st.t,function(x){return num(x)+' €'})+' (pago único)')+'</div></div></div>';
+  var F=[];
+  F.push(['Tus clientes', textoClientes(o)]);
+  F.push(['Volumen OCR', textoVolumen(o)]);
+  if(o.N>0&&!o.bNo){
+    if(o.custom) F.push(['Aplicación base, por cliente','Plan personalizado: más de 500 documentos de media']);
+    else F.push(['Aplicación base, por cliente', (o.anual?eur(o.anualCli)+'/año':eur(o.cuotaCli)+'/mes')+' · volumen OCR de hasta '+num(ESC[o.ti][0])+' documentos · <s>'+eur(o.anual?o.anualRef:o.cuotaRef)+'</s> −'+Math.round(o.dto*100)+' % '+(of?'Despacho Fundador':'de tu cartera')+(o.anual?' · pago anual (≈ '+eur(o.cuotaCli)+'/mes)':''), true]);
+    if(!o.custom) F.push(['Acceso a la plataforma', o.anual?(o.asume?('Lo asumes tú: un pago al año de '+eur(o.anualPlat)):('Lo paga cada cliente: '+eur(o.anualCli)+' al año cada uno')):(o.asume?('Lo asumes tú: '+eur(o.conApp)+'/mes en tu factura'):('Lo paga cada cliente: entre todos, '+eur(o.conApp)+'/mes'))]);
+  }
+  if(o.M>0&&!o.bNo) F.push(['Clientes que solo envían documentos', num(o.M)+' cuentas × 1,25 € + '+num(o.docsS)+' documentos × 0,025 € = '+eur(o.feeSin)+'/mes · ellos no pagan nada'+(o.avisoPeq?' · '+TEXTOS.bloquePeq:'')]);
+  if(!o.bNo&&!(o.custom&&o.N>0)){
+    F.push(['Tu factura mensual como despacho', o.anual&&o.asume?(eur(o.mesReal)+'/mes + un pago al año de '+eur(o.anualPlat)+' por la plataforma'):(eur(o.despachoMes)+'/mes')]);
+    if(o.N>0) F.push(['Paga cada cliente con plataforma', o.asume?'0 € · lo asumes tú':(o.anual?eur(o.anualCli)+' al año':eur(o.cuotaCli)+'/mes')]);
+  }
+  F.push(['Setup de implantación · '+st.nm+' (pago único)', (of?'<s>'+rango(st.t,function(x){return num(x)+' €'})+'</s> ':'')+rango(of?st.f:st.t,function(x){return num(x)+' €'})+' · '+rango(of?st.f:st.t,function(x){return eur(x/n)})+' por cliente', true]);
+  var filas=F.map(function(f){ return '<div class="of-fila"><span>'+esc(f[0])+'</span><b>'+(f[2]?f[1]:esc(f[1]))+'</b></div>'; }).join('');
+  var urg=of?'<div class="of-urg"><b>Condición Despacho Fundador, hasta el 31 de octubre de 2026 (10 plazas):</b> '+(o.N>0?'−30 % de por vida en la plataforma de tus clientes y setup a −40 %'+(o.M>0?'; los clientes que solo envían documentos van sin descuentos':''):'setup a −40 %; la gestión de clientes que solo envían documentos va sin descuentos')+'.</div>':'';
+  var aviso='';
+  if(S.orientado&&S.mode!==S.orientado) aviso='<p class="of-txt"><b>Respondiste '+esc(rutaNombre(S.orientado))+'; ahora ves la '+esc(rutaNombre(S.mode))+'</b>, que elegiste en el modo libre.</p>';
+  else if(S.propuesta&&S.mode==='m'&&(S.propuesta.N!==o.N||S.propuesta.M!==o.M)) aviso='<p class="of-txt"><b>Respondiste '+num(S.propuesta.N)+' con su propia plataforma y '+num(S.propuesta.M)+' que solo envían documentos; ahora ves '+num(o.N)+' y '+num(o.M)+'</b>, que elegiste en el modo libre.</p>';
+  else if(ajustadoEnLibre()) aviso='<p class="of-txt"><b>Has ajustado el cálculo en el modo libre:</b> las cifras son las de tu cálculo actual.</p>';
+  var acts='<div class="of-acts"><button type="button" class="emb-next" data-acc="solicitar">Solicitar información</button><a href="'+CAL+'" target="_blank" rel="noopener">Reserva tu reunión de onboarding · 30 min, gratis</a>'+
+    '<button type="button" class="lnk" data-acc="libre">Ajustar mi cálculo libremente</button><button type="button" class="lnk" data-acc="reiniciar">Volver a empezar</button></div>';
+  return cab+'<div class="of-in">'+aviso+'<p class="of-txt">'+textoOrientacion(r,o)+'</p>'+filas+urg+'<div class="of-conds">'+esc(TEXTOS.aviso)+'<br>Precios sin IVA.</div>'+acts+'</div>';
+}
+
+/* ===== SOLICITUD · lo que viaja con los datos de contacto ===== */
+var FORM={origen:'calculadora-despachos', empresaObligatoria:true, delaEmpresa:'del despacho',
+  exitoHTML:function(p){ return 'Te escribimos a <b>'+esc(p.contacto.email)+'</b> en menos de un día laborable con una propuesta para tu cartera. ¿Quieres adelantarte? <a href="'+CAL+'" target="_blank" rel="noopener">Reserva tu reunión de onboarding</a>: 30 minutos, gratis.'; },
+  contactoFilas:function(p){ return [['Nombre',p.contacto.nombre],['Despacho',p.contacto.empresa],['Correo',p.contacto.email],['Teléfono',p.contacto.telefono||'—'],['Programa de contabilidad',p.contacto.programa||'—'],['Mensaje',p.contacto.mensaje||'—']]; }};
+function rutaCorta(){ return S.mode==='a'?'A':(S.mode==='b'?'B':'A+B'); }
+/* mismos cálculos que pinta la página, en texto, para la solicitud */
+function secciones(){
+  var sec=[], o=calcDesp(), n=o.n, of=S.fund&&FUND_OK;
+  var resp=respuestasEmbudo();
+  if(resp.length) sec.push({titulo:'Tus respuestas'+(visibles().some(function(p){return EMB.resp[p.id]==null})?' (sin terminar)':(ajustadoEnLibre()?' (luego ajustaste el cálculo en el modo libre)':'')), filas:resp});
+  var c=[['Ruta', rutaNombre(S.mode)],['Clientes', num(n)],['Con su propia plataforma', num(o.N)],['Solo envían documentos', num(o.M)],['Volumen OCR', textoVolumen(o)],['Despacho Fundador', of?'Sí':'No']];
+  sec.push({titulo:'Tu cartera', filas:c});
+  if(o.N>0){
+    var a=[];
+    if(o.custom) a.push(['Aplicación base por cliente','Plan personalizado (más de 500 documentos de media)']);
+    else { a.push(['Aplicación base por cliente', (o.anual?eur(o.anualCli)+'/año':eur(o.cuotaCli)+'/mes')+' (volumen OCR de hasta '+num(ESC[o.ti][0])+' documentos, −'+Math.round(o.dto*100)+' %)']); a.push(['Entre todos', o.anual?eur(o.anualPlat)+'/año':eur(o.cuotas)+'/mes']); }
+    if(!o.custom) a.push(['Pago anual', o.anual?'Sí, 2 meses gratis (≈ '+eur(o.cuotaCli)+'/mes por cliente)':'No']);
+    sec.push({titulo:'Clientes con su propia plataforma', filas:a});
+  }
+  if(o.M>0){
+    var b=[];
+    if(o.bNo) b.push(['Ruta B','No disponible: empieza en 25 clientes']);
+    else { b.push(['Cuentas', num(o.M)]); b.push(['Documentos procesados', num(o.docsS)+' al mes']); b.push(['Factura', eur(o.feeSin)+'/mes']); b.push(['Por cuenta', eur(o.porCta)+'/mes']); }
+    b.push(['Pagan ellos','0 €']);
+    if(o.avisoPeq) b.push(['Aviso','Menos de 25 clientes que solo envían documentos: el tamaño de este grupo lo confirmamos en la reunión de onboarding']);
+    sec.push({titulo:'Clientes que solo envían documentos', filas:b});
+  }
+  var q=[];
+  if(o.N>0) q.push(['Acceso a la plataforma', o.asume?'Lo asume el despacho':'Lo paga cada cliente']);
+  if(!o.bNo&&!(o.custom&&o.N>0)){ q.push(['Tu factura mensual como despacho', o.anual&&o.asume?(eur(o.mesReal)+'/mes + un pago al año de '+eur(o.anualPlat)):(eur(o.despachoMes)+'/mes')]); if(o.N>0) q.push(['Paga cada cliente con plataforma', o.asume?'0 €':(o.anual?eur(o.anualCli)+' al año':eur(o.cuotaCli)+'/mes')]); }
+  if(o.custom&&o.N>0) q.push(['Plataforma de los clientes con plataforma','A medida (más de 500 documentos de media)'+(o.asume?' · la asumes tú':' · la paga cada cliente')]);
+  if(o.M>0) q.push(['Pagan los clientes que solo envían documentos','0 €']);
+  sec.push({titulo:'Quién paga qué', filas:q});
+  var st=setup(n);
+  var sf=[['Plan', st.nm], ['Tarifa', rango(st.t,function(x){return num(x)+' €'})+' ('+rango(st.t,function(x){return eur(x/n)})+' por cliente)']];
+  if(of) sf.push(['Precio ofertado · Despacho Fundador (−40 %)', rango(st.f,function(x){return num(x)+' €'})+' ('+rango(st.f,function(x){return eur(x/n)})+' por cliente)']);
+  sec.push({titulo:'Setup de implantación', filas:sf});
+  return sec;
+}
+function resumenCorto(){
+  var o=calcDesp(), r=evaluarTest();
+  var t=num(o.n)+' clientes ('+(o.N>0?num(o.N)+' con plataforma':'')+(o.N>0&&o.M>0?', ':'')+(o.M>0?num(o.M)+' solo documentos':'')+') · Ruta '+rutaCorta();
+  if(r) t+=' · respondió: '+TEXTOS.etiqueta[r.resultado];
+  t+=' · volumen OCR '+num(o.gd)+'/mes';
+  if(o.N>0) t+=' · plataforma: '+(o.asume?'la asume el despacho':'la paga cada cliente');
+  if(t.length>200){ t=t.slice(0,199); var c=Math.max(t.lastIndexOf(' · '),t.lastIndexOf(', ')); t=(c>80?t.slice(0,c):t.replace(/\s+\S*$/,''))+'…'; }
+  return t;
+}
+function payload(){
+  var r=evaluarTest(), o=calcDesp();
+  return {
+    version:1, origen:FORM.origen, fecha:new Date().toISOString(),
+    pagina:String((location.origin||'')+(location.pathname||'')).slice(0,300), referrer:String(document.referrer||'').slice(0,300), utm:utmDeLaUrl(),
+    contacto:{ nombre:val('fNombre'), empresa:val('fEmpresa'), email:val('fEmail'), telefono:val('fTel'), programa:val('fPrograma'), mensaje:val('fMensaje'), consentimiento:!!$('fOk').checked, textoConsentimiento:TXT_CONSENT },
+    etiquetas:{ tipo:'despachos', ruta:rutaCorta(), orientacion:r?TEXTOS.etiqueta[r.resultado]:'', programa:val('fPrograma'), fundador:!!(S.fund&&FUND_OK), clientes:S.cli, modo:MODO,
+      conPlataforma:o.N, sinPlataforma:o.M, pagaPlataforma:o.N>0?(o.asume?'despacho':'cliente'):'', pago:o.N>0?(o.custom?'a medida':(o.anual?'anual':'mensual')):'' },
+    resumen:resumenCorto(), secciones:secciones(), trampa:val('fWeb'), tiempo:Date.now()-T0
+  };
+}
+
+/* ===== COMÚN · modo guiado (embudo), modo libre y solicitud de información =====
+   Cada página define antes: $, num, eur, render(), PASOS, ofertaHTML(), asideHTML(), FORM, payload(), secciones(), resumenCorto()
+   y opcionalmente alTerminarEmbudo(). Los dos modos comparten el mismo estado S de la calculadora:
+   lo que se responde en el guiado aparece en el libre, y lo que se mueve en el libre cambia la oferta. */
+var T0=Date.now(); /* para descartar robots que envían el formulario en menos de 2,5 s */
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]}); }
+function val(id){ var e=$(id); return e&&e.value!=null?String(e.value).trim():''; }
+function utmDeLaUrl(){ var o={}; try{ var q=new URLSearchParams(location.search||''); ['utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(function(k){ var v=q.get(k); if(v) o[k.slice(4)]=v.slice(0,120); }); }catch(e){} return o; }
+function subirHasta(el,attr,tope){ while(el&&el!==tope){ if(el.getAttribute&&el.getAttribute(attr)!=null) return el; el=el.parentNode; } return null; }
+function verArriba(el){ try{ var r=el.getBoundingClientRect(); if(r.top<0||r.top>window.innerHeight*0.6) el.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){} }
+
+/* ---------- modos ---------- */
+var MODO='guiado';
+function conPestanas(){ return !!document.getElementById('tabGuiado'); }
+function ponerModo(m,conScroll){
+  MODO=m;
+  if(conPestanas()){
+    $('tabGuiado').setAttribute('aria-selected',m==='guiado'?'true':'false'); $('tabGuiado').tabIndex=m==='guiado'?0:-1;
+    $('tabLibre').setAttribute('aria-selected',m==='libre'?'true':'false'); $('tabLibre').tabIndex=m==='libre'?0:-1;
+    $('panelGuiado').hidden=m!=='guiado'; $('panelLibre').hidden=m!=='libre';
+  }
+  solVisible();
+  if(typeof pintarBarra==='function') pintarBarra();
+  if(m==='guiado'){ EMB.pintado=-1; embRender(); }
+  if(conScroll) verArriba($('modos'));
+  /* cada página puede llevar al modo libre lo ya respondido en el guiado (despachos guarda sus respuestas aparte) */
+  if(m==='libre'&&typeof alPasarALibre==='function') alPasarALibre();
+}
+function solVisible(){
+  var ver=MODO==='libre'||EMB.fase==='oferta';
+  $('solCard').hidden=!ver;
+  $('solTitulo').textContent=MODO==='libre'?'Solicita información con este cálculo':'Solicita información sobre tu oferta';
+}
+
+/* ---------- embudo guiado: una pantalla por paso ----------
+   Cada paso es una lista de opciones (una o varias) o un deslizador con las paradas de volumen.
+   Elegir no avanza solo: se pasa con «Continuar» o con la flecha de la derecha (o la tecla →). */
+var EMB={i:0,fase:'preguntas',resp:{},pintado:-1};
+function fv(x){ return typeof x==='function'?x():x; }
+function textoImpl(o){ var t=fv(o.impl); return t||''; }
+/* pasos condicionales: si mostrar() da false, el paso se salta, no cuenta en «Paso X de n» y no viaja en la solicitud */
+function visible(p){ return !p.mostrar||!!p.mostrar(); }
+function visibles(){ return PASOS.filter(visible); }
+function sigVisible(i){ for(var j=i+1;j<PASOS.length;j++){ if(visible(PASOS[j])) return j; } return -1; }
+function antVisible(i){ for(var j=i-1;j>=0;j--){ if(visible(PASOS[j])) return j; } return -1; }
+function deslVals(d){ return fv(d.valores); }
+function deslIdx(d,v){ var vs=deslVals(d), k=0; for(var j=0;j<vs.length;j++){ if(vs[j]<=v) k=j; } return k; }
+function deslValor(p){ var r=EMB.resp[p.id], d=p.deslizador; if(r&&typeof r==='object'&&!Array.isArray(r)) return r.n; return fv(d.inicial); }
+function pasoListo(p){ if(p.campo) return campoValido(p); return !!(p.multi||p.deslizador||EMB.resp[p.id]!=null); }
+/* §1.0: el principal inactivo se atenúa con aria-disabled, sigue en el orden de tabulación y recibe el clic (nunca disabled real);
+   al pulsarlo, el motivo se anuncia en #embMotivo (role=alert) y se retira al responder o cambiar de paso */
+function embInactivar(b,si){ if(!b) return; b.disabled=false; b.setAttribute('aria-disabled',si?'true':'false'); }
+function embInactivo(b){ return !!(b&&b.getAttribute('aria-disabled')==='true'); }
+function embMotivo(t){ var e=$('embMotivo'); if(!e) return; t=t||''; if(e.textContent!==t) e.textContent=t; }
+/* ---------- pasos de campo: nombre, correo, teléfono… con su capa RGPD ----------
+   p.campo=true; p.campos=[{id,etiqueta,tipo,autocomplete,max,obligatorio,mostrar,valida,ayuda}]; p.consents=[{id,texto,obligatorio}];
+   p.rgpd (HTML de la capa informativa); p.boton; p.privado (no viaja en «Tus respuestas»). Respuesta: {v:{id:valor}, ok:{id:true}} */
+var RE_CORREO=/^[^@\s]+@[^@\s]+\.(?:[a-zÀ-ÖØ-öø-￿]{2,}|xn--[a-z0-9-]*[a-z0-9])$/i;
+function emailOk(v){ return RE_CORREO.test(String(v||'').trim()); }
+function telOk(v){ var s=String(v||'').trim().replace(/^00/,'+'), d=s.replace(/[^\d]/g,''); if(s.charAt(0)==='+') return d.length>=8&&d.length<=15; return d.length===9&&/^[6789]/.test(d); }
+/* erratas frecuentes de dominio: se sugiere, nunca se corrige sola */
+var DOMINIOS_MAL={'gmial.com':'gmail.com','gmal.com':'gmail.com','gamil.com':'gmail.com','gmai.com':'gmail.com','gmail.co':'gmail.com','gmail.con':'gmail.com','gmail.es':'gmail.com','hotmial.com':'hotmail.com','hotmal.com':'hotmail.com','hotmail.con':'hotmail.com','hotmail.co':'hotmail.com','outlok.com':'outlook.com','outlook.con':'outlook.com','yaho.es':'yahoo.es','yaho.com':'yahoo.com','yahoo.con':'yahoo.com','icloud.con':'icloud.com'};
+function sugerenciaCorreo(v){ var m=String(v||'').trim().toLowerCase().match(/^([^@\s]+)@([^@\s]+)$/); if(!m) return ''; var d=DOMINIOS_MAL[m[2]]; return d?m[1]+'@'+d:''; }
+function camposDe(p){ return (p.campos||[]).filter(function(c){ return !c.mostrar||!!c.mostrar(); }); }
+function campoTexto(c){ var el=$('cmp_'+c.id), x=el?String(el.value||'').trim().replace(/\s+/g,' '):''; return c.limpia?c.limpia(x):x; }
+function campoError(c,x){
+  if(c.obligatorio&&!x) return fv(c.vacio)||'Falta este dato.';
+  if(x&&c.tipo==='email'&&!emailOk(x)) return fv(c.invalido)||'Ese correo no parece completo. Revisa que tenga una @ y un punto (nombre@empresa.es).';
+  if(x&&c.tipo==='tel'&&!telOk(x)) return fv(c.invalido)||'Ese número no parece completo. Escribe 9 cifras (6xx xxx xxx) o el número con prefijo internacional (+33…).';
+  if(x&&c.valida) return c.valida(x)||'';
+  return '';
+}
+function campoValido(p){ return camposDe(p).every(function(c){ return !campoError(c,campoTexto(c)); })&&(fv(p.consents)||[]).every(function(c){ var el=$('cmpOk_'+c.id); return !c.obligatorio||!!(el&&el.checked); }); }
+/* al salir de un campo se valida ese campo (si tiene algo escrito; el vacío se avisa al pulsar) */
+function campoMarcar(c){ var x=campoTexto(c), e=x?campoError(c,x):'', el=$('cmp_'+c.id); if($('cmpErr_'+c.id)) $('cmpErr_'+c.id).textContent=e; if(el&&el.setAttribute) el.setAttribute('aria-invalid',e?'true':'false'); }
+function campoBoton(p){ var l=pasoListo(p); embInactivar($('embNext'),!l); embInactivar($('embFlecha'),!l); (fv(p.consents)||[]).forEach(function(c){ var el=$('cmpOk_'+c.id), lb=$('cmpOkLbl_'+c.id); if(el&&el.checked&&lb&&lb.classList) lb.classList.remove('bad'); }); if(l){ embMotivo(''); if($('cmpErrGlobal')) $('cmpErrGlobal').textContent=''; } }
+function campoValor(p,id){ var r=EMB.resp[p.id]; return (r&&r.v&&r.v[id]!=null)?r.v[id]:''; }
+function pintarCampo(p,entra){
+  var box=$('embCampo'), r=EMB.resp[p.id]||{v:{},ok:{}};
+  if(entra){
+    box.innerHTML=(p.encabezadoCampos?fv(p.encabezadoCampos):'')+camposDe(p).map(function(c){
+      var tipo=c.tipo||'text', v=r.v&&r.v[c.id]!=null?r.v[c.id]:(c.inicial?fv(c.inicial):'');
+      return '<label class="emb-fld" for="cmp_'+c.id+'"><span>'+esc(fv(c.etiqueta))+(c.obligatorio||c.marcaOpcional===false?'':' <em>(opcional)</em>')+'</span>'+
+        '<input id="cmp_'+c.id+'" name="'+c.id+'" type="'+tipo+'" value="'+esc(v)+'"'+(c.autocomplete?' autocomplete="'+c.autocomplete+'"':'')+(tipo==='tel'?' inputmode="tel"':'')+(tipo==='email'?' inputmode="email" autocapitalize="off" autocorrect="off" spellcheck="false"':'')+(tipo==='text'?' autocapitalize="words"':'')+' maxlength="'+(c.max||120)+'"'+(c.placeholder?' placeholder="'+esc(c.placeholder)+'"':'')+' aria-describedby="cmpErr_'+c.id+' cmpAyu_'+c.id+'"><span class="emb-fld-err" id="cmpErr_'+c.id+'" role="alert"></span><span class="emb-fld-sug" id="cmpSug_'+c.id+'"></span>'+
+        '<span class="emb-fld-ayuda" id="cmpAyu_'+c.id+'">'+esc(fv(c.ayuda)||'')+'</span></label>';
+    }).join('')+
+    (fv(p.consents)||[]).map(function(c){ return '<label class="chk" id="cmpOkLbl_'+c.id+'"><input type="checkbox" id="cmpOk_'+c.id+'"'+(r.ok&&r.ok[c.id]?' checked':'')+'><span>'+fv(c.texto)+(c.obligatorio?'':' <em>(opcional)</em>')+'</span></label>'; }).join('')+
+    (p.rgpd?'<p class="rgpd emb-rgpd">'+fv(p.rgpd)+'</p>':'')+
+    (p.capa2?'<div class="emb-capa2" id="cmpCapa2" hidden>'+fv(p.capa2)+'</div>':'')+
+    '<p class="emb-fld-err emb-campo-err" id="cmpErrGlobal" role="alert"></p>';
+    camposDe(p).forEach(function(c){ var el=$('cmp_'+c.id); if(el) el.value=(r.v&&r.v[c.id]!=null)?r.v[c.id]:(c.inicial?fv(c.inicial):''); if($('cmpErr_'+c.id)) $('cmpErr_'+c.id).textContent=''; if($('cmpSug_'+c.id)) $('cmpSug_'+c.id).innerHTML=''; });
+    (fv(p.consents)||[]).forEach(function(c){ var el=$('cmpOk_'+c.id); if(el) el.checked=!!(r.ok&&r.ok[c.id]); });
+    if($('cmpErrGlobal')) $('cmpErrGlobal').textContent='';
+  }
+}
+/* aviso (no error) y sugerencia de dominio mientras se escribe */
+function campoAviso(p,c){
+  var el=$('cmp_'+c.id), x=el?String(el.value||''):'';
+  if(c.aviso&&$('cmpAyu_'+c.id)){ var a=c.aviso(x)||''; $('cmpAyu_'+c.id).textContent=a||fv(c.ayuda)||''; if($('cmpAyu_'+c.id).classList) $('cmpAyu_'+c.id).classList.toggle('aviso',!!a); }
+  if(c.tipo==='email'&&$('cmpSug_'+c.id)){ var s=sugerenciaCorreo(x); $('cmpSug_'+c.id).innerHTML=s?'¿Querías decir <b>'+esc(s)+'</b>? <button type="button" class="lnk" data-acc="sugerir:'+c.id+':'+esc(s)+'">Sí, corregir</button>':''; }
+}
+/* lee los campos del paso; si algo falta o no vale, lo marca y devuelve false */
+function campoLeer(p){
+  var v={}, ok={}, err=[], cortos=[], primero=null, enCampo=0;
+  camposDe(p).forEach(function(c){
+    var el=$('cmp_'+c.id), x=el?String(el.value||'').trim().replace(/\s+/g,' '):'';
+    if(c.limpia) x=c.limpia(x); v[c.id]=x;
+    var e=campoError(c,x);
+    if($('cmpErr_'+c.id)) $('cmpErr_'+c.id).textContent=e;
+    if(el&&el.setAttribute) el.setAttribute('aria-invalid',e?'true':'false');
+    campoAviso(p,c);
+    if(e){ err.push(e); cortos.push(fv(c.corto)||''); if($('cmpErr_'+c.id)) enCampo++; if(!primero) primero=el; }
+  });
+  (fv(p.consents)||[]).forEach(function(c){
+    var el=$('cmpOk_'+c.id), on=!!(el&&el.checked); ok[c.id]=on;
+    var lbl=$('cmpOkLbl_'+c.id); if(lbl&&lbl.classList) lbl.classList.toggle('bad',!!(c.obligatorio&&!on));
+    if(c.obligatorio&&!on){ err.push(fv(c.falta)||'Para seguir necesitamos que marques esta casilla.'); cortos.push(fv(c.corto)||''); if(!primero) primero=el; }
+  });
+  /* varias cosas a la vez: un solo mensaje resumen; una sola: su mensaje */
+  var resumenErr=err.length>1&&cortos.every(Boolean)?('Para enviarla falta '+cortos.join(', ').replace(/, ([^,]*)$/,' y $1')+'.'):(err.length===1&&enCampo?'':(err[0]||''));
+  if($('cmpErrGlobal')) $('cmpErrGlobal').textContent=resumenErr;
+  if(err.length){ try{ if(primero&&primero.focus) primero.focus({preventScroll:false}); }catch(e){} return false; }
+  EMB.resp[p.id]={v:v,ok:ok};
+  if(p.aplicar) p.aplicar(EMB.resp[p.id]);
+  return true;
+}
+function pintarDeslizador(p,entra){
+  var d=p.deslizador, vs=deslVals(d), r=EMB.resp[p.id], v=deslValor(p), k=deslIdx(d,v), ult=vs.length-1, mx=Math.max(1,ult), rg=$('embRange'), un=fv(d.unidad);
+  var mo=d.modos?fv(d.modos):null, modo=mo?fv(d.modo):null, soloNum=!!(mo&&d.modoExacto&&modo===d.modoExacto);
+  if($('embModos')){ $('embModos').hidden=!mo; if(mo){ $('embModos').setAttribute('aria-label',fv(d.modosEtiqueta)||'Cómo nos lo dices'); $('embModos').innerHTML=mo.map(function(x){ return '<button type="button" class="emb-chip" data-modo="'+x.id+'" aria-pressed="'+(x.id===modo?'true':'false')+'">'+esc(x.t)+'</button>'; }).join(''); } }
+  rg.hidden=soloNum; if($('embMarcas')) $('embMarcas').hidden=soloNum;
+  rg.max=String(ult); rg.value=String(k); rg.setAttribute('aria-label',fv(p.q));
+  rg.setAttribute('aria-valuetext',d.texto(v)+' '+un);
+  rg.style.setProperty('--pct',(k/mx*100)+'%');
+  $('embValor').textContent=d.textoResp?d.textoResp(v,r):d.texto(v); $('embUnidad').textContent=un;
+  $('embDeslImpl').textContent=d.impl(v,r)||'';
+  if(entra) $('embMarcas').innerHTML=fv(d.marcas).map(function(m){ var i=vs.indexOf(m[0]); if(i<0) return ''; return '<span class="'+(i===0?'ini':(i===ult?'fin':''))+'" style="left:'+(i/mx*100)+'%">'+esc(m[1])+'</span>'; }).join('');
+  var ex=d.exacto; $('embNum').hidden=!ex||(!!mo&&!soloNum);
+  if(ex){ $('embNumLbl').textContent=fv(ex.etiqueta); $('embNumIn').max=String(ex.max||99999); if(entra) $('embNumIn').value=(r&&r.x!=null)?String(r.x):''; }
+  $('embNumOk').textContent=(ex&&r&&r.x!=null)?(ex.ok?ex.ok(r):'✓ Aplicado: '+num(r.x)):'';
+}
+function embRender(){
+  var fin=EMB.fase==='oferta';
+  /* si el paso actual ha dejado de aplicar (por una respuesta anterior), se pasa al siguiente que aplique */
+  if(!fin&&PASOS[EMB.i]&&!visible(PASOS[EMB.i])){ var s=sigVisible(EMB.i); if(s>=0) EMB.i=s; else { var a0=antVisible(EMB.i); EMB.i=a0<0?0:a0; } }
+  var vis=visibles(), cont=vis.filter(function(x){return !x.noCuenta}), n=cont.length, pos=cont.indexOf(PASOS[EMB.i]);
+  if(typeof pintarBarra==='function') pintarBarra();
+  $('embProg').style.setProperty('--p',(fin?100:(pos<0?0:Math.round((pos+1)/(n+1)*100)))+'%');
+  var lat=fin&&typeof asideOferta==='function'; /* embudo: la oferta conserva el lateral «Tu caso» (espec. §5.1) */
+  $('embPreg').hidden=fin; $('embOferta').hidden=!fin; $('embAside').hidden=fin&&!lat;
+  $('embBody').classList.toggle('fin',fin);
+  var pAct=PASOS[EMB.i], suf=pAct?fv(pAct.sufijoPaso):'';
+  $('embPaso').textContent=fin?'Tu oferta':(pos<0?(fv(pAct.etiquetaPaso)||'Para empezar'):'Paso '+(pos+1)+' de '+n+(suf?' · '+suf:''));
+  if($('embResumen')) $('embResumen').hidden=fin&&!lat;
+  if(fin){ EMB.pintado=-1; $('embOferta').innerHTML=ofertaCompleta(); if(lat){ $('embAside').innerHTML=asideOferta(); pintarResumen(null,false); } solVisible(); return; }
+  var p=PASOS[EMB.i], r=EMB.resp[p.id], entra=EMB.pintado!==EMB.i, d=p.deslizador, q=fv(p.q), ay=fv(p.ayuda);
+  $('embQ').textContent=q;
+  $('embAyuda').textContent=ay||''; $('embAyuda').hidden=!ay;
+  $('embDesl').hidden=!d; $('embOpts').hidden=!!(d||p.campo); $('embImplGrupo').hidden=true;
+  if($('embCampo')) $('embCampo').hidden=!p.campo;
+  if(d) pintarDeslizador(p,entra);
+  else if(p.campo) pintarCampo(p,entra);
+  else {
+    /* si todas las opciones (o todas menos una) implican lo mismo, se dice una vez encima del grupo y las opciones van en fichas */
+    var ims=p.opciones.map(textoImpl), cuenta={}, comun='', maxc=0;
+    ims.forEach(function(x){ if(x){ cuenta[x]=(cuenta[x]||0)+1; if(cuenta[x]>maxc){ maxc=cuenta[x]; comun=x; } } });
+    var todas=maxc===ims.length, igual=ims.length>2&&maxc>=Math.max(2,ims.length-(ims.length>=6?2:1));
+    var fichas=igual&&p.opciones.every(function(o,j){ return String(o.t).length<=34&&(ims[j]===comun||String(ims[j]).length<=32); });
+    $('embImplGrupo').hidden=!igual; $('embImplGrupo').textContent=igual?'('+(todas?comun:'con cualquiera de estas: '+comun).replace(/^\(|\)$/g,'')+')':'';
+    $('embOpts').className='emb-opts'+(fichas?' fichas':'')+(p.claseOpts?' '+p.claseOpts:'');
+    $('embOpts').setAttribute('aria-label',q);
+    $('embOpts').innerHTML=p.opciones.map(function(o,j){
+      var on=p.multi?((r||[]).indexOf(j)>=0):(r===j), im=(igual&&ims[j]===comun)?'':ims[j];
+      /* o.corto: línea breve que sustituye a la descripción en pantallas pequeñas (solo donde la página lo pida por CSS) */
+      return '<button type="button" class="emb-opt'+(p.multi?' multi':'')+'" data-j="'+j+'" aria-pressed="'+(on?'true':'false')+'"><span class="mk" aria-hidden="true"></span><span class="tx"><span class="lb">'+esc(fv(o.t))+'</span>'+(o.ds?'<span class="emb-opt-ds">'+esc(fv(o.ds))+'</span>':'')+(o.corto?'<span class="emb-opt-corto">'+esc(fv(o.corto))+'</span>':'')+(im?'<span class="impl-bajo">'+esc(/^\(/.test(im)?im:'('+im+')')+'</span>':'')+(o.nota?'<span class="emb-opt-nota">'+esc(fv(o.nota))+'</span>':'')+'</span></button>';
+    }).join('');
+  }
+  if($('embNota')){ var ntx=fv(p.nota)||''; $('embNota').innerHTML=ntx; $('embNota').hidden=!ntx; }
+  EMB.pintado=EMB.i;
+  var listo=pasoListo(p), ult=sigVisible(EMB.i)<0, primero=antVisible(EMB.i)<0;
+  $('embBack').hidden=primero; $('embPrev').hidden=primero;
+  if(primero&&p.secundario){ $('embBack').hidden=false; $('embBack').textContent=fv(p.secundario.t); $('embBack').setAttribute('data-sec','1'); }
+  else { $('embBack').textContent='← Atrás'; $('embBack').setAttribute('data-sec','0'); }
+  embInactivar($('embNext'),!listo); embInactivar($('embFlecha'),!listo); if(listo||entra) embMotivo('');
+  var txtNext=(EMB.volver&&!p.campo&&todoRespondido())?'Volver a mi oferta →':(fv(p.boton)||(ult?'Ver mi oferta →':'Continuar →'));
+  $('embNext').textContent=txtNext;
+  $('embFlecha').setAttribute('aria-label',txtNext.replace(/\s*→$/,''));
+  $('embFlecha').title=txtNext.replace(/\s*→$/,'');
+  $('embPista').textContent=(listo||p.campo)?(p.multi?(p.pista||'Marca las que quieras y continúa'):(fv(p.pista)||(typeof pistaPaso==='function'?(pistaPaso(p)||''):''))):'Elige una opción para continuar';
+  $('embAside').innerHTML=asideHTML();
+  var sinLat=!$('embAside').innerHTML; $('embAside').hidden=sinLat; $('embBody').classList.toggle('sin-lateral',sinLat); if($('embResumen')) $('embResumen').hidden=sinLat;
+  pintarResumen(p,entra);
+  if(typeof trasEmbRender==='function') trasEmbRender();
+}
+function ofertaCompleta(){ return ofertaHTML()+(typeof trasOferta==='function'?trasOferta():''); }
+/* en móvil el lateral es una línea plegable dentro de la tarjeta (mismo contenido) */
+var RESUMEN_AUTO=false;
+function pintarResumen(p,entra){
+  if(!$('embResumenB')) return;
+  var b=$('embResumenB'), recorta=!!(p&&p.abrirResumen!=null&&fv(p.abrirResumen));
+  if(entra) EMB.resumenTodo=false;
+  b.innerHTML=$('embAside').innerHTML+(recorta?'<button type="button" class="emb-vertodo" data-acc="verTodo" aria-expanded="'+(EMB.resumenTodo?'true':'false')+'" aria-controls="embResumenB">'+(EMB.resumenTodo?'Ver menos ▴':'Ver todo ▾')+'</button>':'');
+  b.className='emb-aside-in'+((recorta&&!EMB.resumenTodo)?' recortado':'');
+  if($('embResumenT')) $('embResumenT').textContent=(typeof tituloResumen==='function'?tituloResumen(p):'Tu caso hasta ahora');
+  if(entra&&p&&$('embResumen')){
+    if(p.abrirResumen!=null){ var ab=!!fv(p.abrirResumen); $('embResumen').open=ab; RESUMEN_AUTO=ab; }
+    else if(RESUMEN_AUTO){ $('embResumen').open=false; RESUMEN_AUTO=false; }
+  }
+}
+function verTodoResumen(){ EMB.resumenTodo=!EMB.resumenTodo; pintarResumen(PASOS[EMB.i],false); var v=document.querySelector?document.querySelector('#embResumenB .emb-vertodo'):null; try{ if(v&&v.focus) v.focus({preventScroll:true}); }catch(e){} }
+function todoRespondido(){ return visibles().every(function(x){ return EMB.resp[x.id]!=null; }); }
+function refrescarGuiado(){ if(MODO!=='guiado') return; if(EMB.fase==='oferta'){ $('embOferta').innerHTML=ofertaCompleta(); if(typeof asideOferta==='function'){ $('embAside').innerHTML=asideOferta(); pintarResumen(null,false); } } else { $('embAside').innerHTML=asideHTML(); pintarResumen(PASOS[EMB.i],false); } }
+function embElegir(j){
+  var p=PASOS[EMB.i]; if(!p||!p.opciones||!p.opciones[j]) return;
+  if(p.multi){
+    /* una opción excluyente («Ninguno») deja solo esa; cualquier otra quita la excluyente */
+    var a=(EMB.resp[p.id]||[]).slice(), k=a.indexOf(j);
+    if(k>=0) a.splice(k,1);
+    else if(p.opciones[j].excluyente) a=[j];
+    else { a=a.filter(function(x){ return !p.opciones[x].excluyente; }); a.push(j); }
+    a.sort(function(x,y){return x-y});
+    EMB.resp[p.id]=a; if(p.aplicar) p.aplicar(a);
+  } else { EMB.resp[p.id]=j; if(p.aplicar) p.aplicar(p.opciones[j],j); }
+  render(); embRender();
+  var b=document.querySelector?document.querySelector('#embOpts [data-j="'+j+'"]'):null;
+  try{ if(b&&b.focus) b.focus({preventScroll:true}); }catch(e){}
+}
+/* deslizador: parada k; número exacto: lo tecleado (con conversión propia si el paso la define) */
+function embDeslizar(k){
+  var p=PASOS[EMB.i], d=p&&p.deslizador; if(!d) return;
+  var vs=deslVals(d), v=vs[Math.max(0,Math.min(vs.length-1,k))];
+  EMB.resp[p.id]={n:v}; $('embNumIn').value=''; d.aplicar(v,EMB.resp[p.id]); render(); embRender();
+}
+function embExacto(){
+  var p=PASOS[EMB.i], d=p&&p.deslizador, ex=d&&d.exacto; if(!ex) return false;
+  var x=parseInt($('embNumIn').value,10); if(!isFinite(x)||x<1) return false;
+  x=Math.min(x,ex.max||99999);
+  var rr=ex.aResp?ex.aResp(x):{n:x}; rr.x=x;
+  EMB.resp[p.id]=rr; d.aplicar(rr.n,rr); render(); embRender(); return true;
+}
+function embSiguiente(){
+  if(EMB.fase==='oferta'||(typeof embOcupado==='function'&&embOcupado())) return;
+  var p=PASOS[EMB.i]; if(!p) return;
+  if(!p.campo&&!pasoListo(p)){ $('embPista').textContent=''; embMotivo(fv(p.motivo)||'Elige una opción para continuar'); return; }
+  if(p.deslizador){
+    var r=EMB.resp[p.id], x=parseInt($('embNumIn').value,10);
+    if(p.deslizador.exacto&&isFinite(x)&&x>0&&!(r&&r.x===x)) embExacto();
+    var dd=p.deslizador; if(dd.modos&&dd.modoExacto&&fv(dd.modo)===dd.modoExacto&&!(EMB.resp[p.id]&&EMB.resp[p.id].x!=null)){ embMotivo(fv(dd.faltaExacto)||'Escribe el número para continuar.'); try{ $('embNumIn').focus(); }catch(e){} return; }
+    if(EMB.resp[p.id]==null){ var v=deslValor(p); EMB.resp[p.id]={n:v}; p.deslizador.aplicar(v,EMB.resp[p.id]); render(); }
+  }
+  if(p.multi&&EMB.resp[p.id]==null){ EMB.resp[p.id]=[]; if(p.aplicar) p.aplicar([]); }
+  if(p.campo&&!campoLeer(p)) return;
+  if(EMB.resp[p.id]==null) return;
+  /* «Cambiar una respuesta» desde la oferta: al responder se vuelve a la oferta, recalculada, si no queda ningún paso sin responder (§10) */
+  if(EMB.volver&&todoRespondido()){ EMB.volver=false; EMB.fase='oferta'; if(typeof alTerminarEmbudo==='function') alTerminarEmbudo(); embRender(); solVisible(); enfocarEmbudo(); return; }
+  var s=sigVisible(EMB.i);
+  /* un paso puede decidir a dónde se continúa (volver a un segmento ya respondido): índice de PASOS, o -1 para seguir en orden */
+  if(s>=0&&p.salto){ var k=p.salto(s); if(k>=0&&k<PASOS.length) s=k; }
+  if(s>=0) EMB.i=s;
+  else { EMB.fase='oferta'; if(typeof alTerminarEmbudo==='function') alTerminarEmbudo(); }
+  embRender(); enfocarEmbudo();
+}
+function embAtras(){
+  if(typeof embOcupado==='function'&&embOcupado()) return;
+  if(EMB.fase==='oferta'){ EMB.fase='preguntas'; var u=antVisible(PASOS.length); EMB.i=u<0?0:u; }
+  else { var a=antVisible(EMB.i); if(a>=0) EMB.i=a; }
+  embRender(); solVisible(); enfocarEmbudo();
+}
+function embReiniciar(){ EMB={i:0,fase:'preguntas',resp:{},pintado:-1}; if(typeof alReiniciarEmbudo==='function') alReiniciarEmbudo(); embRender(); solVisible(); enfocarEmbudo(); }
+/* cada paso se ve entero en pantalla: si no cabe donde está, se sube el panel arriba */
+function verEtapa(){
+  try{
+    var el=$('panelGuiado'), r=el.getBoundingClientRect(), h=window.innerHeight||800, bajo=(window.innerWidth||1200)<=900?72:0;
+    if(r.top<-2||r.bottom>h-bajo) el.scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(e){}
+}
+function enfocarEmbudo(){
+  var p=PASOS[EMB.i], t=EMB.fase==='oferta'?$('embOferta'):$('embQ');
+  if(EMB.fase!=='oferta'&&p&&p.campo&&p.autofoco){ var c=camposDe(p)[0]; if(c&&$('cmp_'+c.id)) t=$('cmp_'+c.id); }
+  try{ if(t.focus) t.focus({preventScroll:true}); }catch(e){}
+  verEtapa();
+}
+/* respuestas del guiado, en texto, para la solicitud */
+function respuestasEmbudo(){
+  var lista=(typeof pasosDeRespuestas==='function')?pasosDeRespuestas():PASOS;
+  return lista.filter(function(p){ return visible(p)&&!p.privado&&EMB.resp[p.id]!=null; }).map(function(p){
+    var r=EMB.resp[p.id], t;
+    if(Array.isArray(r)) t=r.length?r.map(function(j){return p.opciones[j].t}).join(' · '):(p.vacio||'Ninguna');
+    else if(p.campo) t=p.resumen?p.resumen(r):Object.keys(r.v||{}).map(function(k){return r.v[k]}).filter(Boolean).join(' · ');
+    else if(typeof r==='object') t=p.deslizador&&p.deslizador.resumen?p.deslizador.resumen(r):num(r.n);
+    else t=p.opciones[r].t;
+    return [fv(p.q),t];
+  });
+}
+
+/* ---------- solicitud de información ---------- */
+var TXT_CONSENT='He leído la política de privacidad y acepto que Servicios Digitales y Automatización SL (Trazabis) use estos datos para responder a mi solicitud.';
+var TXT_FALTA_CASILLA='que aceptes la política de privacidad', TXT_SOLO_CASILLA='';
+function resumenHTML(secs){ return secs.map(function(s){ return '<div class="rs"><h4>'+esc(s.titulo)+'</h4>'+s.filas.map(function(f){ return '<div class="rs-row"><span>'+esc(f[0])+'</span><b>'+esc(f[1])+'</b></div>'; }).join('')+'</div>'; }).join(''); }
+function actualizarResumen(){ $('solResumen').innerHTML=resumenHTML(secciones()); }
+function validarSolicitud(){
+  var ids={fNombre:val('fNombre').length>=2, fEmail:RE_CORREO.test(val('fEmail'))};
+  if(FORM.empresaObligatoria) ids.fEmpresa=val('fEmpresa').length>=2;
+  Object.keys(ids).forEach(function(id){ $(id).setAttribute('aria-invalid',ids[id]?'false':'true'); });
+  var err=[];
+  if(!ids.fNombre) err.push('tu nombre');
+  if(FORM.empresaObligatoria&&!ids.fEmpresa) err.push('el nombre '+FORM.delaEmpresa);
+  if(!ids.fEmail) err.push('un correo válido');
+  var ok=!!$('fOk').checked; $('fOkLbl').classList.toggle('bad',!ok); if(!ok) err.push(TXT_FALTA_CASILLA);
+  $('solErr').textContent=!err.length?'':(err.length===1&&!ok&&TXT_SOLO_CASILLA)?TXT_SOLO_CASILLA:('Para enviarla falta '+err.join(', ').replace(/, ([^,]*)$/,' y $1')+'.');
+  if(err.length){ var primero=['fNombre','fEmpresa','fEmail'].filter(function(id){return ids[id]===false})[0]||'fOk'; try{ $(primero).focus(); }catch(e){} }
+  return !err.length;
+}
+function irASolicitud(){ var c=$('solCard'); c.hidden=false; try{ c.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){} var f=$('fNombre'); try{ f.focus({preventScroll:true}); }catch(e){} }
+function mostrarHecho(p,modo){
+  $('solForm').hidden=true; var ok=$('solOk'); ok.hidden=false;
+  var otra='<p style="margin-top:10px"><button type="button" class="lnk" data-acc="libre">Ajustar el cálculo libremente</button> · <button type="button" class="lnk" data-acc="otra">Enviar otra solicitud</button></p>';
+  if(modo==='enviado'){ ok.innerHTML='<div class="tt">Solicitud enviada.</div>'+FORM.exitoHTML(p)+otra; }
+  else {
+    ok.innerHTML='<div class="tt">Vista previa: no se ha enviado nada.</div>En trazabis.com, este botón manda tu solicitud a Trazabis (correo y CRM) con estos datos:<div class="prev">'+
+      resumenHTML([{titulo:'Contacto',filas:FORM.contactoFilas(p)}].concat(p.secciones))+'</div>'+otra;
+  }
+  try{ ok.focus&&ok.focus(); }catch(e){}
+}
+var SOL_ENVIANDO=false;
+var ERR_ENVIO='No hemos podido enviar la solicitud. Inténtalo de nuevo o escríbenos a escribeme@trazabis.es.';
+function enviarSolicitud(e){
+  if(e&&e.preventDefault) e.preventDefault();
+  if(SOL_ENVIANDO) return;
+  if(!validarSolicitud()) return;
+  var p=payload();
+  if(typeof window.enviarSolicitudTrazabis!=='function'){ mostrarHecho(p,'vista-previa'); return; }
+  SOL_ENVIANDO=true; $('solBtn').disabled=true; $('solBtn').textContent='Enviando…'; $('solErr').textContent='';
+  Promise.resolve().then(function(){ return window.enviarSolicitudTrazabis(p); }).then(function(res){
+    if(res&&res.ok){ mostrarHecho(p,'enviado'); } else { $('solErr').textContent=ERR_ENVIO; }
+  }).catch(function(){ $('solErr').textContent=ERR_ENVIO; })
+  .then(function(){ SOL_ENVIANDO=false; $('solBtn').disabled=false; if(typeof actualizarSolicitud==='function') actualizarSolicitud(); else $('solBtn').textContent='Solicitar información'; });
+}
+function otraSolicitud(){ $('solOk').hidden=true; $('solOk').innerHTML=''; $('solForm').hidden=false; if(typeof actualizarSolicitud==='function') actualizarSolicitud(); }
+
+/* ---------- eventos comunes ---------- */
+function accion(a){
+  if(a==='solicitar') irASolicitud();
+  else if(a==='libre') ponerModo('libre',true);
+  else if(a==='guiado') ponerModo('guiado',true);
+  else if(a==='reiniciar'){ ponerModo('guiado'); embReiniciar(); }
+  else if(a==='oferta'){ if(EMB.fase!=='oferta'){ EMB.fase='oferta'; if(typeof alTerminarEmbudo==='function'&&visibles().every(function(p){return EMB.resp[p.id]!=null})) alTerminarEmbudo(); } ponerModo('guiado',true); }
+  else if(a==='otra') otraSolicitud();
+}
+/* alto de la barra fija del móvil, para que «Continuar» quede justo encima */
+function medirBarra(){
+  try{ var b=document.querySelector('.bar'), h=(b&&window.getComputedStyle(b).display!=='none')?b.offsetHeight:0; document.documentElement.style.setProperty('--barra',h+'px'); }catch(e){}
+}
+function iniciarComun(){
+  medirBarra(); try{ window.addEventListener('resize',medirBarra); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(medirBarra); }catch(e){}
+  if(conPestanas()){
+    $('tabGuiado').addEventListener('click',function(){ ponerModo('guiado'); });
+    $('tabLibre').addEventListener('click',function(){ ponerModo('libre'); });
+    $('modos').addEventListener('keydown',function(e){ if(e.key==='ArrowRight'||e.key==='ArrowLeft'){ var m=MODO==='guiado'?'libre':'guiado'; ponerModo(m); $(m==='guiado'?'tabGuiado':'tabLibre').focus(); e.preventDefault(); } });
+  }
+  if($('embCampo')){
+    $('embCampo').addEventListener('keydown',function(e){ if(e.key==='Enter'&&e.target&&e.target.tagName==='INPUT'&&e.target.type!=='checkbox'){ e.preventDefault(); embSiguiente(); } });
+    $('embCampo').addEventListener('input',function(e){ var p=PASOS[EMB.i]; if(!p||!p.campo||!e.target||!e.target.id) return; var id=String(e.target.id).replace(/^cmp_/,''); camposDe(p).forEach(function(c){ if(c.id===id) campoAviso(p,c); }); campoBoton(p); });
+    $('embCampo').addEventListener('change',function(){ var p=PASOS[EMB.i]; if(p&&p.campo) campoBoton(p); });
+    $('embCampo').addEventListener('focusout',function(e){ var p=PASOS[EMB.i]; if(!p||!p.campo||!e.target||!e.target.id) return; var id=String(e.target.id).replace(/^cmp_/,''); camposDe(p).forEach(function(c){ if(c.id===id) campoMarcar(c); }); });
+  }
+  $('embOpts').addEventListener('click',function(e){ var b=subirHasta(e.target,'data-j',this); if(b) embElegir(+b.getAttribute('data-j')); });
+  $('embNext').addEventListener('click',embSiguiente);
+  $('embFlecha').addEventListener('click',embSiguiente);
+  $('embBack').addEventListener('click',function(){ var p=PASOS[EMB.i]; if(p&&p.secundario&&$('embBack').getAttribute('data-sec')==='1') p.secundario.accion(); else embAtras(); });
+  $('embPrev').addEventListener('click',embAtras);
+  $('embRange').addEventListener('input',function(e){ embDeslizar(+e.target.value); });
+  if($('embModos')) $('embModos').addEventListener('click',function(e){ var b=subirHasta(e.target,'data-modo',this), p=PASOS[EMB.i]; if(!b||!p||!p.deslizador||!p.deslizador.cambiarModo) return; p.deslizador.cambiarModo(b.getAttribute('data-modo')); embMotivo(''); EMB.pintado=-1; render(); embRender(); });
+  $('embNumIn').addEventListener('input',function(){ if($('embNumIn').value!=='') embExacto(); });
+  $('embNumIn').addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); embSiguiente(); } });
+  /* flechas del teclado: → continúa y ← vuelve, salvo dentro de un campo o del deslizador */
+  $('panelGuiado').addEventListener('keydown',function(e){
+    var tg=e.target&&e.target.tagName; if(tg==='INPUT'||tg==='TEXTAREA'||tg==='SELECT'||EMB.fase==='oferta') return;
+    if(e.key==='ArrowRight'&&!embInactivo($('embNext'))){ e.preventDefault(); embSiguiente(); }
+    else if(e.key==='ArrowLeft'&&EMB.i>0){ e.preventDefault(); embAtras(); }
+  });
+  document.addEventListener('click',function(e){ var b=subirHasta(e.target,'data-acc',document); if(b){ e.preventDefault&&e.preventDefault(); accion(b.getAttribute('data-acc')); } });
+  $('solForm').addEventListener('submit',enviarSolicitud);
+  $('solEnvio').addEventListener('toggle',function(){ if($('solEnvio').open) actualizarResumen(); });
+  ponerModo('guiado'); embRender();
+}
+
+/* ===== Integración en una landing externa =====
+   TRAZABIS_LEAD_ENDPOINT: URL (webhook) que recibe la solicitud en JSON (POST). Vacía = vista previa, no se envía nada.
+   El cuerpo es el mismo que recibe trazabis.com: { nombre, correo, empresa, telefono, tipo:'despachos', resumen, secciones[], … }
+   más pagina, referrer y origen. */
+var TRAZABIS_LEAD_ENDPOINT='';
+if(TRAZABIS_LEAD_ENDPOINT){
+  window.enviarSolicitudTrazabis=function(p){
+    var datos=JSON.parse(JSON.stringify(p)); datos.pagina=location.href; datos.referrer=document.referrer; datos.origen='landing-despachos-ads';
+    return fetch(TRAZABIS_LEAD_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(datos)})
+      .then(function(r){ return {ok:r.ok}; }).catch(function(){ return {ok:false}; });
+  };
+}
+/* avisa al documento padre de la altura, para que el iframe crezca solo (ver LEEME) */
+(function(){
+  if(window.parent===window) return;
+  var ultimo=0;
+  /* se mide el cuerpo (no el documento, que crece con el propio iframe) más la barra fija del móvil si está visible */
+  function avisar(){
+    var b=document.querySelector('.bar'), hb=(b&&getComputedStyle(b).display!=='none')?b.offsetHeight:0;
+    var a=Math.ceil(document.body.getBoundingClientRect().height)+hb;
+    if(Math.abs(a-ultimo)>2){ ultimo=a; try{ window.parent.postMessage({trazabisCalculadora:'alto',alto:a},'*'); }catch(e){} }
+  }
+  try{ new ResizeObserver(avisar).observe(document.body); }catch(e){ setInterval(avisar,500); }
+  window.addEventListener('load',avisar);
+  /* por si el padre registra su oyente después de la primera medida (iframe con loading="lazy") */
+  [600,1500,3000].forEach(function(ms){ setTimeout(function(){ ultimo=0; avisar(); },ms); });
+})();
+
+iniciarComun();
+render();
+</script>
+</body>
+</html>
